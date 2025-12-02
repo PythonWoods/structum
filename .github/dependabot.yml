@@ -1,0 +1,43 @@
+# SPDX-License-Identifier: Apache-2.0
+
+version: 2
+
+updates:
+  - package-ecosystem: "pip"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "03:00"
+      timezone: "Europe/Rome"
+    open-pull-requests-limit: 10
+    labels: ["dependencies"]
+    commit-message:
+      prefix: "chore(deps)"
+      include: "scope"
+    versioning-strategy: "increase-if-necessary"
+
+    groups:
+      cli-tools:
+        patterns:
+          - "typer*"
+          - "rich*"
+      dev-tools:
+        dependency-type: "development"
+        patterns:
+          - "ruff*"
+          - "black*"
+          - "mypy*"
+      testing:
+        dependency-type: "development"
+        patterns:
+          - "pytest*"
+          - "httpx*"
+
+  - package-ecosystem: github-actions
+    directory: "/"
+    schedule:
+      interval: "monthly"
+      time: "03:00"
+      day: "sunday"
+    labels: ["ci", "github-actions"]
