@@ -5,7 +5,7 @@
 
 [![CI](https://github.com/pythonwoods/structum/actions/workflows/main_ci.yml/badge.svg)](https://github.com/pythonwoods/structum/actions/workflows/main_ci.yml)
 ![GitHub tag (latest SemVer)](https://img.shields.io/github/v/tag/pythonwoods/structum)
-[![License](https://img.shields.io/github/license/pythonwoods/structum)](LICENSE)
+[![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![PyPI](https://img.shields.io/pypi/v/structum.svg)](https://pypi.org/project/structum/)
 [![PyPI - Downloads](https://img.shields.io/pypi/dm/structum.svg)](https://pypi.org/project/structum/)
 [![REUSE status](https://api.reuse.software/badge/github.com/pythonwoods/structum)](https://api.reuse.software/info/github.com/pythonwoods/structum)
