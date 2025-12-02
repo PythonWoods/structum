@@ -6,7 +6,3 @@ Source: https://github.com/PythonWoods/structum
 Files: LICENSES/Apache-2.0.txt
 Copyright: 2004 The Apache Software Foundation
 License: Apache-2.0
-
-Files: *
-Copyright: 2025 PythonWoods
-License: Apache-2.0
