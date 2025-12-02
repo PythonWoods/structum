@@ -1,20 +1,12 @@
 Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
 Upstream-Name: Structum
-Upstream-Contact: PythonWoods <dev@pythonwoods.io>
-Source: https://github.com/tuo-username/structum
+Upstream-Contact: PythonWoods <pythonwoods@example.com>
+Source: https://github.com/PythonWoods/structum
+
+Files: LICENSES/Apache-2.0.txt
+Copyright: 2004 The Apache Software Foundation
+License: Apache-2.0
 
 Files: *
-Copyright: 2025 PythonWoods
-License: Apache-2.0
-
-Files: LICENSE
-Copyright: 2025 PythonWoods
-License: Apache-2.0
-
-Files: README.md
-Copyright: 2025 PythonWoods
-License: Apache-2.0
-
-Files: src/structum/*
 Copyright: 2025 PythonWoods
 License: Apache-2.0
