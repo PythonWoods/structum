@@ -1,0 +1,69 @@
+# SPDX-License-Identifier: Apache-2.0
+# SPDX-FileCopyrightText: 2025 PythonWoods
+
+# ─────────────────────────────────────────────
+#  Python standard
+# ─────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtualenv
+.venv/
+venv/
+env/
+
+# Distribution / packaging
+build/
+dist/
+*.egg-info/
+*.egg
+pip-wheel-metadata/
+
+# Hatchling / uv cache
+.hatch/
+.uv/
+.uv_cache/
+.python_modules/
+
+# Editor / IDE
+.vscode/
+.idea/
+
+# JetBrains
+*.iml
+out/
+
+# MyPy / Ruff / Pyright cache
+.mypy_cache/
+.ruff_cache/
+.pytype/
+.pyright/
+
+# Testing
+coverage.xml
+.tox/
+.pytest_cache/
+nosetests.xml
+
+# Logs
+*.log
+logs/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# MkDocs
+site/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Generated documentation examples or temp
+tmp/
+temp/
+.cache/
+
+# REUSE
+.reuse/cache/
