@@ -385,9 +385,50 @@ structum report full --template=my-template
 - Variable injection
 - Partial includes
 
-##### 4.4 Export Formats
+##### 4.4 LaTeX Export
+```bash
+structum report latex --output=documentation.tex
+structum report latex --template=academic --with-toc
+structum report latex --compile-pdf  # Auto-compile to PDF
+```
+
+**Features:**
+- Professional LaTeX document generation
+- Academic paper templates (IEEE, ACM, Springer)
+- Thesis/dissertation templates
+- Technical book format
+- Code listings with syntax highlighting (listings/minted)
+- Mathematical notation support
+- Bibliography integration (BibTeX)
+- Cross-referencing (labels, refs)
+- Table of contents, list of figures
+- Overleaf-compatible output
+- Auto-compile to PDF (requires pdflatex/xelatex)
+
+**Tech Stack:**
+- Jinja2 for LaTeX templating
+- Pygments for syntax highlighting
+- Optional: subprocess for PDF compilation
+
+**Use Cases:**
+- Academic papers documenting software
+- PhD/Master theses with code appendices
+- Technical books about software architecture
+- Research documentation with algorithms
+- Formal enterprise documentation
+- Conference paper submissions
+
+**Templates Included:**
+- `academic` - IEEE/ACM style
+- `thesis` - University thesis format
+- `book` - Technical book layout
+- `report` - Formal technical report
+- `minimal` - Basic LaTeX article
+
+##### 4.5 Multi-Format Export
 - **PDF** - Audit, compliance, presentation
 - **HTML** - Interactive, dashboard
+- **LaTeX** - Academic papers, theses, technical books
 - **JSON** - API, integration
 - **XML** - Enterprise systems
 - **Markdown** - Documentation

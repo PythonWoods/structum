@@ -129,12 +129,18 @@ src/structum/
 │   └── reports/                    # Reports Module (Phase 4)
 │       ├── __init__.py
 │       ├── pdf.py                  # PDF generation
+│       ├── latex.py                # LaTeX export
 │       ├── dashboard.py            # Interactive dashboard
 │       ├── exporter.py             # Multi-format export
 │       └── templates/              # Report templates
 │           ├── corporate/
 │           ├── minimal/
-│           └── audit/
+│           ├── audit/
+│           └── latex/              # LaTeX templates
+│               ├── academic/       # IEEE, ACM styles
+│               ├── thesis/         # University thesis
+│               ├── book/           # Technical book
+│               └── report/         # Technical report
 ├── integrations/                   # Integrations (Phase 2)
 │   ├── __init__.py
 │   ├── git.py                      # Git integration
