@@ -1,0 +1,60 @@
+site_name: Structum
+site_description: Enterprise Code Structure & Documentation Engine
+site_url: https://pythonwoods.github.io/structum/
+repo_url: https://github.com/pythonwoods/structum
+repo_name: pythonwoods/structum
+
+theme:
+  name: material
+  palette:
+    # Light Mode
+    - scheme: default
+      primary: teal
+      accent: purple
+      toggle:
+        icon: material/weather-sunny
+        name: Switch to dark mode
+    # Dark Mode
+    - scheme: slate
+      primary: teal
+      accent: lime
+      toggle:
+        icon: material/weather-night
+        name: Switch to light mode
+  features:
+    - navigation.instant
+    - navigation.tracking
+    - navigation.sections
+    - navigation.expand
+    - content.code.copy
+    - content.tooltips
+
+plugins:
+  - search
+  - mkdocstrings:
+      handlers:
+        python:
+          paths: [src]
+          options:
+            show_root_heading: true
+            show_source: true
+
+markdown_extensions:
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.tabbed:
+      alternate_style: true
+  - attr_list
+
+nav:
+  - Home: index.md
+  - Getting Started: getting-started.md
+  - User Guide:
+      - CLI Usage: user-guide/cli.md
+      - Themes & Icons: user-guide/themes.md
+      - Custom Themes: user-guide/custom-themes.md
+      - Filtering: user-guide/filtering.md
+  - API Reference: api.md
