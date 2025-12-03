@@ -5,94 +5,68 @@
 
 [![CI](https://github.com/pythonwoods/structum/actions/workflows/main_ci.yml/badge.svg)](https://github.com/pythonwoods/structum/actions/workflows/main_ci.yml)
 ![GitHub tag (latest SemVer)](https://img.shields.io/github/v/tag/pythonwoods/structum)
-[![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![PyPI](https://img.shields.io/pypi/v/structum.svg)](https://pypi.org/project/structum/)
-[![PyPI - Downloads](https://img.shields.io/pypi/dm/structum.svg)](https://pypi.org/project/structum/)
+[![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![REUSE status](https://api.reuse.software/badge/github.com/pythonwoods/structum)](https://api.reuse.software/info/github.com/pythonwoods/structum)
 
-Structum è un **motore enterprise per la creazione di archivi di codice, strutture di progetto e basi di documentazione automatizzate**.  
-Questa versione è una **prerelease (`0.0.1`)**, creata per stabilire l’identità del pacchetto e preparare il ciclo di sviluppo.
+**Structum** is an enterprise-grade CLI tool designed to visualize, document, and archive directory structures. It bridges the gap between complex file systems and human-readable documentation.
 
 ---
 
-## 🚀 Installazione
+## ✨ Key Features
+
+*   **Visual Tree Generation**: Create beautiful, colored directory trees directly in your terminal.
+*   **Multiple Themes**: Support for **Nerd Fonts**, Emojis, and plain ASCII (perfect for Markdown/LLM contexts).
+*   **Smart Filtering**: Easily exclude `.git`, `__pycache__`, or specific file extensions.
+*   **Export Ready**: Generate clean output for documentation or AI context injection.
+
+---
+
+## 🚀 Quick Start
+
+### Installation
 
 ```bash
-pip install structum==0.0.1
-````
+pip install structum
+```
 
----
+### Basic Usage
 
-## 📦 Stato del progetto
+Visualize the current directory with the default Emoji theme:
 
-Questa versione contiene soltanto:
+```bash
+structum .
+```
 
-* struttura minima del pacchetto
-* file legali (LICENSE, REUSE)
-* configurazioni iniziali
-* placeholder per la CLI e moduli futuri
+### Advanced Usage
 
-Tutte le funzionalità verranno introdotte nella serie **0.1.x**.
+Use the **Nerd Font** theme, limit depth to 2 levels, and ignore specific folders:
 
----
-
-## 🧩 Esempio di utilizzo
-
-La struttura API non è ancora implementata, ma potrai fare:
-
-```python
-from structum import __version__
-
-print(__version__)
+```bash
+structum . --theme nerd --depth 2 --ignore .git --ignore venv
 ```
 
 ---
 
-## 🔧 Prossimi passi
+## 🎨 Themes
 
-* Implementazione CLI avanzata
-* Generazione archivi Markdown
-* Supporto LaTeX → PDF
-* Generazione AI bundle
-* Plugin system
-* Tema MkDocs-Material Pro
-* Documentazione estesa
+Structum supports different visual styles:
+
+| Theme | Description | Best For |
+| :--- | :--- | :--- |
+| **Emoji** | Uses standard emojis (📂, 🐍). | Default usage, high compatibility. |
+| **Nerd** | Uses Nerd Font glyphs (, ). | Power users with patched fonts. |
+| **ASCII** | Uses plain text characters. | `tree.txt` files, LLM prompts, Markdown. |
 
 ---
 
-## 📚 Documentazione
+## 📚 Documentation
 
-La documentazione sarà pubblicata a partire da `v0.1.0`:
-
+Full documentation is available at:
 👉 **[https://pythonwoods.github.io/structum/](https://pythonwoods.github.io/structum/)**
 
 ---
 
-## 🤝 Come contribuire
+## 📜 License
 
-1. Fai il fork del repository
-
-2. Crea un nuovo branch:
-
-   ```bash
-   git checkout -b feature/nome-feature
-   ```
-
-3. Implementa la tua modifica
-
-4. Esegui eventuali test
-
-5. Invia una Pull Request
-
----
-
-## 📜 Licenza
-
-Distribuito sotto licenza **Apache 2.0**.
-Vedi [LICENSE](LICENSE).
-
----
-
-## 🏢 Team
-
-Progetto mantenuto dal team **PythonWoods**.
+Distributed under the **Apache 2.0** license. See [LICENSE](LICENSE) for details.
