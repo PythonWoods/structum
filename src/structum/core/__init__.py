@@ -17,6 +17,7 @@ Functions:
 """
 
 from .archive import create_archive
+from .clean import clean_pycache
 from .tree import build_tree, get_tree_ascii, print_tree
 
-__all__ = ["build_tree", "get_tree_ascii", "print_tree", "create_archive"]
+__all__ = ["build_tree", "get_tree_ascii", "print_tree", "create_archive", "clean_pycache"]

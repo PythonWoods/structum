@@ -14,6 +14,7 @@ import typer
 from rich.console import Console
 
 from structum.core.archive import create_archive
+from structum.core.clean import clean_pycache
 from structum.core.tree import print_tree
 
 # Initialize Typer app and Rich console
@@ -172,6 +173,33 @@ def archive_command(
     except ValueError as e:
         console.print(f"[bold red]Error:[/bold red] {e}")
         raise typer.Exit(code=1) from None
+
+
+@app.command(name="clean")
+def clean_command(
+    directory: Path = typer.Argument(
+        ".",
+        help="The root directory to clean.",
+        exists=True,
+        file_okay=False,
+        dir_okay=True,
+        resolve_path=True
+    ),
+    verbose: bool = typer.Option(
+        True,
+        "--verbose/--quiet", "-v/-q",
+        help="Enable verbose output."
+    ),
+) -> None:
+    """
+    Recursively removes all __pycache__ directories.
+
+    \b
+    Examples:
+        structum clean .
+        structum clean src --quiet
+    """
+    clean_pycache(directory, verbose=verbose)
 
 
 if __name__ == "__main__":

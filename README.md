@@ -30,20 +30,36 @@
 pip install structum
 ```
 
-### Basic Usage
+### Usage
 
-Visualize the current directory with the default Emoji theme:
+Structum provides three main commands:
 
+1.  **`tree`**: Visualize directory structure.
+2.  **`archive`**: Export code to Markdown.
+3.  **`clean`**: Remove `__pycache__` directories.
+
+#### Visualize Structure
 ```bash
-structum .
+# Basic usage
+structum tree .
+
+# Filter by extension and depth
+structum tree . --ext py --depth 2
 ```
 
-### Advanced Usage
-
-Use the **Nerd Font** theme, limit depth to 2 levels, and ignore specific folders:
-
+#### Archive Code
 ```bash
-structum . --theme nerd --depth 2 --ignore .git --ignore venv
+# Archive all Python files to a single Markdown file
+structum archive . --output code.md --ext py
+
+# Split archive by folder
+structum archive src --split-folder --output docs/
+```
+
+#### Clean Project
+```bash
+# Remove all __pycache__ directories
+structum clean .
 ```
 
 ---
