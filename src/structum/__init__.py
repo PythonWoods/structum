@@ -17,8 +17,7 @@ Example:
     >>> print_tree(Path("./my_project"), theme="emoji", max_depth=2)
 """
 
-from .core.tree import print_tree, get_tree_ascii, build_tree
+from .__about__ import __version__
+from .core.tree import build_tree, get_tree_ascii, print_tree
 
-__version__ = "0.0.1"
-
-__all__ = ["print_tree", "get_tree_ascii", "build_tree"]
+__all__ = ["__version__", "print_tree", "get_tree_ascii", "build_tree"]
