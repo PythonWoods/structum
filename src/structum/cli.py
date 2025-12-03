@@ -8,6 +8,8 @@ This module defines the main command-line interface using Typer.
 It acts as the bridge between the user input and the core logic.
 """
 
+import subprocess
+import sys
 from pathlib import Path
 
 import typer
@@ -204,6 +206,92 @@ def clean_command(
         structum clean src --quiet
     """
     clean_pycache(directory, verbose=verbose)
+
+
+@app.command(name="docs-serve")
+def docs_serve_command(
+    dev_addr: str = typer.Option(
+        "127.0.0.1:8000",
+        "--dev-addr", "-a",
+        help="Address and port to serve documentation on."
+    ),
+) -> None:
+    """
+    Serves the project documentation locally using MkDocs.
+
+    \b
+    This command starts a local development server that watches for changes
+    and automatically rebuilds the documentation.
+
+    \b
+    Examples:
+        structum docs-serve
+        structum docs-serve --dev-addr 0.0.0.0:8080
+    """
+    try:
+        console.print("[bold blue]Starting documentation server...[/bold blue]")
+        result = subprocess.run(
+            ["mkdocs", "serve", "--dev-addr", dev_addr],
+            check=True
+        )
+        sys.exit(result.returncode)
+    except subprocess.CalledProcessError as e:
+        console.print("[bold red]Error:[/bold red] Failed to start documentation server.")
+        console.print("[dim]Make sure mkdocs and mkdocs-material are installed: pip install mkdocs mkdocs-material[/dim]")
+        raise typer.Exit(code=e.returncode) from None
+    except FileNotFoundError:
+        console.print("[bold red]Error:[/bold red] mkdocs command not found.")
+        console.print("[dim]Install mkdocs: pip install 'structum[docs]'[/dim]")
+        raise typer.Exit(code=1) from None
+
+
+@app.command(name="docs-deploy")
+def docs_deploy_command(
+    message: str | None = typer.Option(
+        None,
+        "--message", "-m",
+        help="Custom commit message for the deployment."
+    ),
+    force: bool = typer.Option(
+        False,
+        "--force",
+        help="Force push to gh-pages branch (use with caution)."
+    ),
+) -> None:
+    """
+    Deploys the documentation to GitHub Pages.
+
+    \b
+    This command builds the documentation and pushes it to the gh-pages branch
+    of your repository. Requires proper git configuration and write access.
+
+    \b
+    Examples:
+        structum docs-deploy
+        structum docs-deploy --message "Update docs for v1.2.0"
+        structum docs-deploy --force
+    """
+    try:
+        console.print("[bold blue]Deploying documentation to GitHub Pages...[/bold blue]")
+        cmd = ["mkdocs", "gh-deploy"]
+
+        if message:
+            cmd.extend(["--message", message])
+
+        if force:
+            cmd.append("--force")
+
+        result = subprocess.run(cmd, check=True)
+        console.print("[bold green]✓[/bold green] Documentation deployed successfully!")
+        sys.exit(result.returncode)
+    except subprocess.CalledProcessError as e:
+        console.print("[bold red]Error:[/bold red] Failed to deploy documentation.")
+        console.print("[dim]Make sure you have push access to the repository and gh-pages branch exists.[/dim]")
+        raise typer.Exit(code=e.returncode) from None
+    except FileNotFoundError:
+        console.print("[bold red]Error:[/bold red] mkdocs command not found.")
+        console.print("[dim]Install mkdocs: pip install 'structum[docs]'[/dim]")
+        raise typer.Exit(code=1) from None
 
 
 if __name__ == "__main__":

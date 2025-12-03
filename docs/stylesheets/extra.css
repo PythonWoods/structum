@@ -1,0 +1,506 @@
+/* ========================================
+   Structum Custom Styles
+   ======================================== */
+
+/* CSS Variables for theming */
+:root {
+  --structum-primary: #009688;
+  --structum-primary-dark: #00796b;
+  --structum-accent: #ab47bc;
+  --structum-gradient-start: #009688;
+  --structum-gradient-end: #00bcd4;
+  --structum-shadow: rgba(0, 0, 0, 0.1);
+  --structum-shadow-hover: rgba(0, 0, 0, 0.2);
+  --structum-border-radius: 12px;
+}
+
+[data-md-color-scheme="slate"] {
+  --structum-primary: #26a69a;
+  --structum-primary-dark: #00897b;
+  --structum-accent: #ce93d8;
+  --structum-gradient-start: #26a69a;
+  --structum-gradient-end: #4dd0e1;
+  --structum-shadow: rgba(0, 0, 0, 0.3);
+  --structum-shadow-hover: rgba(0, 0, 0, 0.5);
+}
+
+/* ========================================
+   Announcement Banner
+   ======================================== */
+
+.md-banner {
+  background: linear-gradient(90deg, var(--structum-gradient-start), var(--structum-gradient-end));
+  padding: 12px 16px;
+  color: white;
+  text-align: center;
+  font-weight: 600;
+  box-shadow: 0 2px 8px var(--structum-shadow);
+}
+
+.md-banner-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.md-banner-icon {
+  font-size: 1.2em;
+  animation: pulse 2s infinite;
+}
+
+.md-banner-link {
+  color: white !important;
+  text-decoration: underline;
+  font-weight: 700;
+}
+
+.md-banner-link:hover {
+  opacity: 0.9;
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+}
+
+/* ========================================
+   Hero Section
+   ======================================== */
+
+.hero-section {
+  text-align: center;
+  padding: 60px 20px 40px;
+  background: linear-gradient(135deg,
+    var(--structum-gradient-start) 0%,
+    var(--structum-gradient-end) 100%
+  );
+  color: white;
+  border-radius: var(--structum-border-radius);
+  margin-bottom: 40px;
+  box-shadow: 0 8px 32px var(--structum-shadow);
+}
+
+.hero-content h1 {
+  font-size: 3.5em;
+  font-weight: 800;
+  margin-bottom: 0.3em;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.hero-content h3 {
+  font-size: 1.5em;
+  font-weight: 400;
+  opacity: 0.95;
+  margin-bottom: 1em;
+}
+
+.hero-description {
+  font-size: 1.15em;
+  max-width: 700px;
+  margin: 0 auto 2em;
+  opacity: 0.9;
+  line-height: 1.6;
+}
+
+.hero-buttons {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.hero-buttons .md-button {
+  font-size: 1.1em;
+  padding: 12px 32px;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+.hero-buttons .md-button--primary {
+  background-color: white !important;
+  color: var(--structum-primary) !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+}
+
+.hero-buttons .md-button--primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.25);
+}
+
+.hero-buttons .md-button:not(.md-button--primary) {
+  background-color: rgba(255, 255, 255, 0.2) !important;
+  color: white !important;
+  border: 2px solid white;
+}
+
+.hero-buttons .md-button:not(.md-button--primary):hover {
+  background-color: rgba(255, 255, 255, 0.3) !important;
+  transform: translateY(-2px);
+}
+
+/* ========================================
+   Feature Cards Grid
+   ======================================== */
+
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 24px;
+  margin: 40px 0;
+}
+
+.feature-card {
+  background: var(--md-default-bg-color);
+  border: 1px solid var(--md-default-fg-color--lightest);
+  border-radius: var(--structum-border-radius);
+  padding: 28px;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px var(--structum-shadow);
+}
+
+.feature-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px var(--structum-shadow-hover);
+  border-color: var(--structum-primary);
+}
+
+.feature-card h3 {
+  color: var(--structum-primary);
+  margin-top: 0;
+  font-size: 1.3em;
+  font-weight: 700;
+}
+
+.feature-card code {
+  font-size: 0.9em;
+}
+
+.feature-card pre {
+  margin-top: 16px;
+  border-radius: 8px;
+}
+
+/* ========================================
+   Quick Start Grid
+   ======================================== */
+
+.quick-start-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 24px;
+  margin: 32px 0;
+}
+
+.qs-step {
+  background: var(--md-code-bg-color);
+  border-left: 4px solid var(--structum-primary);
+  border-radius: 8px;
+  padding: 24px;
+  transition: all 0.3s ease;
+}
+
+.qs-step:hover {
+  border-left-width: 6px;
+  transform: translateX(4px);
+  box-shadow: 0 4px 16px var(--structum-shadow);
+}
+
+.qs-step h4 {
+  color: var(--structum-primary);
+  margin-top: 0;
+  font-weight: 700;
+}
+
+.qs-step pre {
+  margin-top: 12px;
+  border-radius: 6px;
+}
+
+/* ========================================
+   Key Features List
+   ======================================== */
+
+.key-features {
+  background: var(--md-default-bg-color);
+  border: 1px solid var(--md-default-fg-color--lightest);
+  border-radius: var(--structum-border-radius);
+  padding: 32px;
+  margin: 32px 0;
+  box-shadow: 0 2px 8px var(--structum-shadow);
+}
+
+.key-features ul {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 16px;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.key-features li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 1.05em;
+}
+
+.key-features li strong {
+  color: var(--structum-primary);
+}
+
+/* ========================================
+   Use Cases Section
+   ======================================== */
+
+.use-cases {
+  margin: 32px 0;
+}
+
+.use-cases .admonition {
+  border-radius: var(--structum-border-radius);
+  box-shadow: 0 2px 8px var(--structum-shadow);
+  transition: all 0.3s ease;
+}
+
+.use-cases .admonition:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px var(--structum-shadow-hover);
+}
+
+/* ========================================
+   CTA Section
+   ======================================== */
+
+.cta-section {
+  text-align: center;
+  padding: 48px 24px;
+  background: linear-gradient(135deg,
+    rgba(var(--structum-primary), 0.1) 0%,
+    rgba(var(--structum-accent), 0.1) 100%
+  );
+  border-radius: var(--structum-border-radius);
+  margin: 40px 0;
+  box-shadow: 0 4px 16px var(--structum-shadow);
+}
+
+.cta-section h2 {
+  color: var(--structum-primary);
+  font-size: 2.2em;
+  margin-bottom: 0.5em;
+}
+
+.cta-section .md-button {
+  margin: 8px;
+  font-size: 1.1em;
+  padding: 12px 32px;
+  border-radius: 8px;
+}
+
+/* ========================================
+   Footer Custom Styles
+   ======================================== */
+
+.md-footer-custom {
+  padding: 40px 0 20px;
+  background: var(--md-footer-bg-color);
+}
+
+.md-footer-custom-content {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 32px;
+  margin-bottom: 32px;
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 0 24px;
+}
+
+.md-footer-custom-section h4 {
+  color: var(--structum-primary);
+  font-size: 1.1em;
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+
+.md-footer-custom-section p {
+  opacity: 0.8;
+  font-size: 0.95em;
+  margin: 8px 0;
+}
+
+.md-footer-links {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.md-footer-links li {
+  margin: 8px 0;
+}
+
+.md-footer-links a {
+  color: var(--md-footer-fg-color);
+  text-decoration: none;
+  opacity: 0.8;
+  transition: all 0.2s ease;
+}
+
+.md-footer-links a:hover {
+  opacity: 1;
+  color: var(--structum-primary);
+  text-decoration: underline;
+}
+
+.md-footer-license {
+  font-size: 0.9em;
+  opacity: 0.7;
+  margin-top: 12px;
+}
+
+.md-footer-copyright {
+  text-align: center;
+  padding: 20px 0;
+  border-top: 1px solid var(--md-default-fg-color--lightest);
+  opacity: 0.7;
+  font-size: 0.9em;
+}
+
+.md-footer-copyright-content p {
+  margin: 0;
+}
+
+.md-footer-copyright a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.md-footer-copyright a:hover {
+  color: var(--structum-primary);
+  text-decoration: underline;
+}
+
+/* ========================================
+   Footer Info (on landing page)
+   ======================================== */
+
+.footer-info {
+  text-align: center;
+  padding: 32px 16px;
+  opacity: 0.8;
+  font-size: 0.95em;
+}
+
+.footer-info a {
+  margin: 0 12px;
+  color: var(--md-default-fg-color);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.footer-info a:hover {
+  color: var(--structum-primary);
+  text-decoration: underline;
+}
+
+/* ========================================
+   Enhanced Header
+   ======================================== */
+
+.md-header {
+  box-shadow: 0 2px 16px var(--structum-shadow);
+  backdrop-filter: blur(8px);
+}
+
+/* ========================================
+   Responsive Design
+   ======================================== */
+
+@media (max-width: 768px) {
+  .hero-content h1 {
+    font-size: 2.5em;
+  }
+
+  .hero-content h3 {
+    font-size: 1.2em;
+  }
+
+  .hero-description {
+    font-size: 1em;
+  }
+
+  .features-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .quick-start-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .key-features ul {
+    grid-template-columns: 1fr;
+  }
+
+  .md-footer-custom-content {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ========================================
+   Code Blocks Enhancement
+   ======================================== */
+
+.highlight pre {
+  border-radius: 8px;
+  box-shadow: 0 2px 8px var(--structum-shadow);
+}
+
+/* ========================================
+   Admonitions Enhancement
+   ======================================== */
+
+.admonition {
+  border-radius: var(--structum-border-radius);
+  box-shadow: 0 2px 4px var(--structum-shadow);
+}
+
+/* ========================================
+   Navigation Enhancement
+   ======================================== */
+
+.md-nav__link--active {
+  color: var(--structum-primary) !important;
+  font-weight: 600;
+}
+
+.md-nav__link:hover {
+  color: var(--structum-primary);
+}
+
+/* ========================================
+   Tables Enhancement
+   ======================================== */
+
+table {
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px var(--structum-shadow);
+}
+
+/* ========================================
+   Utility Classes
+   ======================================== */
+
+.text-center {
+  text-align: center;
+}
+
+.mt-4 {
+  margin-top: 2rem;
+}
+
+.mb-4 {
+  margin-bottom: 2rem;
+}
