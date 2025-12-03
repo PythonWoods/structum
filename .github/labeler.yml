@@ -1,0 +1,44 @@
+# SPDX-License-Identifier: Apache-2.0
+
+# Documentazione
+documentation:
+  - "*.md"
+  - "docs/**"
+  - "LICENSE"
+
+# CI/CD e Workflow GitHub
+ci:
+  - ".github/**"
+
+# Dipendenze e Configurazione Progetto
+dependencies:
+  - "pyproject.toml"
+  - "poetry.lock"
+  - "requirements.txt"
+  - "setup.py"
+
+# Test
+tests:
+  - "tests/**"
+  - "**/conftest.py"
+
+# Codice Sorgente (Core)
+core:
+  - "src/structum/core/**"
+  - "src/structum/__init__.py"
+
+# Codice Sorgente (CLI)
+cli:
+  - "src/structum/cli.py"
+  - "src/structum/main.py" # Legacy fallback
+
+# Codice Sorgente (Plugins)
+plugins:
+  - "src/structum/plugins/**"
+
+# Configurazione Generica
+config:
+  - "**/*.yml"
+  - "**/*.yaml"
+  - ".gitignore"
+  - ".editorconfig"
