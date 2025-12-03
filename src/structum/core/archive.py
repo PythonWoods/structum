@@ -1,0 +1,231 @@
+# SPDX-License-Identifier: Apache-2.0
+# SPDX-FileCopyrightText: 2025 PythonWoods
+
+"""Code archiving functionality.
+
+This module provides tools to traverse a codebase, collect source files based on
+extensions, and generate Markdown archives. It supports features like Table of
+Contents (ToC) generation and ASCII tree visualization.
+"""
+
+import os
+from collections import defaultdict
+from collections.abc import Sequence
+from datetime import datetime
+from pathlib import Path
+
+from rich.console import Console
+
+from structum.core.tree import get_tree_ascii
+from structum.core.utils import IGNORE_DIRS_DEFAULT, normalize_extensions
+
+console = Console()
+
+
+def gather_files(
+    root: Path,
+    extensions: Sequence[str] | None,
+    ignore_dirs: Sequence[str] | None = None,
+) -> list[tuple[Path, Path]]:
+    """Collects all files matching the requested extensions.
+
+    Recursively traverses the ``root`` directory, excluding directories specified
+    in ``ignore_dirs`` (or defaults), and includes only files matching the
+    provided extensions.
+
+    Args:
+        root: The root directory of the project.
+        extensions: A sequence of file extensions to include (e.g., [".py", ".md"]).
+            If None, no files will be collected.
+        ignore_dirs: A sequence of directory names to exclude. If None, uses
+            ``IGNORE_DIRS_DEFAULT``.
+
+    Returns:
+        A list of tuples ``(relative_path, absolute_path)`` for each collected file.
+    """
+    root = root.resolve()
+    normalized_exts = normalize_extensions(extensions)
+
+    ignored = set(ignore_dirs) if ignore_dirs else IGNORE_DIRS_DEFAULT
+    collected: list[tuple[Path, Path]] = []
+
+    for dirpath, dirnames, filenames in os.walk(root):
+        # Filter directories in-place to prevent traversal
+        dirnames[:] = [d for d in dirnames if d not in ignored]
+        current_dir = Path(dirpath)
+
+        for filename in filenames:
+            if any(filename.endswith(ext) for ext in normalized_exts):
+                full_path = current_dir / filename
+                rel_path = full_path.relative_to(root)
+                collected.append((rel_path, full_path))
+
+    return collected
+
+
+def write_markdown(
+    path: Path,
+    files: Sequence[tuple[Path, Path]],
+    root: Path,
+    toc: bool,
+    include_tree: bool,
+    verbose: bool,
+) -> None:
+    """Writes a Markdown archive containing the collected source files.
+
+    Args:
+        path: The path to the output Markdown file.
+        files: A sequence of tuples ``(relative_path, absolute_path)``.
+        root: The root directory of the project (used for relative paths).
+        toc: If True, includes a Table of Contents.
+        include_tree: If True, includes an ASCII directory tree.
+        verbose: If True, prints status messages to the console.
+    """
+    path.parent.mkdir(parents=True, exist_ok=True)
+
+    if verbose:
+        console.print(f"✍️  Writing archive: [bold cyan]{path}[/bold cyan]")
+
+    with path.open("w", encoding="utf-8") as md:
+        md.write(f"# Code Archive for `{root.name}`\n\n")
+        md.write(f"_Generated on {datetime.now().isoformat(timespec='seconds')}_\n\n")
+
+        if include_tree:
+            if verbose:
+                console.print("   ➕ Including directory tree")
+            md.write("## Project Structure\n\n")
+            md.write("```text\n")
+            # We use the same ignore list logic here implicitly via get_tree_ascii defaults
+            # or we could pass specific ignores if needed. For now, using defaults + .git etc.
+            tree_str = get_tree_ascii(root, extensions=None, ignore_dirs=IGNORE_DIRS_DEFAULT)
+            md.write(tree_str)
+            md.write("\n```\n\n")
+
+        if toc:
+            if verbose:
+                console.print("   ➕ Including Table of Contents")
+            md.write("## Table of Contents\n\n")
+            for rel_path, _ in files:
+                anchor = str(rel_path).replace("/", "-").replace(".", "-")
+                md.write(f"- [{rel_path}](#{anchor})\n")
+            md.write("\n---\n\n")
+
+        for rel_path, full_path in files:
+            # Simple heuristic for code block language
+            ext = full_path.suffix.replace(".", "") or "text"
+            anchor = str(rel_path).replace("/", "-").replace(".", "-")
+
+            md.write(f"## `{rel_path}` {{#{anchor}}}\n\n")
+            md.write(f"```{ext}\n")
+            try:
+                content = full_path.read_text(encoding="utf-8", errors="replace")
+                md.write(content)
+            except Exception as exc:
+                md.write(f"# ERROR reading file: {exc}")
+            md.write("\n```\n\n")
+
+    if verbose:
+        console.print(f"✅ Archive created: [green]{path}[/green]")
+
+
+def _create_archives_per_folder(
+    root: Path,
+    output_dir: Path,
+    files: Sequence[tuple[Path, Path]],
+    toc: bool,
+    include_tree: bool,
+    verbose: bool,
+) -> None:
+    """Generates a Markdown file for each directory containing collected files."""
+    output_dir.mkdir(parents=True, exist_ok=True)
+    grouped: defaultdict[Path, list[tuple[Path, Path]]] = defaultdict(list)
+
+    for rel_path, full_path in files:
+        grouped[rel_path.parent].append((rel_path, full_path))
+
+    for folder, group_files in grouped.items():
+        # Map '.' folder to 'root.md', others to 'path/to/dir.md'
+        relative_dir = folder if folder != Path(".") else Path("root")
+        out_path = output_dir / relative_dir.with_suffix(".md")
+        write_markdown(out_path, group_files, root, toc, include_tree, verbose)
+
+
+def _create_archives_per_type(
+    root: Path,
+    output_dir: Path,
+    files: Sequence[tuple[Path, Path]],
+    toc: bool,
+    include_tree: bool,
+    verbose: bool,
+) -> None:
+    """Generates a Markdown file for each file extension."""
+    output_dir.mkdir(parents=True, exist_ok=True)
+    grouped: defaultdict[str, list[tuple[Path, Path]]] = defaultdict(list)
+
+    for rel_path, full_path in files:
+        ext = full_path.suffix.replace(".", "") or "noext"
+        grouped[ext].append((rel_path, full_path))
+
+    for ext, group_files in grouped.items():
+        out_path = output_dir / f"{ext}.md"
+        write_markdown(out_path, group_files, root, toc, include_tree, verbose)
+
+
+def create_archive(
+    root: Path,
+    output: Path,
+    extensions: Sequence[str] | None,
+    ignore_dirs: Sequence[str] | None = None,
+    split_by_folder: bool = False,
+    split_by_type: bool = False,
+    toc: bool = True,
+    include_tree: bool = True,
+    verbose: bool = True,
+) -> None:
+    """Main entry point to create code archives.
+
+    Args:
+        root: Root directory of the project.
+        output: Output file path (single mode) or directory path (split mode).
+        extensions: List of file extensions to include.
+        ignore_dirs: List of directory names to exclude.
+        split_by_folder: If True, creates one archive per folder.
+        split_by_type: If True, creates one archive per file extension.
+        toc: If True, includes Table of Contents.
+        include_tree: If True, includes directory tree.
+        verbose: If True, enables verbose output.
+
+    Raises:
+        ValueError: If both split_by_folder and split_by_type are True.
+    """
+    if split_by_folder and split_by_type:
+        raise ValueError("Cannot use both split_by_folder and split_by_type.")
+
+    root = root.resolve()
+    output = output.resolve()
+
+    files = gather_files(root, extensions, ignore_dirs)
+
+    if verbose:
+        console.print(f"📂 Project Root: [bold]{root}[/bold]")
+        console.print(f"📄 Files found: [bold]{len(files)}[/bold]")
+
+    if not files:
+        if verbose:
+            console.print("[yellow]No files found matching the criteria.[/yellow]")
+        return
+
+    if split_by_folder:
+        if verbose:
+            console.print("📁 Mode: Split by folder")
+        _create_archives_per_folder(root, output, files, toc, include_tree, verbose)
+        return
+
+    if split_by_type:
+        if verbose:
+            console.print("📚 Mode: Split by extension")
+        _create_archives_per_type(root, output, files, toc, include_tree, verbose)
+        return
+
+    # Single archive mode
+    write_markdown(output, files, root, toc, include_tree, verbose)

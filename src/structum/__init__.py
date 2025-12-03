@@ -18,6 +18,7 @@ Example:
 """
 
 from .__about__ import __version__
+from .core.archive import create_archive
 from .core.tree import build_tree, get_tree_ascii, print_tree
 
-__all__ = ["__version__", "print_tree", "get_tree_ascii", "build_tree"]
+__all__ = ["__version__", "print_tree", "get_tree_ascii", "build_tree", "create_archive"]

@@ -16,6 +16,7 @@ Functions:
     print_tree: Display a directory tree in the console.
 """
 
+from .archive import create_archive
 from .tree import build_tree, get_tree_ascii, print_tree
 
-__all__ = ["build_tree", "get_tree_ascii", "print_tree"]
+__all__ = ["build_tree", "get_tree_ascii", "print_tree", "create_archive"]

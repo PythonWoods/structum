@@ -16,6 +16,24 @@ Example:
 """
 from collections.abc import Iterable
 
+# Default directories to ignore during traversal
+IGNORE_DIRS_DEFAULT: set[str] = {
+    ".git",
+    ".hg",
+    ".svn",
+    ".idea",
+    ".vscode",
+    ".mypy_cache",
+    ".pytest_cache",
+    ".ruff_cache",
+    "node_modules",
+    "venv",
+    ".venv",
+    "env",
+    ".env",
+    "__pycache__",
+}
+
 
 def normalize_extensions(extensions: Iterable[str] | None) -> set[str]:
     """Normalizes file extensions into standardized ".ext" format.
