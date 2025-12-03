@@ -18,55 +18,32 @@ Example:
     >>> print_tree(pathlib.Path("./my_project"), theme="emoji", max_depth=2)
 """
 import pathlib
-from typing import Optional, Sequence, Iterable, Set
-from rich.tree import Tree
-from rich.text import Text
+from collections.abc import Iterable, Sequence
+
 from rich.console import Console
+from rich.text import Text
+from rich.tree import Tree
 
 # Robust import handling (as both module and script)
 try:
     from . import icons
+    from .utils import normalize_extensions
 except ImportError:
-    import icons
+    import icons  # type: ignore[no-redef]
+    from utils import normalize_extensions  # type: ignore[no-redef]
 
 console = Console()
 
-def _normalize_extensions(extensions: Optional[Iterable[str]]) -> Set[str]:
-    """Normalizes file extensions into standardized ".ext" format.
-
-    Args:
-        extensions: An iterable of strings representing file extensions
-            (e.g., "py", ".txt", "md"). Can be None or empty.
-
-    Returns:
-        A set of normalized extensions where each extension starts with a dot
-        (e.g., {".py", ".txt"}). Returns an empty set if the input is None
-        or empty.
-    """
-    if not extensions:
-        return set()
-    
-    normalized: Set[str] = set()
-    for ext in extensions:
-        clean_ext = ext.strip().lower()
-        if not clean_ext:
-            continue
-        if not clean_ext.startswith("."):
-            clean_ext = f".{clean_ext}"
-        normalized.add(clean_ext)
-        
-    return normalized
-
 def build_tree(
     directory: pathlib.Path,
-    extensions: Optional[Sequence[str]] = None,
-    exclude_dirs: Optional[Iterable[str]] = None,
-    max_depth: Optional[int] = None,
+    extensions: Sequence[str] | None = None,
+    exclude_dirs: Iterable[str] | None = None,
+    max_depth: int | None = None,
     ignore_hidden: bool = True,
     ignore_files: bool = False,
     ignore_empty: bool = False,
     theme: str = "emoji",
-) -> Optional[Tree]:
+) -> Tree | None:
     """Builds a Rich Tree object representing the directory structure.
 
     This is the core function that recursively traverses the specified directory
@@ -102,30 +79,30 @@ def build_tree(
         NotADirectoryError: If the provided directory path does not exist or
             is not a valid directory.
     """
-    
+
     # 1. Validation
     directory = directory.resolve()
     if not directory.exists() or not directory.is_dir():
         raise NotADirectoryError(f"The path '{directory}' is not a valid directory.")
 
-    target_exts = _normalize_extensions(extensions)
+    target_exts = normalize_extensions(extensions)
     excluded_dir_names = set(exclude_dirs or [])
 
     # 2. Theme-based Style Configuration
     # Create boolean flags to simplify logic in the loop
     is_plain_style = theme in ["ascii", "none"]
-    
+
     guide_style = "white" if is_plain_style else "bright_black"
 
     # Setup Root
     root_icon = icons.get_icon(directory, theme)
-    
+
     # If we are in plain style, no colors for the root
     if is_plain_style:
         root_label = Text(f"{root_icon} {directory.name}".strip())
     else:
         root_label = Text(f"{root_icon} {directory.name}".strip(), style="cyan")
-    
+
     tree = Tree(root_label, guide_style=guide_style)
 
     # 3. Recursive Function
@@ -158,12 +135,12 @@ def build_tree(
 
                 icon = icons.get_icon(item, theme)
                 label_str = f"{icon} {item.name}".strip()
-                
+
                 # Folder style
                 style = "" if is_plain_style else "yellow"
-                
+
                 branch_tree = Tree(Text(label_str, style=style))
-                
+
                 child_has_content = _populate_branch(branch_tree, item, current_depth + 1)
 
                 if child_has_content or (not ignore_empty):
@@ -177,17 +154,22 @@ def build_tree(
 
                 icon = icons.get_icon(item, theme)
                 label_str = f"{icon} {item.name}".strip()
-                
+
                 # Color Logic (only if not in plain/ascii mode)
                 style = ""
                 if not is_plain_style:
-                    style = "white" # Default
+                    style = "white"  # Default
                     ext = item.suffix.lower()
-                    if ext == ".py": style = "green"
-                    elif ext == ".md": style = "magenta"
-                    elif ext in [".js", ".ts", ".json"]: style = "cyan"
-                    elif ext in [".yml", ".yaml", ".toml", ".ini"]: style = "blue"
-                    elif ext in [".txt", ".log", ".csv"]: style = "dim white"
+                    if ext == ".py":
+                        style = "green"
+                    elif ext == ".md":
+                        style = "magenta"
+                    elif ext in [".js", ".ts", ".json"]:
+                        style = "cyan"
+                    elif ext in [".yml", ".yaml", ".toml", ".ini"]:
+                        style = "blue"
+                    elif ext in [".txt", ".log", ".csv"]:
+                        style = "dim white"
 
                 current_tree.add(Text(label_str, style=style))
                 has_visible_content = True
@@ -196,7 +178,7 @@ def build_tree(
 
     # 4. Start Recursion
     has_content = _populate_branch(tree, directory, 0)
-    
+
     # If the root is empty (after filters) and ignore_empty is True, return None
     if ignore_empty and not has_content:
         return None
@@ -208,9 +190,9 @@ def build_tree(
 
 def print_tree(
     directory: pathlib.Path,
-    extensions: Optional[Sequence[str]] = None,
-    ignore_dirs: Optional[Iterable[str]] = None,
-    max_depth: Optional[int] = None,
+    extensions: Sequence[str] | None = None,
+    ignore_dirs: Iterable[str] | None = None,
+    max_depth: int | None = None,
     ignore_hidden: bool = True,
     ignore_empty: bool = False,
     theme: str = "emoji"
@@ -241,7 +223,7 @@ def print_tree(
         ignore_empty=ignore_empty,
         theme=theme
     )
-    
+
     if tree:
         console.print(tree)
     else:
@@ -252,9 +234,9 @@ def print_tree(
 
 def get_tree_ascii(
     directory: pathlib.Path,
-    extensions: Optional[Sequence[str]] = None,
-    ignore_dirs: Optional[Iterable[str]] = None,
-    max_depth: Optional[int] = None,
+    extensions: Sequence[str] | None = None,
+    ignore_dirs: Iterable[str] | None = None,
+    max_depth: int | None = None,
     ignore_hidden: bool = True,
 ) -> str:
     """Generates an ASCII string representation of the directory tree.
@@ -276,8 +258,8 @@ def get_tree_ascii(
         Returns an empty string if no content is found after applying filters.
     """
     # Use a temporary console to capture output without spurious color codes
-    temp_console = Console(no_color=True, width=1000) 
-    
+    temp_console = Console(no_color=True, width=1000)
+
     tree = build_tree(
         directory=directory,
         extensions=extensions,
@@ -288,11 +270,11 @@ def get_tree_ascii(
         ignore_empty=True, # In export, we usually don't want empty folders
         theme="ascii"      # <--- Force ASCII theme
     )
-    
+
     if not tree:
         return ""
-        
+
     with temp_console.capture() as capture:
         temp_console.print(tree)
-    
+
     return capture.get()

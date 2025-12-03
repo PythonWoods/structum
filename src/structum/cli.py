@@ -9,7 +9,6 @@ It acts as the bridge between the user input and the core logic.
 """
 
 from pathlib import Path
-from typing import List, Optional
 
 import typer
 from rich.console import Console
@@ -35,17 +34,17 @@ def main(
         dir_okay=True,
         resolve_path=True
     ),
-    extensions: Optional[List[str]] = typer.Option(
+    extensions: list[str] | None = typer.Option(
         None,
         "--ext", "-e",
         help="Filter by file extensions (e.g. -e py -e md)."
     ),
-    ignore_dirs: Optional[List[str]] = typer.Option(
+    ignore_dirs: list[str] | None = typer.Option(
         None,
         "--ignore", "-i",
         help="Directory names to exclude (e.g. -i .git -i node_modules)."
     ),
-    max_depth: Optional[int] = typer.Option(
+    max_depth: int | None = typer.Option(
         None,
         "--depth", "-d",
         help="Maximum depth of the tree traversal."
@@ -69,8 +68,8 @@ def main(
     """
     Visualizes the directory structure of the specified path.
     """
-    
-    # Note: CLI flag is --hidden (show_hidden=True), 
+
+    # Note: CLI flag is --hidden (show_hidden=True),
     # but core logic expects ignore_hidden (True by default).
     # We invert the boolean here.
     ignore_hidden_logic = not show_hidden

@@ -74,6 +74,23 @@ Uses specific glyphs from the **Nerd Fonts** project.
         2.  Check **"Use a different font for non-ASCII text"**.
         3.  Select **JetBrainsMono Nerd Font** for both font settings.
 
+    === "GNOME Terminal (Ubuntu/Linux)"
+        1.  Open GNOME Terminal.
+        2.  Go to **Preferences** (or right-click and select **Preferences**).
+        3.  Select your profile (usually **Unnamed** or **Default**).
+        4.  Go to the **Text** tab.
+        5.  Uncheck **"Use the system fixed width font"**.
+        6.  Click **"Custom font"** and select **JetBrainsMono Nerd Font** (or **JetBrainsMono Nerd Font Mono**).
+        7.  Close preferences. The font will apply immediately.
+
+    === "Konsole (KDE)"
+        1.  Open Konsole.
+        2.  Go to **Settings** > **Edit Current Profile**.
+        3.  Select the **Appearance** tab.
+        4.  Click **"Select Font"**.
+        5.  Choose **JetBrainsMono Nerd Font** from the list.
+        6.  Click **OK** and **Apply**.
+
 ### 3. ASCII Theme
 `--theme ascii`
 

@@ -29,7 +29,8 @@ Attributes:
     THEMES: Registry mapping theme names to IconSet instances.
 """
 import pathlib
-from typing import Dict, NamedTuple
+from typing import NamedTuple
+
 
 class IconSet(NamedTuple):
     """Defines a set of icons for folders, default files, and mappings.
@@ -44,8 +45,8 @@ class IconSet(NamedTuple):
     folder_open: str
     folder_closed: str
     file_default: str
-    extensions: Dict[str, str]
-    filenames: Dict[str, str]
+    extensions: dict[str, str]
+    filenames: dict[str, str]
 
 # --- 1. Set "NERD" (Requires Nerd Fonts) ---
 NERD_SET = IconSet(
@@ -118,7 +119,7 @@ def get_icon(path: pathlib.Path, theme_name: str = "emoji") -> str:
         string if theme_name is "none".
     """
     theme = THEMES.get(theme_name, EMOJI_SET)
-    
+
     # If the theme is 'none', return an empty string immediately
     if theme_name == "none":
         return ""
@@ -127,10 +128,10 @@ def get_icon(path: pathlib.Path, theme_name: str = "emoji") -> str:
         return theme.folder_open
 
     name_lower = path.name.lower()
-    
+
     # 1. Check exact filename
     if name_lower in theme.filenames:
         return theme.filenames[name_lower]
-    
+
     # 2. Check extension
     return theme.extensions.get(path.suffix.lower(), theme.file_default)
