@@ -16,6 +16,7 @@ from rich.console import Console
 from structum.core.archive import create_archive
 from structum.core.clean import clean_pycache
 from structum.core.tree import print_tree
+from structum.plugins import load_plugins
 
 # Initialize Typer app and Rich console
 app = typer.Typer(
@@ -25,6 +26,9 @@ app = typer.Typer(
     no_args_is_help=True
 )
 console = Console()
+
+# Load plugins
+load_plugins(app)
 
 @app.command(name="tree")
 def tree_command(

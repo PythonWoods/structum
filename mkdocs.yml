@@ -57,4 +57,5 @@ nav:
       - Themes & Icons: user-guide/themes.md
       - Custom Themes: user-guide/custom-themes.md
       - Filtering: user-guide/filtering.md
+      - Plugins: user-guide/plugins.md
   - API Reference: api.md
