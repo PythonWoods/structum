@@ -21,12 +21,58 @@ Uses specific glyphs from the **Nerd Fonts** project.
 *   **Cons**: **Requires a patched font.**
 
 !!! warning "Requirement: Nerd Fonts"
-    To use the `nerd` theme correctly, your terminal must be using a Nerd Font. If you see squares (□) or weird characters, you need to install a font.
+    To use the `nerd` theme correctly, your terminal must be using a Nerd Font. If you see squares (□) or weird characters, you need to install and configure a font.
 
-    1.  Go to [Nerd Fonts Downloads](https://www.nerdfonts.com/font-downloads).
-    2.  Download a font like **JetBrainsMono Nerd Font** or **MesloLGS NF**.
-    3.  Install the font on your OS.
-    4.  Configure your terminal (VS Code, iTerm, Windows Terminal) to use that font.
+    ### Step 1: Install a Nerd Font
+    
+    We recommend **JetBrainsMono Nerd Font** or **MesloLGS NF**.
+
+    === "Linux (Debian/Ubuntu)"
+        ```bash
+        # Create fonts directory
+        mkdir -p ~/.local/share/fonts
+        
+        # Download JetBrainsMono Nerd Font
+        wget https://github.com/ryanoasis/nerd-fonts/releases/download/v3.1.1/JetBrainsMono.zip
+        
+        # Unzip and install
+        unzip JetBrainsMono.zip -d ~/.local/share/fonts
+        fc-cache -fv
+        ```
+
+    === "macOS (Homebrew)"
+        ```bash
+        brew tap homebrew/cask-fonts
+        brew install --cask font-jetbrains-mono-nerd-font
+        ```
+
+    === "Windows"
+        1.  Go to [Nerd Fonts Downloads](https://www.nerdfonts.com/font-downloads).
+        2.  Download **JetBrainsMono Nerd Font**.
+        3.  Unzip the file.
+        4.  Select all `.ttf` files, right-click, and choose **"Install"**.
+
+    ### Step 2: Configure Your Editor/Terminal
+
+    After installing the font, you must tell your terminal to use it.
+
+    === "VS Code"
+        1.  Open Settings (`Ctrl + ,` or `Cmd + ,`).
+        2.  Search for `Terminal > Integrated: Font Family`.
+        3.  Set the value to: `'JetBrainsMono Nerd Font'` (or the name of the font you installed).
+        4.  Restart the terminal.
+
+    === "Windows Terminal"
+        1.  Open Settings (`Ctrl + ,`).
+        2.  Select your profile (e.g., PowerShell or Ubuntu).
+        3.  Go to **Appearance** > **Font face**.
+        4.  Select **JetBrainsMono Nerd Font**.
+        5.  Click **Save**.
+
+    === "iTerm2 (macOS)"
+        1.  Go to **Preferences** > **Profiles** > **Text**.
+        2.  Check **"Use a different font for non-ASCII text"**.
+        3.  Select **JetBrainsMono Nerd Font** for both font settings.
 
 ### 3. ASCII Theme
 `--theme ascii`

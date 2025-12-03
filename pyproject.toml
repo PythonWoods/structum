@@ -2,7 +2,7 @@
 # SPDX-FileCopyrightText: 2025 PythonWoods
 
 [build-system]
-requires = ["hatchling>=1.24"]
+requires = ["hatchling>=1.25"]
 build-backend = "hatchling.build"
 
 [project]
@@ -11,11 +11,16 @@ dynamic = ["version"]
 description = "Enterprise Code Structure & Documentation Engine."
 readme = "README.md"
 license = { text = "Apache-2.0" }
-authors = [
-  { name = "PythonWoods", email = "info@pythonwoods.com" }
-]
+authors = [{ name = "PythonWoods", email = "info@pythonwoods.com" }]
 requires-python = ">=3.11"
-keywords = ["cli", "tree", "structure", "documentation", "markdown", "visualization"]
+keywords = [
+  "cli",
+  "tree",
+  "structure",
+  "documentation",
+  "markdown",
+  "visualization",
+]
 classifiers = [
   "Development Status :: 4 - Beta",
   "Intended Audience :: Developers",
@@ -28,10 +33,7 @@ classifiers = [
   "Topic :: Utilities",
 ]
 
-dependencies = [
-  "typer>=0.12",
-  "rich>=13.0",
-]
+dependencies = ["typer>=0.12", "rich>=13.0"]
 
 [project.scripts]
 structum = "structum.cli:app"
@@ -43,15 +45,14 @@ structum = "structum.cli:app"
 [tool.hatch.build.targets.wheel]
 packages = ["src/structum"]
 
+#[tool.hatch.build]
+# sources = ["src"]
+
 [tool.hatch.version]
 path = "src/structum/__about__.py"
 
 [tool.hatch.build.targets.sdist]
-include = [
-  "src/**",
-  "README.md",
-  "LICENSE",
-]
+include = ["src/**", "README.md", "LICENSE"]
 
 # -----------------------------------------
 # Dev Environments
@@ -65,11 +66,7 @@ dev = [
   "ruff>=0.5",
   "types-setuptools",
 ]
-docs = [
-  "mkdocs>=1.5",
-  "mkdocs-material>=9.5",
-  "mkdocstrings[python]>=0.24",
-]
+docs = ["mkdocs>=1.5", "mkdocs-material>=9.5", "mkdocstrings[python]>=0.24"]
 
 # -----------------------------------------
 # Ruff configuration
@@ -84,7 +81,13 @@ ignore = ["E501"]
 
 [tool.ruff.lint.isort]
 known-first-party = ["structum"]
-section-order = ["future", "standard-library", "third-party", "first-party", "local-folder"]
+section-order = [
+  "future",
+  "standard-library",
+  "third-party",
+  "first-party",
+  "local-folder",
+]
 
 # -----------------------------------------
 # mypy configuration
