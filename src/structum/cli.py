@@ -1,42 +1,89 @@
 # SPDX-License-Identifier: Apache-2.0
 # SPDX-FileCopyrightText: 2025 PythonWoods
 
-"""CLI entry point for Structum.
+"""
+CLI Entry Point.
 
-This module serves as the main entry point for the command-line interface,
-providing directory tree visualization functionality directly from the terminal.
+This module defines the main command-line interface using Typer.
+It acts as the bridge between the user input and the core logic.
 """
 
-import sys
 from pathlib import Path
+from typing import List, Optional
 
-# Try to import from the installed package first.
-# If it fails (dev mode without install), add the source root to sys.path.
-try:
-    from structum.core.tree import print_tree
-except ImportError:
-    # Development fallback: Allow direct execution of the file
-    # Adds 'src' to sys.path so 'structum' can be imported
-    sys.path.append(str(Path(__file__).resolve().parents[2]))
-    from structum.core.tree import print_tree
+import typer
+from rich.console import Console
 
-def main() -> None:
-    """Simple entry point to test the CLI functionality.
-    
-    Currently hardcoded for development testing. Displays the directory tree
-    of the current directory with a maximum depth of 2 levels.
+from structum.core.tree import print_tree
+
+# Initialize Typer app and Rich console
+app = typer.Typer(
+    name="structum",
+    help="Enterprise Code Structure & Documentation Engine.",
+    add_completion=False,
+    no_args_is_help=True
+)
+console = Console()
+
+@app.command()
+def main(
+    directory: Path = typer.Argument(
+        ".",
+        help="The root directory to analyze.",
+        exists=True,
+        file_okay=False,
+        dir_okay=True,
+        resolve_path=True
+    ),
+    extensions: Optional[List[str]] = typer.Option(
+        None,
+        "--ext", "-e",
+        help="Filter by file extensions (e.g. -e py -e md)."
+    ),
+    ignore_dirs: Optional[List[str]] = typer.Option(
+        None,
+        "--ignore", "-i",
+        help="Directory names to exclude (e.g. -i .git -i node_modules)."
+    ),
+    max_depth: Optional[int] = typer.Option(
+        None,
+        "--depth", "-d",
+        help="Maximum depth of the tree traversal."
+    ),
+    show_hidden: bool = typer.Option(
+        False,
+        "--hidden",
+        help="Show hidden files and directories (starting with '.')."
+    ),
+    ignore_empty: bool = typer.Option(
+        False,
+        "--no-empty",
+        help="Hide directories that do not contain visible files."
+    ),
+    theme: str = typer.Option(
+        "emoji",
+        "--theme", "-t",
+        help="Icon theme to use: 'nerd', 'emoji', 'ascii', 'none'."
+    ),
+) -> None:
     """
-    root = Path(".")
+    Visualizes the directory structure of the specified path.
+    """
     
-    print("--- Structum CLI (Dev Mode) ---")
-    
-    # Example usage
+    # Note: CLI flag is --hidden (show_hidden=True), 
+    # but core logic expects ignore_hidden (True by default).
+    # We invert the boolean here.
+    ignore_hidden_logic = not show_hidden
+
     print_tree(
-        root, 
-        max_depth=2, 
-        theme="emoji",
-        ignore_dirs=[".git", "__pycache__", "venv"]
+        directory=directory,
+        extensions=extensions,
+        ignore_dirs=ignore_dirs,
+        max_depth=max_depth,
+        ignore_hidden=ignore_hidden_logic,
+        ignore_empty=ignore_empty,
+        theme=theme
     )
 
 if __name__ == "__main__":
-    main()
+    app()
