@@ -17,9 +17,9 @@ console = Console()
 
 def load_builtin_plugins(app: typer.Typer) -> None:
     """Loads built-in plugins contained in the structum.plugins package."""
-    from . import sample_plugin
+    from . import sample
 
-    sample_plugin.register(app)
+    sample.register(app)
 
 
 def load_entrypoint_plugins(app: typer.Typer) -> None:
