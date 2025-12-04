@@ -52,8 +52,40 @@ Please ensure all checks pass before submitting a Pull Request.
 
 ## Adding a Plugin
 
-Refer to `src/structum/plugins/sample/` for a reference implementation.
-Plugins should follow the `commands`/`core` structure.
+### Quick Start
+
+Generate a plugin skeleton from the project root:
+
+```bash
+structum plugins new my-plugin --category utility
+```
+
+This creates `src/structum/plugins/my_plugin/` with the complete structure.
+
+### Register Your Plugin
+
+Edit `src/structum/plugins/loader.py`:
+
+```python
+from . import sample, my_plugin  # Add your import
+
+PluginRegistry.register(my_plugin.MyPlugin)  # Add registration
+```
+
+### Plugin Categories
+
+Choose the appropriate category for your plugin:
+- `analysis` – Code analysis and metrics
+- `export` – Export and format conversion
+- `formatting` – Code formatting and style
+- `utility` – Utility and helper tools
+
+### Full Documentation
+
+See `docs/development/plugins.md` for:
+- Complete plugin structure reference
+- External plugin development (for PyPI)
+- Best practices and examples
 
 ## Documentation
 
