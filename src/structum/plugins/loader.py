@@ -12,6 +12,8 @@ from importlib.metadata import entry_points
 import typer
 from rich.console import Console
 
+from .registry import PluginRegistry
+
 console = Console()
 
 
@@ -19,6 +21,15 @@ def load_builtin_plugins(app: typer.Typer) -> None:
     """Loads built-in plugins contained in the structum.plugins package."""
     from . import sample
 
+    # Register the plugin class
+    PluginRegistry.register(sample.SamplePlugin)
+
+    # Initialize plugins
+    PluginRegistry.load_all()
+
+    # Register CLI commands if available
+    # Note: In a real scenario, the plugin might expose a method to register commands
+    # For backward compatibility with the sample plugin's structure:
     sample.register(app)
 
 
@@ -27,10 +38,6 @@ def load_entrypoint_plugins(app: typer.Typer) -> None:
 
     Looks for entry points in the 'structum.plugins' group.
     """
-    # Note: We only print if we actually find plugins to avoid noise,
-    # or we could use a verbose flag if passed down (but loader runs early).
-    # For now, we'll keep it quiet unless errors occur or plugins are found.
-
     eps = entry_points(group="structum.plugins")
 
     if not eps:
@@ -40,11 +47,14 @@ def load_entrypoint_plugins(app: typer.Typer) -> None:
 
     for ep in eps:
         try:
-            plugin = ep.load()
-            plugin(app)
+            plugin_cls = ep.load()
+            PluginRegistry.register(plugin_cls)
             console.print(f"[green]✔ Plugin loaded:[/green] {ep.name}")
         except Exception as e:
             console.print(f"[red]✘ Error loading plugin {ep.name}:[/red] {e}")
+
+    # Initialize all loaded plugins
+    PluginRegistry.load_all()
 
 
 def load_plugins(app: typer.Typer) -> None:

@@ -7,6 +7,7 @@ Contains the business logic of the application. These modules are independent of
 *   `archive.py`: Logic for collecting files and generating markdown archives.
 *   `clean.py`: Logic for cleaning artifacts.
 *   `docs.py`: Logic for documentation management.
+*   `config.py`: Configuration management and persistence.
 
 ## CLI (`src/structum/cli/`)
 Handles the user interface using Typer.
@@ -16,3 +17,8 @@ Handles the user interface using Typer.
 
 ## Plugins (`src/structum/plugins/`)
 Manages the plugin system.
+
+*   `sdk.py`: Plugin SDK defining `PluginBase` class.
+*   `registry.py`: Central plugin registry.
+*   `loader.py`: Plugin discovery and loading.
+*   `sample/`: Example plugin demonstrating the architecture.

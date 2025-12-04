@@ -8,3 +8,4 @@ Structum provides a powerful Command Line Interface (CLI) to interact with its f
 *   [Archive](commands.md#archive): Archive source code.
 *   [Clean](commands.md#clean): Clean up artifacts.
 *   [Docs](commands.md#docs): Manage documentation.
+*   [Plugins](commands.md#plugins): Manage plugins.

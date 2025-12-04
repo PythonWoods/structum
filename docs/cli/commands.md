@@ -48,3 +48,39 @@ structum docs serve
 ```bash
 structum docs deploy
 ```
+
+## Plugins
+
+Manage installed plugins.
+
+### List
+
+List all installed plugins.
+
+```bash
+structum plugins list
+```
+
+### Info
+
+Show detailed information about a plugin.
+
+```bash
+structum plugins info <NAME>
+```
+
+### Enable
+
+Enable a disabled plugin.
+
+```bash
+structum plugins enable <NAME>
+```
+
+### Disable
+
+Disable a plugin.
+
+```bash
+structum plugins disable <NAME>
+```
