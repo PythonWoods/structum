@@ -19,9 +19,20 @@ class PluginRegistry:
 
         Args:
             plugin_cls: The plugin class to register.
+
+        Raises:
+            TypeError: If plugin doesn't inherit from PluginBase.
+            ValueError: If plugin is missing required attributes.
         """
         if not issubclass(plugin_cls, PluginBase):
             raise TypeError(f"Plugin {plugin_cls} must inherit from PluginBase")
+
+        # Validate required attributes
+        if not hasattr(plugin_cls, "name") or not isinstance(plugin_cls.name, str):
+            raise ValueError(f"Plugin {plugin_cls} must have a 'name' string attribute")
+
+        if not hasattr(plugin_cls, "version") or not isinstance(plugin_cls.version, str):
+            raise ValueError(f"Plugin {plugin_cls} must have a 'version' string attribute")
 
         cls._plugins[plugin_cls.name] = plugin_cls
 

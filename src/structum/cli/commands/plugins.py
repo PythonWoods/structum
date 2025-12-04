@@ -3,6 +3,8 @@
 
 """Plugin Management CLI Commands."""
 
+from pathlib import Path
+
 import typer
 from rich.console import Console
 from rich.table import Table
@@ -16,6 +18,8 @@ console = Console()
 @app.command("list")
 def list_plugins() -> None:
     """List all installed plugins."""
+    from structum.core.config import get_plugin_enabled
+
     plugins = PluginRegistry.list_plugins()
 
     if not plugins:
@@ -25,13 +29,17 @@ def list_plugins() -> None:
     table = Table(title="Installed Plugins")
     table.add_column("Name", style="cyan")
     table.add_column("Version", style="green")
+    table.add_column("Status")
     table.add_column("Description")
     table.add_column("Author", style="magenta")
 
     for name, info in plugins.items():
+        enabled = get_plugin_enabled(name)
+        status = "[green]enabled[/green]" if enabled else "[red]disabled[/red]"
         table.add_row(
             name,
             info["version"],
+            status,
             info["description"],
             info["author"],
         )
@@ -80,3 +88,24 @@ def disable_plugin(name: str) -> None:
 
     set_plugin_enabled(name, False)
     console.print(f"[yellow]⚠ Plugin '{name}' disabled.[/yellow]")
+
+
+@app.command("new")
+def new_plugin(
+    name: str = typer.Argument(..., help="Plugin name (kebab-case, e.g. my-plugin)"),
+    output: Path = typer.Option(
+        Path.cwd(), "--output", "-o", help="Output directory"
+    ),
+) -> None:
+    """Generate a new plugin skeleton."""
+    from structum.plugins.skeleton import generate_plugin_skeleton
+
+    try:
+        plugin_dir = generate_plugin_skeleton(name, output)
+        console.print(f"[green]✔ Plugin skeleton created at:[/green] {plugin_dir}")
+        console.print("\n[bold]Next steps:[/bold]")
+        console.print(f"  1. cd {plugin_dir}")
+        console.print("  2. Implement your plugin logic")
+        console.print("  3. Register with entry points or add to builtins")
+    except Exception as e:
+        console.print(f"[red]✘ Error creating plugin:[/red] {e}")

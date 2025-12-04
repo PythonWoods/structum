@@ -84,3 +84,14 @@ Disable a plugin.
 ```bash
 structum plugins disable <NAME>
 ```
+
+### New
+
+Generate a new plugin skeleton.
+
+```bash
+structum plugins new <NAME> [--output DIR]
+```
+
+**Options:**
+*   `--output, -o`: Output directory (default: current directory).

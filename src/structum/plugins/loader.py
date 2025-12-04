@@ -12,6 +12,8 @@ from importlib.metadata import entry_points
 import typer
 from rich.console import Console
 
+from structum.core.config import get_plugin_enabled
+
 from .registry import PluginRegistry
 
 console = Console()
@@ -27,10 +29,10 @@ def load_builtin_plugins(app: typer.Typer) -> None:
     # Initialize plugins
     PluginRegistry.load_all()
 
-    # Register CLI commands if available
-    # Note: In a real scenario, the plugin might expose a method to register commands
-    # For backward compatibility with the sample plugin's structure:
-    sample.register(app)
+    # Register CLI commands only if plugin is enabled
+    plugin = PluginRegistry.get("sample")
+    if plugin and get_plugin_enabled("sample"):
+        plugin.register_commands(app)
 
 
 def load_entrypoint_plugins(app: typer.Typer) -> None:
@@ -55,6 +57,12 @@ def load_entrypoint_plugins(app: typer.Typer) -> None:
 
     # Initialize all loaded plugins
     PluginRegistry.load_all()
+
+    # Register CLI commands for enabled plugins
+    for name in PluginRegistry.list_plugins():
+        plugin = PluginRegistry.get(name)
+        if plugin and get_plugin_enabled(name):
+            plugin.register_commands(app)
 
 
 def load_plugins(app: typer.Typer) -> None:

@@ -6,7 +6,10 @@
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any
+from typing import TYPE_CHECKING, Any
+
+if TYPE_CHECKING:
+    import typer
 
 
 @dataclass
@@ -55,6 +58,9 @@ class PluginBase(ABC):
             String content to append to documentation or None.
         """
         return None
+
+    def register_commands(self, app: "typer.Typer") -> None:  # noqa: B027
+        """Register CLI commands for this plugin. Override in subclass."""
 
     def teardown(self) -> None:  # noqa: B027
         """Cleanup resources. Override in subclass if needed."""
