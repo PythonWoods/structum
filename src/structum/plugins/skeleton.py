@@ -30,6 +30,7 @@ class {class_name}(PluginBase):
 
     name = "{name}"
     version = "0.1.0"
+    category = "{category}"
     description = "{description}"
     author = "Your Name"
 
@@ -78,12 +79,15 @@ def example_function() -> str:
 '''
 
 
-def generate_plugin_skeleton(name: str, output_dir: Path) -> Path:
+def generate_plugin_skeleton(
+    name: str, output_dir: Path, category: str = "utility"
+) -> Path:
     """Generate a plugin skeleton.
 
     Args:
         name: Plugin name (kebab-case).
         output_dir: Directory to create plugin in.
+        category: Plugin category (analysis, export, formatting, utility).
 
     Returns:
         Path to created plugin directory.
@@ -105,6 +109,7 @@ def generate_plugin_skeleton(name: str, output_dir: Path) -> Path:
         "name": name,
         "class_name": class_name,
         "description": description,
+        "category": category,
     }
 
     # Write files

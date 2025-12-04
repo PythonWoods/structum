@@ -15,6 +15,7 @@ class SamplePlugin(PluginBase):
 
     name = "sample"
     version = "1.0.0"
+    category = "utility"
     description = "Example plugin demonstrating the plugin system."
     author = "PythonWoods"
 

@@ -20,11 +20,21 @@ class PluginConfig:
     options: dict[str, Any] = field(default_factory=dict)
 
 
+# Available plugin categories
+CATEGORIES = {
+    "analysis": "Code analysis and metrics",
+    "export": "Export and format conversion",
+    "formatting": "Code formatting and style",
+    "utility": "Utility and helper tools",
+}
+
+
 class PluginBase(ABC):
     """Base class for all Structum plugins."""
 
     name: str
     version: str
+    category: str = "utility"  # Default category
     description: str = ""
     author: str = ""
 

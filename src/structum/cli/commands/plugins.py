@@ -10,6 +10,7 @@ from rich.console import Console
 from rich.table import Table
 
 from structum.plugins.registry import PluginRegistry
+from structum.plugins.sdk import CATEGORIES
 
 app = typer.Typer(help="Manage plugins.")
 console = Console()
@@ -28,20 +29,20 @@ def list_plugins() -> None:
 
     table = Table(title="Installed Plugins")
     table.add_column("Name", style="cyan")
+    table.add_column("Category", style="yellow")
     table.add_column("Version", style="green")
     table.add_column("Status")
     table.add_column("Description")
-    table.add_column("Author", style="magenta")
 
     for name, info in plugins.items():
         enabled = get_plugin_enabled(name)
         status = "[green]enabled[/green]" if enabled else "[red]disabled[/red]"
         table.add_row(
             name,
+            info["category"],
             info["version"],
             status,
             info["description"],
-            info["author"],
         )
 
     console.print(table)
@@ -57,6 +58,7 @@ def plugin_info(name: str) -> None:
         return
 
     console.print(f"[bold cyan]Plugin:[/bold cyan] {plugin.name}")
+    console.print(f"[bold yellow]Category:[/bold yellow] {plugin.category}")
     console.print(f"[bold green]Version:[/bold green] {plugin.version}")
     console.print(f"[bold]Author:[/bold] {plugin.author}")
     console.print(f"[bold]Description:[/bold] {plugin.description}")
@@ -96,12 +98,25 @@ def new_plugin(
     output: Path = typer.Option(
         Path.cwd(), "--output", "-o", help="Output directory"
     ),
+    category: str = typer.Option(
+        "utility",
+        "--category",
+        "-c",
+        help=f"Plugin category ({', '.join(CATEGORIES.keys())})",
+    ),
 ) -> None:
     """Generate a new plugin skeleton."""
     from structum.plugins.skeleton import generate_plugin_skeleton
 
+    if category not in CATEGORIES:
+        console.print(
+            f"[red]Invalid category '{category}'. "
+            f"Valid: {', '.join(CATEGORIES.keys())}[/red]"
+        )
+        return
+
     try:
-        plugin_dir = generate_plugin_skeleton(name, output)
+        plugin_dir = generate_plugin_skeleton(name, output, category)
         console.print(f"[green]✔ Plugin skeleton created at:[/green] {plugin_dir}")
         console.print("\n[bold]Next steps:[/bold]")
         console.print(f"  1. cd {plugin_dir}")

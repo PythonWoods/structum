@@ -4,7 +4,7 @@
 """Plugin Registry for Structum."""
 
 
-from structum.plugins.sdk import PluginBase
+from structum.plugins.sdk import CATEGORIES, PluginBase
 
 
 class PluginRegistry:
@@ -33,6 +33,14 @@ class PluginRegistry:
 
         if not hasattr(plugin_cls, "version") or not isinstance(plugin_cls.version, str):
             raise ValueError(f"Plugin {plugin_cls} must have a 'version' string attribute")
+
+        # Validate category
+        category = getattr(plugin_cls, "category", "utility")
+        if category not in CATEGORIES:
+            raise ValueError(
+                f"Plugin {plugin_cls} has invalid category '{category}'. "
+                f"Valid categories: {', '.join(CATEGORIES.keys())}"
+            )
 
         cls._plugins[plugin_cls.name] = plugin_cls
 
@@ -67,11 +75,27 @@ class PluginRegistry:
         return {
             name: {
                 "version": plugin.version,
+                "category": plugin.category,
                 "description": plugin.description,
                 "author": plugin.author,
             }
             for name, plugin in cls._plugins.items()
         }
+
+    @classmethod
+    def list_by_category(cls) -> dict[str, list[str]]:
+        """List plugins grouped by category.
+
+        Returns:
+            Dictionary mapping category to list of plugin names.
+        """
+        result: dict[str, list[str]] = {}
+        for name, plugin in cls._plugins.items():
+            category = plugin.category
+            if category not in result:
+                result[category] = []
+            result[category].append(name)
+        return result
 
     @classmethod
     def clear(cls) -> None:

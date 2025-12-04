@@ -90,8 +90,9 @@ structum plugins disable <NAME>
 Generate a new plugin skeleton.
 
 ```bash
-structum plugins new <NAME> [--output DIR]
+structum plugins new <NAME> [--output DIR] [--category CAT]
 ```
 
 **Options:**
 *   `--output, -o`: Output directory (default: current directory).
+*   `--category, -c`: Plugin category (`analysis`, `export`, `formatting`, `utility`).
