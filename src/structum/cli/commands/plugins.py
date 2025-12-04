@@ -96,7 +96,7 @@ def disable_plugin(name: str) -> None:
 def new_plugin(
     name: str = typer.Argument(..., help="Plugin name (kebab-case, e.g. my-plugin)"),
     output: Path = typer.Option(
-        Path.cwd(), "--output", "-o", help="Output directory"
+        None, "--output", "-o", help="Output directory (default: auto-detect)"
     ),
     category: str = typer.Option(
         "utility",
@@ -115,12 +115,36 @@ def new_plugin(
         )
         return
 
+    # Smart default: detect if we're in structum project
+    is_structum_project = (Path.cwd() / "src" / "structum" / "plugins").exists()
+
+    if output is None:
+        if is_structum_project:
+            output = Path.cwd() / "src" / "structum" / "plugins"
+        else:
+            output = Path.cwd()
+
     try:
         plugin_dir = generate_plugin_skeleton(name, output, category)
         console.print(f"[green]✔ Plugin skeleton created at:[/green] {plugin_dir}")
-        console.print("\n[bold]Next steps:[/bold]")
-        console.print(f"  1. cd {plugin_dir}")
-        console.print("  2. Implement your plugin logic")
-        console.print("  3. Register with entry points or add to builtins")
+
+        if is_structum_project and output == Path.cwd() / "src" / "structum" / "plugins":
+            # Builtin plugin instructions
+            console.print("\n[bold]Next steps (builtin plugin):[/bold]")
+            console.print(f"  1. Implement your plugin in [cyan]{plugin_dir}[/cyan]")
+            console.print("  2. Edit [cyan]src/structum/plugins/loader.py[/cyan]:")
+            console.print(f"     - Add [yellow]from . import {name.replace('-', '_')}[/yellow]")
+            console.print(f"     - Register [yellow]{name.replace('-', '_')}.{name.replace('-', '').title()}Plugin[/yellow]")
+            console.print("  3. Run [cyan]structum plugins list[/cyan] to verify")
+            console.print("\n[dim]See docs/development/plugins.md for details.[/dim]")
+        else:
+            # External plugin instructions
+            console.print("\n[bold]Next steps (external plugin):[/bold]")
+            console.print("  1. Create package structure with [cyan]pyproject.toml[/cyan]")
+            console.print("  2. Add entry point:")
+            console.print('     [yellow][project.entry-points."structum.plugins"][/yellow]')
+            console.print(f'     [yellow]{name} = "{name.replace("-", "_")}:{name.replace("-", "").title()}Plugin"[/yellow]')
+            console.print("  3. Install with [cyan]pip install -e .[/cyan]")
+            console.print("\n[dim]See docs/development/plugins.md for details.[/dim]")
     except Exception as e:
         console.print(f"[red]✘ Error creating plugin:[/red] {e}")
