@@ -10,35 +10,50 @@ and automatic release generation via **release-please**.
 ## [Unreleased]
 
 ### ✨ Features
-- **Plugin System**: Full plugin architecture with SDK, registry, and CLI management
-  - `structum plugins list` - List installed plugins with category and status
+
+#### Core Commands
+- **Code Archiving** (`structum archive`): Export source code to Markdown files
+  - Single file or split by folder output
+  - Filter by file extension
+- **Clean Command** (`structum clean`): Remove `__pycache__` directories recursively
+- **Entry Point**: Run via `python -m structum`
+
+#### Plugin System
+- **Plugin SDK**: `PluginBase` abstract class for standardized plugin development
+- **Plugin Registry**: Centralized plugin management with validation
+- **Plugin CLI**: Full management commands
+  - `structum plugins list` - List plugins with category/status
   - `structum plugins info <name>` - Show plugin details
   - `structum plugins enable/disable <name>` - Manage plugin state
-  - `structum plugins new <name>` - Generate plugin skeleton with smart defaults
-- **Plugin Categories**: Organize plugins into `analysis`, `export`, `formatting`, `utility`
-- **Plugin Validation**: Automatic validation of plugin attributes on load
-- **Configuration Persistence**: Plugin state stored in `~/.config/structum/config.json`
+  - `structum plugins new <name>` - Generate skeleton with smart defaults
+- **Plugin Categories**: `analysis`, `export`, `formatting`, `utility`
+- **Plugin Validation**: Auto-validates `name`, `version`, `category` on load
+- **Configuration Persistence**: State stored in `~/.config/structum/config.json`
 
-### 🐛 Bug Fixes
-- …
+#### Documentation
+- **MkDocs Integration**: Professional documentation site with Material theme
+- **Docs Commands**: `structum docs serve` and `structum docs deploy`
 
-### 🚀 Performance
-- …
+#### Planned (Phase 4)
+- **LaTeX Export**: Academic document generation (IEEE, ACM styles)
 
 ### 🔨 Refactoring
-- Modular CLI architecture with `cli/commands/` structure
-- Plugin `__init__.py` now only exports, logic moved to `plugin.py`
+- Modular CLI architecture (`cli/commands/` structure)
 - Separated core business logic from CLI interface
-
-### 🧪 Tests
-- …
+- Plugin `__init__.py` now only exports, logic in `plugin.py`
+- Modern type hints (Python 3.11+ PEP 585/604)
+- Migrated CLI from Click to Typer
 
 ### 📚 Documentation
-- Comprehensive plugin development guide (`docs/development/plugins.md`)
-- Updated CLI commands documentation
+- Comprehensive technical architecture (`ARCHITECTURE.md`)
+- Development roadmap (`ROADMAP.md`)
+- Plugin development guide (`docs/development/plugins.md`)
+- CLI commands reference (`docs/cli/commands.md`)
 - Context-aware help messages in `plugins new`
 
 ### 🔧 Chores
-- …
+- Dynamic versioning with hatchling
+- Dependabot configuration for pip and GitHub Actions
+- REUSE/SPDX compliance
 
 ---
