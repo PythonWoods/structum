@@ -201,6 +201,7 @@ nav:
   - Development:
       - Overview: development/index.md
       - Conventions: development/conventions.md
+      - Plugins: development/plugins.md
       - Testing: development/testing.md
       - Roadmap: development/roadmap.md
   - Reference:

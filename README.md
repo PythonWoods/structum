@@ -40,17 +40,17 @@ Structum provides three main commands:
 
 #### Visualize Structure
 ```bash
-# Basic usage
-structum tree .
+# Basic usage with stats
+structum tree . --stats
 
-# Filter by extension and depth
-structum tree . --ext py --depth 2
+# Filter by extension (comma-separated supported)
+structum tree . --ext py,md,json --depth 2
 ```
 
 #### Archive Code
 ```bash
-# Archive all Python files to a single Markdown file
-structum archive . --output code.md --ext py
+# Archive multiple file types
+structum archive . --output code.md --ext py,js,ts
 
 # Split archive by folder
 structum archive src --split-folder --output docs/
@@ -58,8 +58,8 @@ structum archive src --split-folder --output docs/
 
 #### Clean Project
 ```bash
-# Remove all __pycache__ directories
-structum clean .
+# Remove __pycache__ (use --skip-venv to exclude virtual environments)
+structum clean . --skip-venv
 ```
 
 #### Manage Plugins
