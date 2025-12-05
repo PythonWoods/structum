@@ -29,7 +29,7 @@ structum archive [OPTIONS] [DIRECTORY]
 **Options:**
 
 * `--output, -o`: Output file path.
-* `--ext, -e`: Filter by file extensions (e.g., `-e py,md`).
+* `--ext, -e`: Filter by file extensions (e.g., `-e py,md`). If omitted, all files are included.
 * `--ignore, -i`: Directory names to exclude.
 * `--split-folder`: Create a separate archive for each folder.
 * `--split-type`: Create a separate archive for each file extension.
