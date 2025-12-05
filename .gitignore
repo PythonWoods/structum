@@ -2,69 +2,127 @@
 # SPDX-FileCopyrightText: 2025 PythonWoods
 
 # ─────────────────────────────────────────────
-#  Python standard
+#  Python Core & Bytecode
 # ─────────────────────────────────────────────
 __pycache__/
 *.py[cod]
 *$py.class
 
-# Virtualenv
+# ─────────────────────────────────────────────
+#  Virtual Environments
+# ─────────────────────────────────────────────
 .venv/
 venv/
 env/
 .env/
+ENV/
+env.bak/
+venv.bak/
 
-# Distribution / packaging
+# ─────────────────────────────────────────────
+#  Distribution & Packaging
+# ─────────────────────────────────────────────
 build/
 dist/
 *.egg-info/
 *.egg
+.eggs/
 pip-wheel-metadata/
+MANIFEST
 
-# Hatchling / uv cache
+# ─────────────────────────────────────────────
+#  Dependency Managers & Tooling (Hatch, uv, Poetry)
+# ─────────────────────────────────────────────
 .hatch/
 .uv/
 .uv_cache/
 .python_modules/
+poetry.lock
+# Nota: poetry.lock va committato per le app, ma a volte escluso per le lib.
+# Se usi uv/hatch, poetry.lock non serve.
 
-# Editor / IDE
-.vscode/
-.idea/
+# ─────────────────────────────────────────────
+#  Testing & Coverage
+# ─────────────────────────────────────────────
+.tox/
+.nox/
+.pytest_cache/
+.coverage
+.coverage.*
+coverage.xml
+nosetests.xml
+htmlcov/
+report.xml
+*.cover
+*.py,cover
+.hypothesis/
 
-# JetBrains
-*.iml
-out/
-
-# MyPy / Ruff / Pyright cache
+# ─────────────────────────────────────────────
+#  Static Analysis & Linters (MyPy, Ruff, Pyright)
+# ─────────────────────────────────────────────
 .mypy_cache/
 .ruff_cache/
 .pytype/
 .pyright/
+.dmypy.json
+dmypy.json
 
-# Testing
-coverage.xml
-.tox/
-.pytest_cache/
-nosetests.xml
-
-# Logs
-*.log
-logs/
-
-# Jupyter
-.ipynb_checkpoints/
-
-# MkDocs
+# ─────────────────────────────────────────────
+#  Documentation (MkDocs, Sphinx)
+# ─────────────────────────────────────────────
 site/
+docs/_build/
+docs/site/
 
-# OS
+# ─────────────────────────────────────────────
+#  IDE & Editors
+# ─────────────────────────────────────────────
+# VS Code
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+*.code-workspace
+
+# JetBrains / IntelliJ
+.idea/
+*.iml
+out/
+
+# Sublime Text
+*.sublime-workspace
+*.sublime-project
+
+# ─────────────────────────────────────────────
+#  OS & Filesystem
+# ─────────────────────────────────────────────
 .DS_Store
+.DS_Store?
+._*
+.Trashes
+ehthumbs.db
 Thumbs.db
 
-# Generated documentation examples or temp
+# ─────────────────────────────────────────────
+#  Logs & Databases
+# ─────────────────────────────────────────────
+*.log
+logs/
+*.sqlite
+*.db
+
+# ─────────────────────────────────────────────
+#  Jupyter Notebooks
+# ─────────────────────────────────────────────
+.ipynb_checkpoints/
+profile_default/
+ipython_config.py
+
+# ─────────────────────────────────────────────
+#  Temporary & Caches
+# ─────────────────────────────────────────────
 tmp/
 temp/
 .cache/
-
-# REUSE
 .reuse/cache/
