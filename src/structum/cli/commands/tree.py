@@ -51,6 +51,11 @@ def tree_command(
         "--theme", "-t",
         help="Icon theme to use: 'nerd', 'emoji', 'ascii', 'none'."
     ),
+    show_stats: bool = typer.Option(
+        False,
+        "--stats", "-s",
+        help="Show directory and file count statistics."
+    ),
 ) -> None:
     """
     Visualizes the directory structure of the specified path.
@@ -73,5 +78,6 @@ def tree_command(
         max_depth=max_depth,
         ignore_hidden=ignore_hidden_logic,
         ignore_empty=ignore_empty,
-        theme=theme
+        theme=theme,
+        show_stats=show_stats
     )

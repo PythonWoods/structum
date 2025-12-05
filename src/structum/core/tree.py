@@ -195,7 +195,8 @@ def print_tree(
     max_depth: int | None = None,
     ignore_hidden: bool = True,
     ignore_empty: bool = False,
-    theme: str = "emoji"
+    theme: str = "emoji",
+    show_stats: bool = False
 ) -> None:
     """Prints a formatted, colored directory tree to the console.
 
@@ -212,7 +213,43 @@ def print_tree(
         ignore_empty: If True, empty directories (after filtering) are not
             displayed. Defaults to False.
         theme: The theme to apply for icons and colors. Defaults to "emoji".
+        show_stats: If True, displays directory and file count statistics.
+            Defaults to False.
     """
+    # Count directories and files if stats are requested
+    dir_count = 0
+    file_count = 0
+    
+    if show_stats:
+        # Count items recursively
+        target_exts = normalize_extensions(extensions)
+        excluded_dir_names = set(ignore_dirs or [])
+        
+        def _count_items(path: pathlib.Path, depth: int) -> None:
+            nonlocal dir_count, file_count
+            
+            if max_depth is not None and depth > max_depth:
+                return
+            
+            try:
+                items = list(path.iterdir())
+            except PermissionError:
+                return
+            
+            for item in items:
+                if ignore_hidden and item.name.startswith("."):
+                    continue
+                
+                if item.is_dir():
+                    if item.name not in excluded_dir_names:
+                        dir_count += 1
+                        _count_items(item, depth + 1)
+                elif item.is_file():
+                    if not target_exts or item.suffix.lower() in target_exts:
+                        file_count += 1
+        
+        _count_items(directory, 0)
+    
     tree = build_tree(
         directory=directory,
         extensions=extensions,
@@ -226,6 +263,11 @@ def print_tree(
 
     if tree:
         console.print(tree)
+        if show_stats:
+            # Format stats like Unix tree command
+            dir_word = "directory" if dir_count == 1 else "directories"
+            file_word = "file" if file_count == 1 else "files"
+            console.print(f"\n{dir_count} {dir_word}, {file_count} {file_word}")
     else:
         console.print("[yellow italic]No content found with current filters.[/yellow italic]")
 
