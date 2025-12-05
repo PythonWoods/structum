@@ -49,3 +49,23 @@ class TestDocs:
         assert "gh-deploy" in args
         assert "--message" in args
         assert "--force" in args
+
+    @patch("subprocess.run")
+    def test_serve_docs_not_found(self, mock_run):
+        """Test serve_docs when mkdocs is missing."""
+        mock_run.side_effect = FileNotFoundError
+        
+        with pytest.raises(SystemExit) as exc:
+            docs.serve_docs("localhost")
+        
+        assert exc.value.code == 1
+
+    @patch("subprocess.run")
+    def test_deploy_docs_not_found(self, mock_run):
+        """Test deploy_docs when mkdocs is missing."""
+        mock_run.side_effect = FileNotFoundError
+        
+        with pytest.raises(SystemExit) as exc:
+            docs.deploy_docs(message=None, force=False)
+            
+        assert exc.value.code == 1
