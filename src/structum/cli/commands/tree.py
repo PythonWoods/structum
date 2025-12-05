@@ -5,11 +5,21 @@
 Tree Command.
 """
 
+from enum import Enum
 from pathlib import Path
 
 import typer
 
 from structum.core.tree import print_tree
+
+
+class ThemeChoice(str, Enum):
+    """Valid theme choices for tree visualization."""
+    NERD = "nerd"
+    EMOJI = "emoji"
+    ASCII = "ascii"
+    NONE = "none"
+
 
 
 def tree_command(
@@ -46,10 +56,11 @@ def tree_command(
         "--no-empty",
         help="Hide directories that do not contain visible files."
     ),
-    theme: str = typer.Option(
-        "emoji",
+    theme: ThemeChoice = typer.Option(
+        ThemeChoice.EMOJI,
         "--theme", "-t",
-        help="Icon theme to use: 'nerd', 'emoji', 'ascii', 'none'."
+        help="Icon theme to use.",
+        case_sensitive=False
     ),
     show_stats: bool = typer.Option(
         False,
@@ -78,6 +89,6 @@ def tree_command(
         max_depth=max_depth,
         ignore_hidden=ignore_hidden_logic,
         ignore_empty=ignore_empty,
-        theme=theme,
+        theme=theme.value,  # Convert Enum to string
         show_stats=show_stats
     )
