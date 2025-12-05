@@ -26,6 +26,11 @@ def clean_command(
         "--verbose/--quiet", "-v/-q",
         help="Verbose output."
     ),
+    skip_venv: bool = typer.Option(
+        False,
+        "--skip-venv",
+        help="Skip virtual environment directories (.env, venv, etc.)."
+    ),
 ) -> None:
     """
     Recursively removes all __pycache__ directories.
@@ -34,5 +39,6 @@ def clean_command(
     Examples:
         structum clean .
         structum clean src --quiet
+        structum clean . --skip-venv
     """
-    clean_pycache(directory, verbose=verbose)
+    clean_pycache(directory, verbose=verbose, skip_venv=skip_venv)
