@@ -8,7 +8,7 @@ Main CLI Application.
 import typer
 from rich.console import Console
 
-from structum.cli.commands import archive, clean, docs, plugins, tree
+from structum.cli.commands import archive, clean, docs, plugins, tree, info
 from structum.plugins import load_plugins
 
 # Initialize Typer app
@@ -32,6 +32,8 @@ load_plugins(app)
 app.command(name="tree")(tree.tree_command)
 app.command(name="archive")(archive.archive_command)
 app.command(name="clean")(clean.clean_command)
+app.command(name="version")(info.version_command)
+app.command(name="info")(info.info_command)
 
 # Command groups use add_typer()
 app.add_typer(docs.app, name="docs")  # docs serve, docs deploy
