@@ -2,30 +2,32 @@
 
 ## Installation
 
-Structum requires Python 3.11 or higher.
-
-### Via pip (Recommended)
+Install Structum using pip:
 
 ```bash
 pip install structum
 ```
 
-### From Source (Development)
+## Basic Usage
 
-If you want to contribute or use the latest unreleased features:
-
-```bash
-git clone https://github.com/pythonwoods/structum.git
-cd structum
-pip install -e .
-```
-
-## First Run
-
-Once installed, verify the installation by checking the help command:
+### Visualize Directory Tree
 
 ```bash
-structum --help
+structum tree .
 ```
 
-You should see the help message detailing available options and arguments.
+### Archive Code
+
+```bash
+structum archive . --output code_context.md
+```
+
+### Clean Artifacts
+
+```bash
+structum clean .
+```
+
+## Next Steps
+
+Explore the [CLI Reference](cli/index.md) for detailed command usage.

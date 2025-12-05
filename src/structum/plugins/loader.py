@@ -12,14 +12,27 @@ from importlib.metadata import entry_points
 import typer
 from rich.console import Console
 
+from structum.core.config import get_plugin_enabled
+
+from .registry import PluginRegistry
+
 console = Console()
 
 
 def load_builtin_plugins(app: typer.Typer) -> None:
     """Loads built-in plugins contained in the structum.plugins package."""
-    from . import sample_plugin
+    from . import sample
 
-    sample_plugin.register(app)
+    # Register the plugin class
+    PluginRegistry.register(sample.SamplePlugin)
+
+    # Initialize plugins
+    PluginRegistry.load_all()
+
+    # Register CLI commands only if plugin is enabled
+    plugin = PluginRegistry.get("sample")
+    if plugin and get_plugin_enabled("sample"):
+        plugin.register_commands(app)
 
 
 def load_entrypoint_plugins(app: typer.Typer) -> None:
@@ -27,10 +40,6 @@ def load_entrypoint_plugins(app: typer.Typer) -> None:
 
     Looks for entry points in the 'structum.plugins' group.
     """
-    # Note: We only print if we actually find plugins to avoid noise,
-    # or we could use a verbose flag if passed down (but loader runs early).
-    # For now, we'll keep it quiet unless errors occur or plugins are found.
-
     eps = entry_points(group="structum.plugins")
 
     if not eps:
@@ -40,11 +49,20 @@ def load_entrypoint_plugins(app: typer.Typer) -> None:
 
     for ep in eps:
         try:
-            plugin = ep.load()
-            plugin(app)
+            plugin_cls = ep.load()
+            PluginRegistry.register(plugin_cls)
             console.print(f"[green]✔ Plugin loaded:[/green] {ep.name}")
         except Exception as e:
             console.print(f"[red]✘ Error loading plugin {ep.name}:[/red] {e}")
+
+    # Initialize all loaded plugins
+    PluginRegistry.load_all()
+
+    # Register CLI commands for enabled plugins
+    for name in PluginRegistry.list_plugins():
+        plugin = PluginRegistry.get(name)
+        if plugin and get_plugin_enabled(name):
+            plugin.register_commands(app)
 
 
 def load_plugins(app: typer.Typer) -> None:

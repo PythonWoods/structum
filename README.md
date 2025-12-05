@@ -62,6 +62,15 @@ structum archive src --split-folder --output docs/
 structum clean .
 ```
 
+#### Manage Plugins
+```bash
+# List installed plugins
+structum plugins list
+
+# Generate a new plugin
+structum plugins new my-plugin --category analysis
+```
+
 ---
 
 ## 🎨 Themes

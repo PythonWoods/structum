@@ -9,7 +9,7 @@ invoking the Typer application defined in :mod:`structum.cli`.
 
 from __future__ import annotations
 
-from .cli import app
+from .cli.main import app
 
 
 def main() -> None:

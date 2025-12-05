@@ -191,13 +191,21 @@ markdown_extensions:
 nav:
   - Home: index.md
   - Getting Started: getting-started.md
-  - User Guide:
-      - CLI Usage: user-guide/cli.md
-      - Themes & Icons: user-guide/themes.md
-      - Custom Themes: user-guide/custom-themes.md
-      - Filtering: user-guide/filtering.md
-      - Plugins: user-guide/plugins.md
-  - API Reference: api.md
+  - CLI Reference:
+      - Overview: cli/index.md
+      - Commands: cli/commands.md
+  - Architecture:
+      - Overview: architecture/index.md
+      - Modules: architecture/modules.md
+      - Design Principles: architecture/design-principles.md
+  - Development:
+      - Overview: development/index.md
+      - Conventions: development/conventions.md
+      - Testing: development/testing.md
+      - Roadmap: development/roadmap.md
+  - Reference:
+      - Overview: reference/index.md
+      - API: reference/api.md
 
 # Validation and Strict Mode
 validation:
