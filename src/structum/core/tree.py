@@ -107,7 +107,7 @@ def build_tree(
 
     # 3. Recursive Function
     def _populate_branch(current_tree: Tree, current_path: pathlib.Path, current_depth: int) -> bool:
-        if max_depth is not None and current_depth > max_depth:
+        if max_depth is not None and current_depth >= max_depth:
             return False
 
         try:
@@ -280,8 +280,9 @@ def get_tree_ascii(
     ignore_dirs: Iterable[str] | None = None,
     max_depth: int | None = None,
     ignore_hidden: bool = True,
+    ignore_empty: bool = False,
 ) -> str:
-    """Generates an ASCII string representation of the directory tree.
+    """Generates an ASCII string representation of a directory tree.
 
     This function is useful for exporting the tree to text files, Markdown,
     or other contexts where Rich's advanced rendering is not supported or
@@ -294,6 +295,8 @@ def get_tree_ascii(
         max_depth: Maximum depth to display. Defaults to None.
         ignore_hidden: If True, hidden files and directories are ignored.
             Defaults to True.
+        ignore_empty: If True, empty directories (after filtering) are not
+            displayed. Defaults to False.
 
     Returns:
         A string containing the ASCII representation of the directory tree.
@@ -309,7 +312,7 @@ def get_tree_ascii(
         max_depth=max_depth,
         ignore_hidden=ignore_hidden,
         ignore_files=False,
-        ignore_empty=True, # In export, we usually don't want empty folders
+        ignore_empty=ignore_empty,
         theme="ascii"      # <--- Force ASCII theme
     )
 
