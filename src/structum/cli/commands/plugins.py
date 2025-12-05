@@ -127,6 +127,9 @@ def new_plugin(
     try:
         plugin_dir = generate_plugin_skeleton(name, output, category)
         console.print(f"[green]✔ Plugin skeleton created at:[/green] {plugin_dir}")
+        
+        # Generate proper class name (same logic as skeleton.py)
+        class_name = "".join(word.capitalize() for word in name.split("-")) + "Plugin"
 
         if is_structum_project and output == Path.cwd() / "src" / "structum" / "plugins":
             # Builtin plugin instructions
@@ -134,7 +137,7 @@ def new_plugin(
             console.print(f"  1. Implement your plugin in [cyan]{plugin_dir}[/cyan]")
             console.print("  2. Edit [cyan]src/structum/plugins/loader.py[/cyan]:")
             console.print(f"     - Add [yellow]from . import {name.replace('-', '_')}[/yellow]")
-            console.print(f"     - Register [yellow]{name.replace('-', '_')}.{name.replace('-', '').title()}Plugin[/yellow]")
+            console.print(f"     - Register [yellow]{name.replace('-', '_')}.{class_name}[/yellow]")
             console.print("  3. Run [cyan]structum plugins list[/cyan] to verify")
             console.print("\n[dim]See docs/development/plugins.md for details.[/dim]")
         else:
@@ -143,7 +146,7 @@ def new_plugin(
             console.print("  1. Create package structure with [cyan]pyproject.toml[/cyan]")
             console.print("  2. Add entry point:")
             console.print('     [yellow][project.entry-points."structum.plugins"][/yellow]')
-            console.print(f'     [yellow]{name} = "{name.replace("-", "_")}:{name.replace("-", "").title()}Plugin"[/yellow]')
+            console.print(f'     [yellow]{name} = "{name.replace("-", "_")}:{class_name}"[/yellow]')
             console.print("  3. Install with [cyan]pip install -e .[/cyan]")
             console.print("\n[dim]See docs/development/plugins.md for details.[/dim]")
     except Exception as e:
