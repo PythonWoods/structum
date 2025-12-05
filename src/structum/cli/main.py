@@ -27,12 +27,15 @@ console = Console()
 # Load plugins
 load_plugins(app)
 
-# Register sub-apps
+# Register commands
+# Single commands use app.command()
 app.command(name="tree")(tree.tree_command)
 app.command(name="archive")(archive.archive_command)
-app.add_typer(clean.app)
-app.add_typer(docs.app, name="docs") # docs serve, docs deploy
-app.add_typer(plugins.app, name="plugins")
+app.command(name="clean")(clean.clean_command)
+
+# Command groups use add_typer()
+app.add_typer(docs.app, name="docs")  # docs serve, docs deploy
+app.add_typer(plugins.app, name="plugins")  # plugins list, info, enable, disable, new
 
 def run() -> None:
     app()

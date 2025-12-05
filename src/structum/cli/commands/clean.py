@@ -11,9 +11,7 @@ import typer
 
 from structum.core.clean import clean_pycache
 
-app = typer.Typer()
 
-@app.command(name="clean")
 def clean_command(
     directory: Path = typer.Argument(
         ".",
