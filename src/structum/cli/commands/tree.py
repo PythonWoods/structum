@@ -11,9 +11,7 @@ import typer
 
 from structum.core.tree import print_tree
 
-app = typer.Typer()
 
-@app.command(name="tree")
 def tree_command(
     directory: Path = typer.Argument(
         ".",

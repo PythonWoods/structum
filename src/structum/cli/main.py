@@ -28,7 +28,7 @@ console = Console()
 load_plugins(app)
 
 # Register sub-apps
-app.add_typer(tree.app, name="tree")
+app.command(name="tree")(tree.tree_command)
 app.add_typer(archive.app, name="archive")
 app.add_typer(clean.app)
 app.add_typer(docs.app, name="docs") # docs serve, docs deploy
