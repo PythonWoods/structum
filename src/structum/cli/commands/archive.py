@@ -84,7 +84,7 @@ def archive_command(
     verbose: bool = typer.Option(
         True,
         "--verbose/--quiet", "-v/-q",
-        help="Enable verbose output."
+        help="Verbose output."
     ),
 ) -> None:
     """
