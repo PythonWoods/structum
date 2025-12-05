@@ -21,6 +21,27 @@ class ThemeChoice(str, Enum):
     NONE = "none"
 
 
+def parse_list_callback(value: list[str] | None) -> list[str] | None:
+    """Parse comma-separated values and flatten multiple flags.
+    
+    Supports both:
+    - Multiple flags: --ext py --ext md
+    - Comma-separated: --ext py,md,js
+    - Mixed: --ext py,md --ext js
+    """
+    if not value:
+        return None
+    
+    result = []
+    for item in value:
+        # Split by comma and strip whitespace
+        parts = [part.strip() for part in item.split(",") if part.strip()]
+        result.extend(parts)
+    
+    return result if result else None
+
+
+
 
 def tree_command(
     directory: Path = typer.Argument(
@@ -34,12 +55,14 @@ def tree_command(
     extensions: list[str] | None = typer.Option(
         None,
         "--ext", "-e",
-        help="Filter by file extensions (e.g. -e py -e md)."
+        help="Filter by file extensions (e.g., '-e py -e md' or '-e py,md,js').",
+        callback=parse_list_callback
     ),
     ignore_dirs: list[str] | None = typer.Option(
         None,
         "--ignore", "-i",
-        help="Directory names to exclude (e.g. -i .git -i node_modules)."
+        help="Directory names to exclude (e.g., '-i .git -i node_modules' or '-i .git,node_modules').",
+        callback=parse_list_callback
     ),
     max_depth: int | None = typer.Option(
         None,
