@@ -20,23 +20,33 @@ console = Console()
 
 
 @app.command("list")
-def list_plugins() -> None:
+def list_plugins(
+    show_dev: bool = typer.Option(
+        False,
+        "--show-dev",
+        help="Show plugins in development mode (.dev marker)",
+    ),
+) -> None:
     """List all installed plugins."""
     from structum.core.config import get_plugin_enabled
+    from structum.plugins.loader import get_dev_plugins
 
     plugins = PluginRegistry.list_plugins()
+    dev_plugins = get_dev_plugins() if show_dev else {}
 
-    if not plugins:
+    if not plugins and not dev_plugins:
         console.print("[yellow]No plugins found.[/yellow]")
         return
 
-    table = Table(title="Installed Plugins")
+    title = "Installed Plugins" + (" (including dev mode)" if show_dev else "")
+    table = Table(title=title)
     table.add_column("Name", style="cyan")
     table.add_column("Category", style="yellow")
     table.add_column("Version", style="green")
     table.add_column("Status")
     table.add_column("Description")
 
+    # Add production plugins
     for name, info in plugins.items():
         enabled = get_plugin_enabled(name)
         status = "[green]enabled[/green]" if enabled else "[red]disabled[/red]"
@@ -48,7 +58,34 @@ def list_plugins() -> None:
             info["description"],
         )
 
+    # Add dev mode plugins if requested
+    if show_dev:
+        for name, info in dev_plugins.items():
+            plugin_class = info.get("plugin_class")
+            if plugin_class:
+                table.add_row(
+                    f"{name}*",
+                    getattr(plugin_class, "category", "unknown"),
+                    getattr(plugin_class, "version", "0.1.0"),
+                    "[dim yellow][DEV MODE][/dim yellow]",
+                    getattr(plugin_class, "description", "Development plugin"),
+                )
+            else:
+                # Plugin with errors
+                table.add_row(
+                    f"{name}*",
+                    "unknown",
+                    "unknown",
+                    "[red][ERROR][/red]",
+                    f"Failed to load: {info.get('error', 'Unknown error')}",
+                )
+
     console.print(table)
+
+    if show_dev and dev_plugins:
+        console.print(
+            "\n[dim]* Plugins in development mode (.dev marker present)[/dim]"
+        )
 
 
 @app.command("info")
@@ -138,9 +175,11 @@ def new_plugin(
             # Builtin plugin instructions
             console.print("\n[bold]Next steps (builtin plugin):[/bold]")
             console.print(f"  1. Implement your plugin logic in [cyan]{plugin_dir}[/cyan]")
-            console.print("  2. Run [cyan]structum plugins list[/cyan] to verify auto-discovery")
-            console.print("  3. Test your plugin with [cyan]structum {name}[/cyan]")
-            console.print("\n[dim]Note: Built-in plugins are auto-discovered. No manual registration needed![/dim]")
+            console.print(f"  2. View dev plugin with [cyan]structum plugins list --show-dev[/cyan]")
+            console.print(f"  3. When ready, remove dev marker: [cyan]rm {plugin_dir}/.dev[/cyan]")
+            console.print(f"  4. Test your plugin with [cyan]structum {name} run[/cyan]")
+            console.print("\n[dim yellow]ℹ Plugin created in development mode (.dev marker present)[/dim yellow]")
+            console.print("[dim]The plugin will not be registered until .dev file is removed.[/dim]")
             console.print("[dim]See docs/development/plugins.md for details.[/dim]")
         else:
             # External plugin instructions
