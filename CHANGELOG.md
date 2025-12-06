@@ -96,4 +96,9 @@ and automatic release generation via **release-please**.
   - Added `no_args_is_help=True` to all command groups for consistent UX
   - Updated plugin skeleton template to include this fix automatically
 
+- **Plugin Template** (2025-12-06):
+  - Fixed `IsADirectoryError` when `--output` points to a directory in enterprise template
+  - Template now automatically generates `results.txt` filename when output is a directory
+  - Maintains backward compatibility with file paths
+
 ---

@@ -52,60 +52,50 @@ COMMANDS_MAIN_TEMPLATE = '''# SPDX-License-Identifier: Apache-2.0
 
 """{name} Plugin Commands."""
 
-from pathlib import Path
-
 import typer
-
-from ..core.logic import process
 
 app = typer.Typer(
     help="{description}",
     no_args_is_help=True
 )
 
+# Plugin metadata
+PLUGIN_INFO = {{
+    "name": "{name}",
+    "version": "0.1.0",
+    "description": "{description}",
+    "category": "{category}",
+}}
 
-@app.command("run")
-def run_command(
-    path: Path = typer.Argument(
-        Path("."),
-        help="Path to process",
-        exists=True,
-        resolve_path=True,
-    ),
-    output: Path | None = typer.Option(
-        None,
-        "--output",
-        "-o",
-        help="Output file path (optional)",
-    ),
-    dry_run: bool = typer.Option(
-        False,
-        "--dry-run",
-        help="Preview changes without applying them",
-    ),
-    verbose: bool = typer.Option(
-        False,
-        "--verbose",
-        "-v",
-        help="Enable verbose output",
-    ),
-) -> None:
-    """Execute the plugin's main functionality.
 
-    This is the primary command for the {name} plugin.
-    Customize this implementation to match your plugin's purpose.
-    """
-    result = process(
-        path=path,
-        output=output,
-        dry_run=dry_run,
-        verbose=verbose,
-    )
+@app.command("info")
+def info_command() -> None:
+    """Display plugin information and metadata."""
+    output_lines = [
+        f"✓ {{PLUGIN_INFO['name']}} v{{PLUGIN_INFO['version']}}",
+        f"  {{PLUGIN_INFO['description']}}",
+        "",
+        f"Category: {{PLUGIN_INFO['category']}}",
+        "",
+        "Available commands:",
+        "  info     - Display this information",
+        "  # TODO: Add your commands here",
+    ]
+    typer.echo("\\n".join(output_lines))
 
-    if verbose:
-        typer.echo(f"[{name}] Processing completed")
 
-    typer.echo(result)
+# TODO: Implement your plugin commands here
+# Example:
+#
+# @app.command("process")
+# def process_command(
+#     path: Path = typer.Argument(..., help="Path to process"),
+#     output: Path | None = typer.Option(None, "--output", "-o"),
+# ) -> None:
+#     \"\"\"Process files.\"\"\"
+#     from ..core.logic import process
+#     result = process(path, output, plugin_info=PLUGIN_INFO)
+#     typer.echo(result)
 '''
 
 CORE_INIT_TEMPLATE = '''# SPDX-License-Identifier: Apache-2.0
@@ -120,40 +110,33 @@ CORE_LOGIC_TEMPLATE = '''# SPDX-License-Identifier: Apache-2.0
 from pathlib import Path
 
 
-def process(
-    path: Path,
-    output: Path | None = None,
-    dry_run: bool = False,
-    verbose: bool = False,
-) -> str:
-    """Process the given path and return results.
-
-    Args:
-        path: Path to process
-        output: Optional output file path
-        dry_run: If True, preview changes without applying
-        verbose: Enable verbose logging
-
-    Returns:
-        Result message
-
-    TODO: Implement your plugin's core logic here.
-    This is a placeholder implementation.
-    """
-    if dry_run:
-        return f"[DRY RUN] Would process: {{path}}"
-
-    if verbose:
-        print(f"Processing {{path}}...")
-
-    # TODO: Add your implementation here
-    result = f"Processed {{path}} successfully"
-
-    if output:
-        output.write_text(result)
-        return f"Results written to {{output}}"
-
-    return result
+# TODO: Implement your plugin's core business logic here
+#
+# Example function:
+#
+# def process_data(
+#     path: Path,
+#     plugin_info: dict[str, str] | None = None,
+# ) -> dict[str, any]:
+#     """Process data from the given path.
+#
+#     Args:
+#         path: Path to process
+#         plugin_info: Plugin metadata (name, version, description, category)
+#
+#     Returns:
+#         Dictionary with processing results
+#     """
+#     plugin_name = plugin_info.get("name", "unknown") if plugin_info else "unknown"
+#
+#     # Your implementation here
+#     result = {{
+#         "plugin": plugin_name,
+#         "processed": str(path),
+#         "status": "success",
+#     }}
+#
+#     return result
 '''
 
 
