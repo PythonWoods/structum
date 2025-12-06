@@ -7,7 +7,10 @@ import typer
 
 from ..core.greeting import get_greeting
 
-app = typer.Typer(help="Example additional commands.")
+app = typer.Typer(
+    help="Example additional commands.",
+    no_args_is_help=True
+)
 
 @app.command("hello")
 def hello(name: str = "dev") -> None:

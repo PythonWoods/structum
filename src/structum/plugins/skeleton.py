@@ -54,7 +54,10 @@ COMMANDS_MAIN_TEMPLATE = '''# SPDX-License-Identifier: Apache-2.0
 
 import typer
 
-app = typer.Typer(help="{description}")
+app = typer.Typer(
+    help="{description}",
+    no_args_is_help=True
+)
 
 
 @app.command("hello")
