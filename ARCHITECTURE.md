@@ -1,6 +1,6 @@
 # Structum - Technical Architecture
 
-> **Last Updated:** 2025-12-03
+> **Last Updated:** 2025-12-06
 > **Status:** 🔵 In Development
 > **Version:** 2.0 Architecture
 
@@ -322,28 +322,49 @@ class PluginBase(ABC):
 ### Plugin Lifecycle
 
 ```
-┌─────────────────┐
-│  Discovery      │  Plugin discovery via entry points
+┌───────────────────────────────────────────────────────────────┐
+│                        Discovery Phase                         │
+├───────────────────────────┬───────────────────────────────────┤
+│   Built-in Plugins        │      External Plugins             │
+│   (Auto-Discovery)        │      (Entry Points)               │
+│                           │                                   │
+│  1. Scan plugins/ dir     │  1. Query entry_points()          │
+│  2. Find plugin.py files  │  2. Group: "structum.plugins"     │
+│  3. Import modules        │  3. Load entry point classes      │
+│  4. Inspect for           │  4. Direct class reference        │
+│     PluginBase subclasses │                                   │
+│  5. Skip _ prefixed dirs  │                                   │
+└───────────────────────────┴───────────────────────────────────┘
+         │                             │
+         └─────────────┬───────────────┘
+                       ▼
+┌─────────────────────────────────────┐
+│  Registration   │  Add to PluginRegistry
 └────────┬────────┘
          │
          ▼
 ┌─────────────────┐
-│  Registration   │  Register in plugin registry
+│  Validation     │  Check name, version, category
 └────────┬────────┘
          │
          ▼
 ┌─────────────────┐
-│  Validation     │  Check compatibility, dependencies
+│  Initialization │  Call PluginRegistry.load_all()
 └────────┬────────┘
          │
          ▼
 ┌─────────────────┐
-│  Setup          │  Initialize with config
+│  Setup          │  Run plugin.setup() with config
 └────────┬────────┘
          │
          ▼
 ┌─────────────────┐
-│  Execution      │  Process files, generate output
+│  CLI Registration│ plugin.register_commands(app) if enabled
+└────────┬────────┘
+         │
+         ▼
+┌─────────────────┐
+│  Execution      │  Process files, run commands
 └────────┬────────┘
          │
          ▼
@@ -351,6 +372,23 @@ class PluginBase(ABC):
 │  Teardown       │  Cleanup resources
 └─────────────────┘
 ```
+
+#### Discovery Mechanisms
+
+**Built-in Plugin Discovery** (Filesystem Scanning):
+- Scans `src/structum/plugins/` directory
+- Looks for `plugin.py` files in subdirectories
+- Uses `importlib` for dynamic module loading
+- Uses `inspect` module to find `PluginBase` subclasses
+- Skips directories prefixed with `_` (e.g., `_wip_plugin`)
+- Provides immediate feedback for malformed plugins
+
+**External Plugin Discovery** (Entry Points):
+- Uses Python packaging `entry_points()` system
+- Group: `"structum.plugins"`
+- Format: `plugin-name = "package:PluginClass"`
+- Standard Python plugin architecture
+- Supports third-party PyPI packages
 
 ### Plugin Registry
 

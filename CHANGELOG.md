@@ -23,11 +23,16 @@ and automatic release generation via **release-please**.
 
 - **Plugin SDK**: `PluginBase` abstract class for standardized plugin development
 - **Plugin Registry**: Centralized plugin management with validation
+- **Plugin Auto-Discovery**: Built-in plugins automatically discovered via filesystem scanning
+  - Uses introspection to find `PluginBase` subclasses
+  - Consistent with external plugin entry point mechanism
+  - Zero-configuration plugin registration
+  - Support for disabling plugins with underscore prefix (`_plugin_name`)
 - **Plugin CLI**: Full management commands
   - `structum plugins list` - List plugins with category/status
   - `structum plugins info <name>` - Show plugin details
   - `structum plugins enable/disable <name>` - Manage plugin state
-  - `structum plugins new <name>` - Generate skeleton with smart defaults
+  - `structum plugins new <name>` - Generate skeleton with smart defaults (auto-registered)
 - **Plugin Categories**: `analysis`, `export`, `formatting`, `utility`
 - **Plugin Validation**: Auto-validates `name`, `version`, `category` on load
 - **Configuration Persistence**: State stored in `~/.config/structum/config.json`
@@ -69,5 +74,11 @@ and automatic release generation via **release-please**.
   - `structum archive` now correctly includes all files if no `--ext` is provided (previously found 0 files).
   - Fixed crash when `--output` is an existing directory in single-file mode (defaults to `archive.md`).
   - Directory tree in archive now respects `--ignore` and `--ext` filters.
+
+- **CLI Help Behavior** (2025-12-06):
+  - Fixed inconsistent help behavior for command groups (`docs`, `plugins`, `sample`)
+  - Running `structum docs` or `structum plugins` without subcommand now shows help instead of "Missing command." error
+  - Added `no_args_is_help=True` to all command groups for consistent UX
+  - Updated plugin skeleton template to include this fix automatically
 
 ---

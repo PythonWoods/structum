@@ -19,6 +19,7 @@
 *   **Multiple Themes**: Support for **Nerd Fonts**, Emojis, and plain ASCII (perfect for Markdown/LLM contexts).
 *   **Smart Filtering**: Easily exclude `.git`, `__pycache__`, or specific file extensions.
 *   **Export Ready**: Generate clean output for documentation or AI context injection.
+*   **Extensible Plugin System**: Auto-discovered plugins for custom commands and framework integrations.
 
 ---
 
@@ -64,12 +65,17 @@ structum clean . --skip-venv
 
 #### Manage Plugins
 ```bash
-# List installed plugins
+# List installed plugins (auto-discovered)
 structum plugins list
 
-# Generate a new plugin
+# Generate a new plugin (automatically registered)
 structum plugins new my-plugin --category analysis
+
+# Test your plugin
+structum my-plugin
 ```
+
+> **Note**: Built-in plugins are automatically discovered - no manual registration needed!
 
 ---
 
