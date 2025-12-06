@@ -380,8 +380,29 @@ class PluginBase(ABC):
 - Looks for `plugin.py` files in subdirectories
 - Uses `importlib` for dynamic module loading
 - Uses `inspect` module to find `PluginBase` subclasses
+- **Checks for `.dev` marker file** (development mode)
+  - If `.dev` exists: plugin tracked separately, NOT registered
+  - If `.dev` absent: plugin registered normally
 - Skips directories prefixed with `_` (e.g., `_wip_plugin`)
 - Provides immediate feedback for malformed plugins
+- Stores dev-mode plugins in global `_dev_plugins` registry
+- Exposes `get_dev_plugins()` for `--show-dev` CLI support
+
+**Development Mode (.dev marker):**
+```
+Plugin directory structure:
+my_plugin/
+├── .dev              ← Marker file (prevents registration)
+├── plugin.py
+├── commands/
+└── core/
+```
+
+**Workflow:**
+1. `structum plugins new my-plugin` → Creates with `.dev` marker
+2. Plugin discovered but NOT registered
+3. `structum plugins list --show-dev` → Shows [DEV MODE] status
+4. `rm .dev` → Next load registers plugin normally
 
 **External Plugin Discovery** (Entry Points):
 - Uses Python packaging `entry_points()` system
@@ -389,6 +410,7 @@ class PluginBase(ABC):
 - Format: `plugin-name = "package:PluginClass"`
 - Standard Python plugin architecture
 - Supports third-party PyPI packages
+- No `.dev` marker support (use package uninstall instead)
 
 ### Plugin Registry
 

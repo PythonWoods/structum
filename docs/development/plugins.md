@@ -41,25 +41,41 @@ This automatically creates the plugin in `src/structum/plugins/my_plugin/`.
 Edit the generated files:
 
 - `plugin.py` – Main plugin class
-- `commands/main.py` – CLI commands
+- `commands/main.py` – CLI commands (default: `run` command)
 - `core/logic.py` – Business logic
+
+**Development Mode (.dev marker):**
+
+New plugins are created in development mode with a `.dev` marker file. This means:
+- ✅ Plugin exists and can be inspected
+- ❌ Plugin is NOT registered (invisible in normal plugin list)
+- 🔍 Visible with `structum plugins list --show-dev`
 
 ### Step 3: Test Your Plugin
 
-**No manual registration needed!** Built-in plugins are automatically discovered.
+**While in development mode:**
 
 ```bash
-# Verify it was auto-discovered
-structum plugins list
+# View your dev-mode plugin
+structum plugins list --show-dev
 
-# Test your plugin's help
-structum my-plugin
-
-# Run your command
-structum my-plugin <your-command>
+# The plugin will show with [DEV MODE] status
 ```
 
-> **Note**: Plugins are auto-discovered by scanning `src/structum/plugins/` for directories containing a `plugin.py` file with a `PluginBase` subclass. To temporarily disable a plugin during development, prefix the directory name with an underscore (e.g., `_my_plugin`).
+**When ready for production:**
+
+```bash
+# Remove the .dev marker
+rm src/structum/plugins/my_plugin/.dev
+
+# Verify it's now registered
+structum plugins list
+
+# Test your plugin
+structum my-plugin run
+```
+
+> **Note**: The `.dev` marker prevents accidental use of incomplete plugins. Remove it only when your plugin is production-ready.
 
 ### Step 4: Submit a Pull Request
 
@@ -198,10 +214,14 @@ __all__ = ["MyPlugin"]
 
 #### `commands/main.py`
 
-Define your CLI commands:
+Define your CLI commands using the enterprise-grade `run` template:
 
 ```python
+from pathlib import Path
+
 import typer
+
+from ..core.logic import process
 
 app = typer.Typer(
     help="My plugin commands.",
@@ -211,28 +231,101 @@ app = typer.Typer(
 
 @app.command("run")
 def run_command(
-    path: str = typer.Argument(".", help="Path to process"),
-    verbose: bool = typer.Option(False, "--verbose", "-v"),
+    path: Path = typer.Argument(
+        Path("."),
+        help="Path to process",
+        exists=True,
+        resolve_path=True,
+    ),
+    output: Path | None = typer.Option(
+        None,
+        "--output",
+        "-o",
+        help="Output file path (optional)",
+    ),
+    dry_run: bool = typer.Option(
+        False,
+        "--dry-run",
+        help="Preview changes without applying them",
+    ),
+    verbose: bool = typer.Option(
+        False,
+        "--verbose",
+        "-v",
+        help="Enable verbose output",
+    ),
 ) -> None:
-    """Run the main plugin action."""
-    from ..core.logic import process
+    """Execute the plugin's main functionality."""
+    result = process(
+        path=path,
+        output=output,
+        dry_run=dry_run,
+        verbose=verbose,
+    )
 
-    result = process(path, verbose)
+    if verbose:
+        typer.echo(f"[my-plugin] Processing completed")
+
     typer.echo(result)
 ```
+
+**Template Features:**
+- ✅ `Path` arguments with validation
+- ✅ Enterprise options: `--output`, `--dry-run`, `--verbose`
+- ✅ Type safety with type hints
+- ✅ Clear separation: CLI → core logic
+- ✅ Professional parameter names
 
 > **Important**: Always include `no_args_is_help=True` to maintain consistency with other Structum commands. This ensures users see helpful command lists instead of error messages when invoking your plugin without arguments.
 
 #### `core/logic.py`
 
-Keep business logic separate from CLI:
+Keep business logic separate from CLI with the enterprise template:
 
 ```python
-def process(path: str, verbose: bool) -> str:
-    """Core processing logic."""
-    # Your implementation here
-    return f"Processed {path}"
+from pathlib import Path
+
+
+def process(
+    path: Path,
+    output: Path | None = None,
+    dry_run: bool = False,
+    verbose: bool = False,
+) -> str:
+    """Process the given path and return results.
+
+    Args:
+        path: Path to process
+        output: Optional output file path
+        dry_run: If True, preview changes without applying
+        verbose: Enable verbose logging
+
+    Returns:
+        Result message
+    """
+    if dry_run:
+        return f"[DRY RUN] Would process: {path}"
+
+    if verbose:
+        print(f"Processing {path}...")
+
+    # TODO: Add your implementation here
+    result = f"Processed {path} successfully"
+
+    if output:
+        output.write_text(result)
+        return f"Results written to {output}"
+
+    return result
 ```
+
+**Template includes:**
+- ✅ Full type hints
+- ✅ Comprehensive docstring
+- ✅ Dry-run support
+- ✅ Verbose logging
+- ✅ Optional file output
+- ✅ TODO markers for implementation
 
 ---
 
@@ -276,12 +369,31 @@ Built-in plugins are **automatically discovered** via filesystem scanning:
 1. **Scan**: The loader scans `src/structum/plugins/` for directories
 2. **Filter**: Skips directories starting with `_` (e.g., `_wip_plugin`) and special folders
 3. **Import**: Dynamically imports modules with a `plugin.py` file
-4. **Introspect**: Uses reflection to find `PluginBase` subclasses
-5. **Register**: Automatically registers discovered plugin classes
+4. **Check**: Looks for `.dev` marker file
+5. **Introspect**: Uses reflection to find `PluginBase` subclasses
+6. **Register**: Automatically registers production plugins (without `.dev` marker)
+7. **Track**: Stores dev-mode plugins separately for `--show-dev` inspection
 
 **No manual registration required!** Simply create your plugin structure and it's immediately available.
 
-**Disable during development**: Prefix directory with `_` (e.g., `mv my_plugin _my_plugin`)
+**Development Mode Options:**
+
+| Method | Use Case | Visibility |
+|--------|----------|------------|
+| `.dev` marker | **Recommended** - Work in progress | Hidden by default, `--show-dev` to view |
+| `_` prefix | Quick temporary disable | Completely invisible (not even discovered) |
+
+**Workflow comparison:**
+```bash
+# .dev marker (Recommended)
+structum plugins new my-plugin  # Auto-creates .dev
+structum plugins list --show-dev  # Visible in dev mode
+rm .dev  # Promote to production
+
+# _ prefix (Old method)
+mv my_plugin _my_plugin  # Disable
+mv _my_plugin my_plugin  # Enable
+```
 
 ### External Plugin Discovery
 

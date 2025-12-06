@@ -28,11 +28,26 @@ and automatic release generation via **release-please**.
   - Consistent with external plugin entry point mechanism
   - Zero-configuration plugin registration
   - Support for disabling plugins with underscore prefix (`_plugin_name`)
+- **Development Mode (.dev marker)** (2025-12-06): Hybrid system for work-in-progress plugins
+  - New plugins auto-created with `.dev` marker file
+  - Dev-mode plugins NOT registered (invisible by default)
+  - Visible with `structum plugins list --show-dev` flag
+  - Remove `.dev` file to promote plugin to production
+  - Better developer workflow with clear visibility and control
+- **Enterprise Plugin Template** (2025-12-06): Professional skeleton for new plugins
+  - Command: `run` (replaces "hello world" example)
+  - Arguments: Path with validation and resolution
+  - Options: `--output`, `--dry-run`, `--verbose`
+  - Full type hints with `Path`, `Optional`
+  - Comprehensive docstrings with Args/Returns
+  - TODO markers for clear implementation guidance
+  - Separation of concerns: CLI in `commands/`, logic in `core/`
 - **Plugin CLI**: Full management commands
   - `structum plugins list` - List plugins with category/status
+  - `structum plugins list --show-dev` - Include dev-mode plugins
   - `structum plugins info <name>` - Show plugin details
   - `structum plugins enable/disable <name>` - Manage plugin state
-  - `structum plugins new <name>` - Generate skeleton with smart defaults (auto-registered)
+  - `structum plugins new <name>` - Generate skeleton (creates in dev mode)
 - **Plugin Categories**: `analysis`, `export`, `formatting`, `utility`
 - **Plugin Validation**: Auto-validates `name`, `version`, `category` on load
 - **Configuration Persistence**: State stored in `~/.config/structum/config.json`
