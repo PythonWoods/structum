@@ -137,12 +137,11 @@ def new_plugin(
         if is_structum_project and output == Path.cwd() / "src" / "structum" / "plugins":
             # Builtin plugin instructions
             console.print("\n[bold]Next steps (builtin plugin):[/bold]")
-            console.print(f"  1. Implement your plugin in [cyan]{plugin_dir}[/cyan]")
-            console.print("  2. Edit [cyan]src/structum/plugins/loader.py[/cyan]:")
-            console.print(f"     - Add [yellow]from . import {name.replace('-', '_')}[/yellow]")
-            console.print(f"     - Register [yellow]{name.replace('-', '_')}.{class_name}[/yellow]")
-            console.print("  3. Run [cyan]structum plugins list[/cyan] to verify")
-            console.print("\n[dim]See docs/development/plugins.md for details.[/dim]")
+            console.print(f"  1. Implement your plugin logic in [cyan]{plugin_dir}[/cyan]")
+            console.print("  2. Run [cyan]structum plugins list[/cyan] to verify auto-discovery")
+            console.print("  3. Test your plugin with [cyan]structum {name}[/cyan]")
+            console.print("\n[dim]Note: Built-in plugins are auto-discovered. No manual registration needed![/dim]")
+            console.print("[dim]See docs/development/plugins.md for details.[/dim]")
         else:
             # External plugin instructions
             console.print("\n[bold]Next steps (external plugin):[/bold]")
