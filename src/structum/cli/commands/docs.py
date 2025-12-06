@@ -9,7 +9,10 @@ import typer
 
 from structum.core.docs import deploy_docs, serve_docs
 
-app = typer.Typer()
+app = typer.Typer(
+    help="Manage project documentation.",
+    no_args_is_help=True
+)
 
 @app.command(name="serve")
 def docs_serve_command(

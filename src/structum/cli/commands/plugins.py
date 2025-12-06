@@ -12,7 +12,10 @@ from rich.table import Table
 from structum.plugins.registry import PluginRegistry
 from structum.plugins.sdk import CATEGORIES
 
-app = typer.Typer(help="Manage plugins.")
+app = typer.Typer(
+    help="Manage plugins.",
+    no_args_is_help=True
+)
 console = Console()
 
 
