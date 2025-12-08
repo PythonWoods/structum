@@ -1,0 +1,476 @@
+{
+  // =============================================================================
+  // STRUCTUM - DEBUG CONFIGURATIONS
+  // =============================================================================
+  //
+  // Launch configurations permettono di debuggare codice con breakpoints.
+  //
+  // COME USARE:
+  // 1. Set breakpoint: Click a sinistra del numero linea (pallino rosso)
+  // 2. F5: Start debugging (usa config selezionata)
+  // 3. Debug toolbar appare (continue, step over, step into, step out, restart, stop)
+  // 4. Inspect variables in Debug panel (sinistra)
+  //
+  // SHORTCUTS DEBUGGING:
+  // F5        → Start/Continue
+  // F9        → Toggle breakpoint
+  // F10       → Step over (next line)
+  // F11       → Step into (entra in funzione)
+  // Shift+F11 → Step out (esci da funzione)
+  // Ctrl+Shift+F5 → Restart
+  // Shift+F5  → Stop
+  //
+  // VARIABILI:
+  // - Variables panel mostra locals, globals
+  // - Hover su variabile per vedere valore
+  // - Watch panel per monitora espressioni custom
+  // - Debug Console per valutare codice runtime
+  //
+  // =============================================================================
+
+  "version": "0.2.0",
+  "configurations": [
+    // ---------------------------------------------------------------------------
+    // CLI COMMANDS - Debug Structum Commands
+    // ---------------------------------------------------------------------------
+
+    {
+      "name": "Debug: structum tree",
+      "type": "debugpy",
+      // Finalità: Python debugger (debugpy = backend)
+      "request": "launch",
+      // launch = Start new process
+      // attach = Attach to running process
+      "module": "structum.cli",
+      // Finalità: Run come modulo (non script)
+      // Equivalente CLI: python -m structum.cli tree .
+      "args": ["tree", "."],
+      // Finalità: Argomenti passati a structum
+      // Modifica: Cambia path o opzioni
+      "console": "integratedTerminal",
+      // Finalità: Output nel terminal integrato VSCode
+      // Alternative: "internalConsole" (debug console panel)
+      "justMyCode": true,
+      // Finalità: Debug solo codice Structum (non librerie)
+      // false = Step into typer, rich, etc. (verbose)
+      // true = Skip library code (raccomandato)
+      "cwd": "${workspaceFolder}",
+      // Current working directory
+      "env": {
+        "PYTHONPATH": "${workspaceFolder}/src"
+        // Finalità: Trova moduli in src/
+      }
+      // USO:
+      // 1. Set breakpoint in src/structum/cli/commands/tree.py
+      // 2. F5 → Select "Debug: structum tree"
+      // 3. Debugger stops at breakpoint
+      // 4. Inspect variables, step through code
+    },
+
+    {
+      "name": "Debug: structum analyze",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "structum.cli",
+      "args": ["analyze", "."],
+      "console": "integratedTerminal",
+      "justMyCode": true,
+      "env": {
+        "PYTHONPATH": "${workspaceFolder}/src"
+      }
+      // Finalità: Debug structum analyze command
+      // Set breakpoint in src/structum/cli/commands/analyze.py
+    },
+
+    {
+      "name": "Debug: structum docs",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "structum.cli",
+      "args": ["docs", "generate"],
+      "console": "integratedTerminal",
+      "justMyCode": true,
+      "env": {
+        "PYTHONPATH": "${workspaceFolder}/src"
+      }
+      // Finalità: Debug structum docs command
+    },
+
+    {
+      "name": "Debug: structum (custom args)",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "structum.cli",
+      "args": [
+        // Modifica qui per testare comandi diversi
+        "tree",
+        ".",
+        "--max-depth",
+        "3"
+      ],
+      "console": "integratedTerminal",
+      "justMyCode": true,
+      "env": {
+        "PYTHONPATH": "${workspaceFolder}/src"
+      }
+      // Finalità: Debug con argomenti custom
+      // Uso: Modifica args[] per testare opzioni diverse
+      // Esempio: ["analyze", "/path/to/project", "--json"]
+    },
+
+    // ---------------------------------------------------------------------------
+    // TESTING - Debug Tests
+    // ---------------------------------------------------------------------------
+
+    {
+      "name": "Debug: Current Test File",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "pytest",
+      // Finalità: Run pytest come modulo
+      "args": [
+        "${file}",
+        // ${file} = File correntemente aperto in editor
+        "-v",
+        // Verbose
+        "-s"
+        // No capture stdout (print statements visibili)
+      ],
+      "console": "integratedTerminal",
+      "justMyCode": false,
+      // false perché potremmo voler debug inside pytest
+      "cwd": "${workspaceFolder}"
+      // USO:
+      // 1. Apri test file (es. tests/unit/test_tree.py)
+      // 2. Set breakpoint in test function
+      // 3. F5 → Select "Debug: Current Test File"
+      // 4. Debugger stops in test
+      // 5. Inspect fixtures, variables, assertions
+    },
+
+    {
+      "name": "Debug: Current Test Function",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "pytest",
+      "args": [
+        "${file}::${selectedText}",
+        // ${selectedText} = Text selected in editor
+        // Finalità: Run solo il test selezionato
+        "-v",
+        "-s"
+      ],
+      "console": "integratedTerminal",
+      "justMyCode": false
+      // USO:
+      // 1. Apri test file
+      // 2. Seleziona nome test function (es. "test_tree_basic")
+      // 3. F5 → Select "Debug: Current Test Function"
+      // 4. Debugger runs solo quella test function
+      // NOTA: Devi selezionare esattamente il nome (no spazi)
+    },
+
+    {
+      "name": "Debug: All Tests",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "pytest",
+      "args": [
+        "tests/",
+        "-v",
+        "-s",
+        "--tb=short"
+        // Short traceback (meno verbose)
+      ],
+      "console": "integratedTerminal",
+      "justMyCode": true,
+      "cwd": "${workspaceFolder}"
+      // USO:
+      // 1. Set breakpoint in qualsiasi test
+      // 2. F5 → "Debug: All Tests"
+      // 3. Tutti test run, debugger stops at breakpoint
+      // Quando: Debug test failures, vedere flow completo
+    },
+
+    {
+      "name": "Debug: Failed Tests Only",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "pytest",
+      "args": [
+        "--lf",
+        // Last failed
+        "-v",
+        "-s"
+      ],
+      "console": "integratedTerminal",
+      "justMyCode": true
+      // USO:
+      // 1. Run test (alcuni falliscono)
+      // 2. Fix bug
+      // 3. F5 → "Debug: Failed Tests Only"
+      // 4. Re-test solo falliti con debug
+    },
+
+    // ---------------------------------------------------------------------------
+    // PLUGIN DEVELOPMENT - Debug Plugin Loading
+    // ---------------------------------------------------------------------------
+
+    {
+      "name": "Debug: Plugin Loader",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "structum.plugins.loader",
+      // Finalità: Debug plugin loading mechanism
+      "args": [],
+      "console": "integratedTerminal",
+      "justMyCode": false,
+      "env": {
+        "PYTHONPATH": "${workspaceFolder}/src"
+      }
+      // USO:
+      // 1. Set breakpoint in src/structum/plugins/loader.py
+      // 2. F5 → "Debug: Plugin Loader"
+      // 3. Step through plugin discovery, registration
+      // Quando: Debug plugin system, entry points
+    },
+
+    // ---------------------------------------------------------------------------
+    // CORE FUNCTIONALITY - Debug Core Modules
+    // ---------------------------------------------------------------------------
+
+    {
+      "name": "Debug: Tree Builder",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/debug_scripts/test_tree.py",
+      // Finalità: Script custom per debug
+      // Crea: debug_scripts/test_tree.py con codice test
+      "console": "integratedTerminal",
+      "justMyCode": true,
+      "env": {
+        "PYTHONPATH": "${workspaceFolder}/src"
+      }
+      // USO:
+      // 1. Crea debug_scripts/test_tree.py:
+      //    from structum.core.tree import build_tree
+      //    tree = build_tree(".")
+      //    print(tree)
+      // 2. Set breakpoint in src/structum/core/tree.py
+      // 3. F5 → "Debug: Tree Builder"
+      // 4. Step through tree building logic
+    },
+
+    {
+      "name": "Debug: Analyze Module",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/debug_scripts/test_analyze.py",
+      "console": "integratedTerminal",
+      "justMyCode": true,
+      "env": {
+        "PYTHONPATH": "${workspaceFolder}/src"
+      }
+      // Finalità: Debug analyze functionality in isolation
+      // Crea debug_scripts/test_analyze.py con test logic
+    },
+
+    // ---------------------------------------------------------------------------
+    // SPECIAL - Python File Debug
+    // ---------------------------------------------------------------------------
+
+    {
+      "name": "Debug: Current Python File",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${file}",
+      // ${file} = File attualmente aperto
+      "console": "integratedTerminal",
+      "justMyCode": true
+      // USO:
+      // 1. Apri qualsiasi .py file
+      // 2. Set breakpoint
+      // 3. F5 → "Debug: Current Python File"
+      // 4. Debug quel file (se ha if __name__ == "__main__")
+      // Quando: Quick script debugging
+    },
+
+    // ---------------------------------------------------------------------------
+    // ATTACH TO PROCESS (Advanced)
+    // ---------------------------------------------------------------------------
+
+    {
+      "name": "Attach: Remote Debug",
+      "type": "debugpy",
+      "request": "attach",
+      "connect": {
+        "host": "localhost",
+        "port": 5678
+        // Finalità: Attach a processo Python già running
+      },
+      "pathMappings": [
+        {
+          "localRoot": "${workspaceFolder}/src",
+          "remoteRoot": "/app/src"
+          // Map local path → remote path (Docker, SSH)
+        }
+      ]
+      // USO AVANZATO:
+      // 1. Nel codice remoto, aggiungi:
+      //    import debugpy
+      //    debugpy.listen(("0.0.0.0", 5678))
+      //    debugpy.wait_for_client()
+      // 2. Run codice remoto
+      // 3. F5 → "Attach: Remote Debug"
+      // 4. Debug codice running in Docker/SSH
+      // Quando: Debugging Docker containers, remote servers
+    }
+  ],
+
+  // ===========================================================================
+  // COMPOUNDS - Multiple Configurations
+  // ===========================================================================
+  // Compound: Run multiple configs together
+  // Utile per: Client + Server debugging simultaneo
+
+  "compounds": [
+    {
+      "name": "Debug: CLI + Tests",
+      "configurations": [
+        "Debug: structum tree",
+        "Debug: Current Test File"
+      ],
+      "stopAll": true
+      // Finalità: Debug CLI e test insieme
+      // Uso: Debugging integration issues
+      // Raramente necessario
+    }
+  ]
+}
+
+// =============================================================================
+// DEBUG WORKFLOW ESEMPI
+// =============================================================================
+//
+// 1. DEBUG TEST FALLITO:
+//    a. Run "Test: Run All" via tasks
+//    b. Test fallisce
+//    c. Apri test file, set breakpoint
+//    d. F5 → "Debug: Current Test File"
+//    e. Step through, find bug
+//    f. Fix, re-run
+//
+// 2. DEBUG COMMAND ISSUE:
+//    a. User reports: structum tree crash
+//    b. Set breakpoint in tree.py
+//    c. F5 → "Debug: structum tree"
+//    d. Reproduce crash
+//    e. Inspect variables at crash point
+//    f. Fix
+//
+// 3. DEBUG PLUGIN LOADING:
+//    a. Plugin not loading
+//    b. Set breakpoint in loader.py:load_builtin_plugins
+//    c. F5 → "Debug: Plugin Loader"
+//    d. Step through discovery logic
+//    e. Find why plugin skipped
+//    f. Fix (naming, structure, etc.)
+//
+// 4. DEBUG PERFORMANCE ISSUE:
+//    a. Command slow
+//    b. Set breakpoints in suspected slow functions
+//    c. F5 → Debug command
+//    d. Time between breakpoints (wall clock)
+//    e. Identify bottleneck
+//    f. Optimize
+//
+// =============================================================================
+
+// =============================================================================
+// DEBUG PANEL GUIDE
+// =============================================================================
+// Quando in debug mode (F5):
+//
+// LEFT SIDEBAR (Debug view):
+// ├── Variables
+// │   ├── Locals (variabili locali funzione corrente)
+// │   └── Globals (variabili globali modulo)
+// ├── Watch
+// │   └── Aggiungi espressioni custom (es. len(results))
+// ├── Call Stack
+// │   └── Vedi funzioni chiamanti (backtrace)
+// └── Breakpoints
+//     └── Gestisci tutti breakpoints
+//
+// TOP TOOLBAR (Debug controls):
+// ├── Continue (F5)      → Run fino a prossimo breakpoint
+// ├── Step Over (F10)    → Next line (skip function internals)
+// ├── Step Into (F11)    → Entra in funzione
+// ├── Step Out (Shift+F11) → Esci da funzione corrente
+// ├── Restart (Ctrl+Shift+F5)
+// └── Stop (Shift+F5)
+//
+// BOTTOM PANEL:
+// ├── Debug Console
+// │   └── Valuta espressioni Python runtime
+// │   └── Esempio: print(variable_name)
+// └── Terminal
+//     └── Output del programma
+//
+// =============================================================================
+
+// =============================================================================
+// BREAKPOINTS AVANZATI
+// =============================================================================
+//
+// Conditional Breakpoint:
+// 1. Right-click su breakpoint (pallino rosso)
+// 2. "Edit Breakpoint" → "Expression"
+// 3. Scrivi condizione: i > 100
+// 4. Debugger stops solo se condizione True
+// Quando: Loop grandi, vuoi fermarti solo a certe iterazioni
+//
+// Logpoint (Breakpoint senza stop):
+// 1. Right-click → "Add Logpoint"
+// 2. Scrivi: Current value: {variable_name}
+// 3. Debugger NON si ferma, ma logga in Debug Console
+// Quando: Vuoi vedere valori senza fermare execution
+//
+// Hit Count Breakpoint:
+// 1. Right-click → "Edit Breakpoint" → "Hit Count"
+// 2. Scrivi: 10
+// 3. Debugger stops solo alla 10ma volta che passa lì
+// Quando: Loop, vuoi vedere stato dopo N iterazioni
+//
+// =============================================================================
+
+// =============================================================================
+// TIPS & TRICKS
+// =============================================================================
+//
+// 1. Debug Console (bottom panel):
+//    - Esegui codice Python durante debug
+//    - Esempio: dir(obj), type(variable), len(list)
+//    - Modifica variabili runtime (advanced)
+//
+// 2. Hover su variabili:
+//    - Durante debug, hover su variabile → Vedi valore
+//    - Click arrow per espandere object/dict/list
+//
+// 3. Copy Value:
+//    - Right-click su variabile in Variables panel
+//    - "Copy Value" → Copia JSON representation
+//    - Utile per: Salvare test data, reportare bug
+//
+// 4. Set Next Statement:
+//    - Drag yellow arrow (current line indicator)
+//    - Skip lines o re-run lines
+//    - Advanced: può creare inconsistent state
+//
+// 5. Exception Breakpoints:
+//    - Debug panel → Breakpoints section
+//    - Click "+" → "Python: All Exceptions"
+//    - Debugger stops su QUALSIASI exception
+//    - Quando: Debug crash inspiegabili
+//
+// =============================================================================

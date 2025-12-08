@@ -1,0 +1,453 @@
+{
+  // =============================================================================
+  // STRUCTUM - WORKSPACE SETTINGS
+  // =============================================================================
+  //
+  // Questo file contiene settings VSCode specifici per il progetto Structum.
+  // Sovrascrive le user settings globali solo per questo workspace.
+  //
+  // STRUTTURA:
+  // 1. Python Configuration
+  // 2. Formatting
+  // 3. Linting
+  // 4. Type Checking
+  // 5. Testing
+  // 6. Terminal
+  // 7. Git
+  // 8. Editor
+  // 9. Files
+  // 10. Search
+  // =============================================================================
+
+  // ---------------------------------------------------------------------------
+  // 1. PYTHON CONFIGURATION
+  // ---------------------------------------------------------------------------
+
+  "python.defaultInterpreterPath": "${workspaceFolder}/.venv/bin/python",
+  // Finalità: Usa il virtual environment del progetto (.venv)
+  // Perché: Isolamento dipendenze, evita conflitti con system Python
+  // Come verificare: Status bar VSCode mostra ".venv" (bottom-left)
+  // Troubleshooting: Se non vede .venv:
+  //   1. Crea venv: python3.11 -m venv .venv
+  //   2. Riapri VSCode
+  //   3. Ctrl+Shift+P → "Python: Select Interpreter" → .venv/bin/python
+
+  "python.testing.pytestEnabled": true,
+  // Finalità: Abilita pytest come test runner
+  // Perché: Structum usa pytest (non unittest)
+  // Uso: Test sidebar (beaker icon) mostra tutti i test
+  // Alternative disabilitate:
+  "python.testing.unittestEnabled": false,
+  "python.testing.nosetestsEnabled": false,
+
+  "python.testing.pytestArgs": [
+    "tests",
+    // Finalità: Cerca test in cartella tests/
+    "-v",
+    // Finalità: Verbose output (mostra ogni test)
+    "--cov=structum",
+    // Finalità: Misura code coverage
+    "--cov-report=term-missing"
+    // Finalità: Mostra quali righe non sono coperte da test
+  ],
+  // Uso: Run test → Terminal mostra coverage report
+  // Esempio output:
+  //   src/structum/core/utils.py    85%   (missing: 45-50)
+
+  "python.analysis.extraPaths": [
+    "${workspaceFolder}/src"
+    // Finalità: Pylance trova moduli in src/
+    // Perché: src-layout (structum in src/structum/)
+    // Fix: Import errors red underline
+  ],
+
+  // ---------------------------------------------------------------------------
+  // 2. FORMATTING
+  // ---------------------------------------------------------------------------
+
+  "[python]": {
+    "editor.defaultFormatter": "ms-python.black-formatter",
+    // Finalità: Usa Black per formattare Python
+    // Perché: Black è opinionated, zero config, consistency
+    // Alternative: autopep8, yapf (meno usate)
+
+    "editor.formatOnSave": true,
+    // Finalità: Formatta automaticamente quando salvi (Ctrl+S)
+    // Perché: Sempre formattato, mai dimenticato
+    // Shortcut manuale: Shift+Alt+F
+
+    "editor.codeActionsOnSave": {
+      "source.organizeImports": "explicit"
+      // Finalità: Riordina imports automaticamente quando salvi
+      // Perché: Imports sempre in ordine (Ruff style)
+      // Risultato:
+      //   1. Standard library imports
+      //   2. Third-party imports
+      //   3. Local imports
+      //   (con linee vuote tra gruppi)
+    }
+  },
+
+  "[markdown]": {
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "yzhang.markdown-all-in-one"
+    // Finalità: Formatta Markdown (tabelle, liste)
+    // Uso: Scrivi tabella malformatta → Salva → Auto-aligned
+  },
+
+  "[json]": {
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "vscode.json-language-features"
+    // Finalità: JSON sempre ben formattato e indentato
+  },
+
+  "[toml]": {
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "tamasfe.even-better-toml"
+    // Finalità: pyproject.toml formattato correttamente
+  },
+
+  // ---------------------------------------------------------------------------
+  // 3. LINTING
+  // ---------------------------------------------------------------------------
+
+  "ruff.enable": true,
+  // Finalità: Abilita Ruff linter
+  // Perché: Ultra-veloce (Rust-based), sostituisce flake8/pylint
+  // Mostra: Errori inline mentre scrivi
+
+  "ruff.organizeImports": true,
+  // Finalità: Ruff gestisce import organization
+  // Integrazione: Con "organizeImports" on save
+
+  "ruff.fixAll": true,
+  // Finalità: Auto-fix problemi quando possibile
+  // Uso: Quick fix disponibile (Ctrl+. su errore)
+  // Esempi fix: Unused imports, trailing whitespace, etc.
+
+  "ruff.lint.args": [
+    "--config=${workspaceFolder}/pyproject.toml"
+    // Finalità: Usa config Ruff da pyproject.toml
+    // Config: [tool.ruff] section
+  ],
+
+  // ---------------------------------------------------------------------------
+  // 4. TYPE CHECKING
+  // ---------------------------------------------------------------------------
+
+  "python.analysis.typeCheckingMode": "basic",
+  // Finalità: Type checking real-time (Pylance)
+  // Levels: "off" | "basic" | "strict"
+  // "basic": Balance tra noise e safety
+  // "strict": Molto rigido (tutti type hints obbligatori)
+  // Mostra: Errori type inline (es. pass int a funzione che vuole str)
+
+  "python.analysis.diagnosticMode": "workspace",
+  // Finalità: Analizza tutti file nel workspace
+  // Alternative: "openFilesOnly" (solo file aperti)
+  // Perché: Catch errori anche in file non aperti
+
+  "python.analysis.autoImportCompletions": true,
+  // Finalità: Auto-suggest import quando usi classe non importata
+  // Uso: Scrivi "Path" → Suggerisce "from pathlib import Path"
+
+  // ---------------------------------------------------------------------------
+  // 5. TESTING
+  // ---------------------------------------------------------------------------
+
+  "python.testing.autoTestDiscoverOnSaveEnabled": true,
+  // Finalità: Rileva nuovi test automaticamente quando salvi
+  // Uso: Scrivi nuovo test → Appare in test explorer
+
+  "testExplorer.useNativeTesting": true,
+  // Finalità: Usa Python testing nativo (non test explorer extension)
+  // Perché: Più integrato, meglio supportato
+
+  // ---------------------------------------------------------------------------
+  // 6. TERMINAL
+  // ---------------------------------------------------------------------------
+
+  "terminal.integrated.defaultProfile.linux": "bash",
+  "terminal.integrated.defaultProfile.osx": "zsh",
+  "terminal.integrated.defaultProfile.windows": "PowerShell",
+  // Finalità: Shell di default per terminal integrato
+  // Shortcut: Ctrl+` (apre terminal)
+  // Uso: Run comandi git, pytest, structum direttamente
+
+  "terminal.integrated.fontSize": 13,
+  // Finalità: Font size comodo per terminal
+
+  "terminal.integrated.scrollback": 10000,
+  // Finalità: History terminal lunga (10k righe)
+  // Perché: Rivedi output vecchi (pytest, logs)
+
+  // ---------------------------------------------------------------------------
+  // 7. GIT
+  // ---------------------------------------------------------------------------
+
+  "git.autofetch": true,
+  // Finalità: Fetch automatico da remote (ogni 5min)
+  // Perché: Sempre aggiornato su remote changes
+  // Non fa pull, solo fetch (safe)
+
+  "git.confirmSync": false,
+  // Finalità: Non chiede conferma per sync
+  // Perché: Sync è safe (solo pull + push)
+
+  "git.enableSmartCommit": true,
+  // Finalità: Commit all changes se nessun file staged
+  // Uso: Source Control → Scrivi message → Commit
+  //      (auto-stages se niente in staging)
+
+  "git.postCommitCommand": "push",
+  // Finalità: Auto-push dopo commit
+  // Perché: Meno passaggi (commit + push in uno)
+  // Safe: Solo su branch feature, non su main
+
+  "gitlens.currentLine.enabled": true,
+  // Finalità: Mostra blame inline (autore riga corrente)
+  // Dove: A destra della linea dove sei con cursor
+  // Esempio: "John Doe, 2 days ago • feat: add analyze"
+
+  "gitlens.codeLens.enabled": true,
+  // Finalità: Mostra "recent changes" sopra funzioni/classi
+  // Uso: Click per vedere history di quella funzione
+
+  // ---------------------------------------------------------------------------
+  // 8. EDITOR
+  // ---------------------------------------------------------------------------
+
+  "editor.rulers": [100],
+  // Finalità: Linea verticale a 100 caratteri
+  // Perché: Structum usa line-length=100 (vedi pyproject.toml)
+  // Visual guide per non superare
+
+  "editor.minimap.enabled": false,
+  // Finalità: Disabilita minimap (colonna destra)
+  // Perché: Spazio screen limitato, minimap poco utile
+  // Opzionale: Abilita se preferisci (true)
+
+  "editor.bracketPairColorization.enabled": true,
+  // Finalità: Colora parentesi/brackets in coppie
+  // Perché: Facile vedere matching {}[]()
+  // Esempio: { [ ( ) ] } → Ogni coppia colore diverso
+
+  "editor.guides.bracketPairs": "active",
+  // Finalità: Mostra linea verticale tra bracket pairs
+  // Quando: Solo per bracket pair dove cursor è
+
+  "editor.linkedEditing": true,
+  // Finalità: Edit HTML/XML tag opening → Chiude automaticamente
+  // Utile per: Markdown, HTML docs
+
+  "editor.suggestSelection": "first",
+  // Finalità: Autocomplete seleziona primo suggerimento
+  // Uso: Tab per accettare, Esc per cancellare
+
+  "editor.tabSize": 4,
+  // Finalità: Python standard (4 spaces per tab)
+  // PEP 8 compliant
+
+  "editor.insertSpaces": true,
+  // Finalità: Tab inserisce spazi (non tab character)
+  // Perché: Python best practice
+
+  "editor.detectIndentation": false,
+  // Finalità: Usa sempre tabSize=4, non auto-detect
+  // Perché: Consistency (alcuni file potrebbero avere tab diverso)
+
+  "editor.trimAutoWhitespace": true,
+  // Finalità: Rimuove trailing whitespace automaticamente
+  // Quando: Quando vai a linea nuova
+
+  "editor.renderWhitespace": "boundary",
+  // Finalità: Mostra spazi (solo leading/trailing)
+  // Opzioni: "none" | "boundary" | "all"
+  // Utile: Debug indentation issues
+
+  "editor.wordWrap": "off",
+  // Finalità: No word wrap (linee lunghe overflow)
+  // Perché: Python ha line-length limit (100)
+  // Alternative: "on" se preferisci wrap
+
+  // ---------------------------------------------------------------------------
+  // 9. FILES
+  // ---------------------------------------------------------------------------
+
+  "files.trimTrailingWhitespace": true,
+  // Finalità: Rimuove spazi a fine riga quando salvi
+  // Perché: Clean commits (no whitespace changes)
+
+  "files.insertFinalNewline": true,
+  // Finalità: Aggiunge newline a fine file quando salvi
+  // Perché: POSIX compliant, Git best practice
+
+  "files.trimFinalNewlines": true,
+  // Finalità: Rimuove multiple newlines a fine file
+  // Risultato: Esattamente 1 newline finale
+
+  "files.exclude": {
+    // Finalità: Nasconde cartelle da file explorer
+    "**/__pycache__": true,
+    // Python cache
+    "**/*.pyc": true,
+    // Compiled Python
+    "**/.pytest_cache": true,
+    // Pytest cache
+    "**/.mypy_cache": true,
+    // Mypy cache
+    "**/.ruff_cache": true,
+    // Ruff cache
+    "**/.coverage": true,
+    // Coverage data
+    "**/htmlcov": true,
+    // Coverage HTML report
+    "**/*.egg-info": true,
+    // Python package metadata
+    "**/.venv": true
+    // Virtual environment (già visible via settings)
+  },
+  // Risultato: File explorer più pulito
+
+  "files.watcherExclude": {
+    // Finalità: Non watch questi file per changes (performance)
+    "**/.venv/**": true,
+    "**/node_modules/**": true,
+    "**/__pycache__/**": true
+  },
+
+  // ---------------------------------------------------------------------------
+  // 10. SEARCH
+  // ---------------------------------------------------------------------------
+
+  "search.exclude": {
+    // Finalità: Escludi da search (Ctrl+Shift+F)
+    "**/node_modules": true,
+    "**/.venv": true,
+    "**/__pycache__": true,
+    "**/htmlcov": true,
+    "**/.pytest_cache": true,
+    "**/*.pyc": true
+  },
+  // Risultato: Search più veloce, risultati rilevanti
+
+  "search.useIgnoreFiles": true,
+  // Finalità: Rispetta .gitignore in search
+  // Perché: Non cercare in file ignorati da git
+
+  // ---------------------------------------------------------------------------
+  // 11. EXTRA (Productivity)
+  // ---------------------------------------------------------------------------
+
+  "breadcrumbs.enabled": true,
+  // Finalità: Mostra path file in cima (breadcrumbs)
+  // Esempio: src > structum > core > config.py
+
+  "explorer.confirmDelete": false,
+  // Finalità: Non chiede conferma per delete
+  // Perché: Git recovery possibile, meno friction
+
+  "explorer.confirmDragAndDrop": false,
+  // Finalità: No conferma per drag & drop files
+
+  "workbench.editor.enablePreview": false,
+  // Finalità: File sempre aprono in tab permanente (no preview)
+  // Preview: Single-click → Tab italic (chiude quando click altro)
+  // Permanent: Double-click o questo setting
+
+  "workbench.startupEditor": "none",
+  // Finalità: Non aprire Welcome page all'avvio
+  // Alternative: "welcomePage" | "readme" | "none"
+
+  // ---------------------------------------------------------------------------
+  // 12. TODO TREE (se installata extension)
+  // ---------------------------------------------------------------------------
+
+  "todo-tree.general.tags": [
+    "TODO",
+    "FIXME",
+    "HACK",
+    "XXX",
+    "NOTE",
+    "OPTIMIZE"
+    // Finalità: Riconosce questi tag nei commenti
+    // Uso: # TODO: Implement this → Appare in TODO tree
+  ],
+
+  "todo-tree.highlights.defaultHighlight": {
+    "icon": "alert",
+    "type": "text",
+    "foreground": "white",
+    "background": "orange",
+    "opacity": 50
+    // Finalità: Highlighting TODO in editor
+  },
+
+  // ---------------------------------------------------------------------------
+  // 13. COPILOT (se hai subscription)
+  // ---------------------------------------------------------------------------
+
+  "github.copilot.enable": {
+    "*": true,
+    "python": true,
+    "markdown": true
+    // Finalità: Abilita Copilot per questi linguaggi
+  },
+
+  // ---------------------------------------------------------------------------
+  // 14. PYTHON PATH (per testing corretto)
+  // ---------------------------------------------------------------------------
+
+  "python.envFile": "${workspaceFolder}/.env",
+  // Finalità: Carica environment variables da .env
+  // Uso: Crea .env con OPENAI_API_KEY=... per tests
+
+  // ---------------------------------------------------------------------------
+  // 15. PERFORMANCE
+  // ---------------------------------------------------------------------------
+
+  "files.maxMemoryForLargeFilesMB": 4096,
+  // Finalità: Gestisci file grandi (4GB)
+  // Utile per: Log files, large JSON
+
+  "diffEditor.maxComputationTime": 5000
+  // Finalità: Max time per diff computation
+  // Perché: Evita freeze su diff grandi
+}
+
+// =============================================================================
+// SHORTCUTS UTILI (con questi settings)
+// =============================================================================
+//
+// Formatting:
+//   Shift+Alt+F       → Format document
+//   Ctrl+S            → Save (auto-format)
+//
+// Testing:
+//   Click test icon   → Run test
+//   Right-click test  → Debug test
+//
+// Git:
+//   Ctrl+Shift+G      → Open Git panel
+//   Source Control    → Stage, commit, push
+//
+// Terminal:
+//   Ctrl+`            → Toggle terminal
+//   Ctrl+Shift+`      → New terminal
+//
+// Quick Fixes:
+//   Ctrl+.            → Show quick fixes (su errore)
+//   F2                → Rename symbol
+//
+// Navigation:
+//   Ctrl+P            → Quick open file
+//   Ctrl+Shift+O      → Go to symbol in file
+//   F12               → Go to definition
+//   Alt+Left/Right    → Navigate back/forward
+//
+// Search:
+//   Ctrl+F            → Find in file
+//   Ctrl+Shift+F      → Find in workspace
+//   Ctrl+H            → Replace in file
+//
+// =============================================================================

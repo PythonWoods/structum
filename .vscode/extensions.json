@@ -1,0 +1,280 @@
+{
+  // =============================================================================
+  // ESTENSIONI RACCOMANDATE PER STRUCTUM
+  // =============================================================================
+  //
+  // Questo file definisce le extensions VSCode raccomandate per sviluppare Structum.
+  // VSCode mostrerà automaticamente un prompt per installarle quando apri il progetto.
+  //
+  // COME USARE:
+  // 1. Apri VSCode nel progetto Structum
+  // 2. VSCode ti chiederà "Vuoi installare le extensions raccomandate?"
+  // 3. Click "Install All" per installarle tutte
+  //
+  // MANUALE: Ctrl+Shift+X → Cerca extension → Install
+  // =============================================================================
+
+  "recommendations": [
+    // -------------------------------------------------------------------------
+    // PYTHON DEVELOPMENT (Essenziali)
+    // -------------------------------------------------------------------------
+
+    "ms-python.python",
+    // Extension Python ufficiale Microsoft
+    // Finalità:
+    //   - IntelliSense (autocomplete intelligente)
+    //   - Syntax highlighting
+    //   - Linting (error checking)
+    //   - Debugging (breakpoints, step-through)
+    //   - Test discovery and running
+    // Uso:
+    //   - Automatico dopo installazione
+    //   - Seleziona interpreter: Ctrl+Shift+P → "Python: Select Interpreter"
+
+    "ms-python.vscode-pylance",
+    // Type checking e IntelliSense avanzato
+    // Finalità:
+    //   - Fast type checking (più veloce di mypy durante edit)
+    //   - Auto-imports
+    //   - Hover documentation
+    //   - Parameter hints
+    //   - Type inference intelligente
+    // Uso:
+    //   - Automatico con Python extension
+    //   - Mostra errori real-time mentre scrivi
+    //   - Hover su funzioni per vedere signatures
+
+    "ms-python.black-formatter",
+    // Code formatter (Black style)
+    // Finalità:
+    //   - Formattazione automatica del codice
+    //   - Consistency style enforcement
+    //   - Format-on-save disponibile
+    // Uso:
+    //   - Manual: Shift+Alt+F (format document)
+    //   - Auto: Abilitato format-on-save in settings.json
+    //   - Config: Line length 100 (vedi pyproject.toml)
+
+    "charliermarsh.ruff",
+    // Fast linter (Python)
+    // Finalità:
+    //   - Linting ultra-veloce (10-100x più veloce di pylint)
+    //   - Auto-fix per molti issues
+    //   - Import organization
+    //   - Sostituisce: flake8, isort, pylint
+    // Uso:
+    //   - Automatico: Mostra errori inline
+    //   - Quick fix: Ctrl+. (su errore)
+    //   - Organizza imports: Abilitato in settings.json
+
+    // -------------------------------------------------------------------------
+    // TESTING
+    // -------------------------------------------------------------------------
+
+    "littlefoxteam.vscode-python-test-adapter",
+    // Test explorer UI
+    // Finalità:
+    //   - Visualizza tutti i test in sidebar
+    //   - Run/Debug single test con click
+    //   - Test coverage visualization
+    //   - Test watch mode
+    // Uso:
+    //   - Sidebar → Test beaker icon
+    //   - Click su test per run
+    //   - Right-click → Debug test
+    //   - Green/Red indicators per pass/fail
+
+    // -------------------------------------------------------------------------
+    // GIT & VERSION CONTROL
+    // -------------------------------------------------------------------------
+
+    "eamodio.gitlens",
+    // Git supercharged
+    // Finalità:
+    //   - Blame annotations (chi ha scritto ogni riga)
+    //   - Commit history visualization
+    //   - File history explorer
+    //   - Compare changes visually
+    //   - Repository insights
+    // Uso:
+    //   - Inline blame: Mostra autore a fine riga
+    //   - Sidebar → GitLens icon per history
+    //   - Hover su linea → Vedi commit details
+    //   - Command Palette: "GitLens: Show File History"
+
+    // -------------------------------------------------------------------------
+    // MARKDOWN & DOCUMENTATION
+    // -------------------------------------------------------------------------
+
+    "yzhang.markdown-all-in-one",
+    // Markdown editing enhanced
+    // Finalità:
+    //   - Syntax highlighting avanzato
+    //   - Auto-completion (lists, tables)
+    //   - Preview (Ctrl+K V)
+    //   - TOC generation
+    //   - Keyboard shortcuts
+    // Uso:
+    //   - Ctrl+K V: Open preview side-by-side
+    //   - Ctrl+Shift+[: Fold section
+    //   - Ctrl+B: Bold selection
+    //   - Automatic table formatting
+
+    // -------------------------------------------------------------------------
+    // PRODUCTIVITY (Opzionali ma utili)
+    // -------------------------------------------------------------------------
+
+    "github.copilot",
+    // AI code completion (Requires subscription)
+    // Finalità:
+    //   - AI-powered autocomplete
+    //   - Function generation from comments
+    //   - Test generation
+    //   - Boilerplate code acceleration
+    // Uso:
+    //   - Scrivi commento → Copilot suggerisce codice
+    //   - Tab per accettare suggestion
+    //   - Alt+] / Alt+[ per navigare suggestions
+    // Costo: $10/mese (o free per studenti/OSS maintainers)
+    // Nota: OPZIONALE - Structum development possibile senza
+
+    "ms-vsliveshare.vsliveshare",
+    // Real-time collaboration (pair programming)
+    // Finalità:
+    //   - Condividere session VSCode con altri
+    //   - Pair programming remoto
+    //   - Code review live
+    //   - Debug insieme
+    // Uso:
+    //   - Click "Live Share" in status bar
+    //   - Invita collaborator via link
+    //   - Utile per: onboarding, debugging complesso
+
+    "gruntfuggly.todo-tree",
+    // TODO/FIXME tracking
+    // Finalità:
+    //   - Trova tutti TODO, FIXME, HACK nel codice
+    //   - Tree view in sidebar
+    //   - Click per navigare
+    // Uso:
+    //   - Sidebar → Tree icon
+    //   - Vedi tutti "# TODO: ..." nel progetto
+    //   - Click per saltare a quel punto
+    //   - Customizable tags (settings.json)
+
+    // -------------------------------------------------------------------------
+    // CODE QUALITY (Avanzate)
+    // -------------------------------------------------------------------------
+
+    "ms-python.mypy-type-checker",
+    // Static type checking (mypy)
+    // Finalità:
+    //   - Type checking avanzato (oltre Pylance)
+    //   - Enforza type hints
+    //   - Catch type errors prima di runtime
+    // Uso:
+    //   - Automatico su file con type hints
+    //   - Mostra errori inline
+    //   - Config: pyproject.toml [tool.mypy]
+    // Nota: Più strict di Pylance, utile per quality
+
+    "tamasfe.even-better-toml",
+    // TOML file support
+    // Finalità:
+    //   - Syntax highlighting per pyproject.toml
+    //   - Validation
+    //   - Auto-completion
+    // Uso:
+    //   - Automatico su file .toml
+    //   - Mostra errori sintassi
+    //   - Hover per docs di campi pyproject.toml
+
+    // -------------------------------------------------------------------------
+    // EXTRA (Completamente opzionali)
+    // -------------------------------------------------------------------------
+
+    "streetsidesoftware.code-spell-checker",
+    // Spell checker for code
+    // Finalità:
+    //   - Trova typos in commenti, docstrings, strings
+    //   - Suggerisce correzioni
+    // Uso:
+    //   - Sottolinea parole sconosciute
+    //   - Right-click → Suggestions
+    //   - Add to dictionary per false positives
+
+    "usernamehw.errorlens",
+    // Inline error display
+    // Finalità:
+    //   - Mostra errori direttamente inline (non solo underline)
+    //   - Più visibile degli errori standard
+    //   - Color-coded per severità
+    // Uso:
+    //   - Automatico
+    //   - Errori mostrati alla fine della linea
+    //   - Può essere "noisy" - disabilita se disturba
+
+    "christian-kohler.path-intellisense",
+    // Auto-complete file paths
+    // Finalità:
+    //   - Autocomplete quando scrivi import paths
+    //   - Trova file mentre digiti
+    // Uso:
+    //   - Scrivi: from structum.core.
+    //   - Suggerisce: config, utils, etc.
+
+    "mechatroner.rainbow-csv",
+    // CSV file visualization
+    // Finalità:
+    //   - Colora colonne CSV
+    //   - Query CSV con SQL-like syntax
+    // Uso:
+    //   - Utile se generi CSV reports
+    //   - Automatico su file .csv
+
+    // -------------------------------------------------------------------------
+    // THEME (Opzionale)
+    // -------------------------------------------------------------------------
+
+    "GitHub.github-vscode-theme"
+    // GitHub theme (dark/light)
+    // Finalità:
+    //   - Theme pulito e minimal
+    //   - Buon contrast per syntax highlighting
+    // Uso:
+    //   - Ctrl+K Ctrl+T → Select theme
+    //   - Scegli "GitHub Dark" o "GitHub Light"
+    // Nota: Completamente opzionale, usa theme preferito
+  ],
+
+  // =============================================================================
+  // EXTENSIONS DA NON INSTALLARE (conflitti noti)
+  // =============================================================================
+  "unwantedRecommendations": [
+    // Queste extensions possono creare conflitti con setup raccomandato
+
+    "ms-python.pylint",
+    // Motivo: Ruff è più veloce e completo
+
+    "ms-python.flake8",
+    // Motivo: Ruff sostituisce flake8
+
+    "ms-python.isort"
+    // Motivo: Ruff gestisce import sorting
+  ]
+}
+
+// =============================================================================
+// COME INSTALLARE MANUALMENTE
+// =============================================================================
+// Se VSCode non mostra il prompt automatico:
+//
+// 1. Apri Command Palette: Ctrl+Shift+P
+// 2. Cerca: "Extensions: Show Recommended Extensions"
+// 3. Install quelle che vuoi
+//
+// O installa via terminal:
+// code --install-extension ms-python.python
+// code --install-extension ms-python.vscode-pylance
+// etc.
+// =============================================================================

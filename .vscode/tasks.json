@@ -1,0 +1,465 @@
+{
+  // =============================================================================
+  // STRUCTUM - TASKS CONFIGURATION
+  // =============================================================================
+  //
+  // Tasks sono comandi automatizzabili che puoi eseguire in VSCode.
+  //
+  // COME USARE:
+  // 1. Ctrl+Shift+B → Run build task (default)
+  // 2. Ctrl+Shift+P → "Tasks: Run Task" → Scegli task
+  // 3. Terminal → Tasks menu
+  //
+  // QUANDO USARE:
+  // - Run tests frequentemente → Task "Run tests"
+  // - Format/lint tutto il progetto → Task "Format all"
+  // - Build/deploy → Task custom
+  //
+  // VANTAGGI vs Terminal Manuale:
+  // - Riproducibilità (sempre stesso comando)
+  // - Keyboard shortcuts
+  // - Output parsing (problemi cliccabili)
+  // - Task dependencies (run A prima di B)
+  // =============================================================================
+
+  "version": "2.0.0",
+  "tasks": [
+    // ---------------------------------------------------------------------------
+    // DEVELOPMENT - Run Structum Commands
+    // ---------------------------------------------------------------------------
+
+    {
+      "label": "Run: structum tree",
+      "type": "shell",
+      "command": "${workspaceFolder}/.venv/bin/structum",
+      "args": ["tree", "."],
+      "presentation": {
+        "reveal": "always",
+        // Finalità: Sempre mostra terminal output
+        "panel": "new"
+        // Finalità: Apri in nuovo terminal panel
+      },
+      "problemMatcher": [],
+      // Finalità: Test veloce che structum tree funziona
+      // Uso: Ctrl+Shift+P → "Run: structum tree"
+      // Quando: Dopo modifiche a tree command
+      "group": "none"
+    },
+
+    {
+      "label": "Run: structum analyze",
+      "type": "shell",
+      "command": "${workspaceFolder}/.venv/bin/structum",
+      "args": ["analyze", "."],
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      },
+      "problemMatcher": []
+      // Finalità: Test structum analyze command
+    },
+
+    {
+      "label": "Run: structum --help",
+      "type": "shell",
+      "command": "${workspaceFolder}/.venv/bin/structum",
+      "args": ["--help"],
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      },
+      "problemMatcher": []
+      // Finalità: Verifica CLI help funziona
+    },
+
+    // ---------------------------------------------------------------------------
+    // TESTING - Primary Tasks
+    // ---------------------------------------------------------------------------
+
+    {
+      "label": "Test: Run All",
+      "type": "shell",
+      "command": "${workspaceFolder}/.venv/bin/pytest",
+      "args": [
+        "tests/",
+        "-v",
+        // Verbose output
+        "--cov=structum",
+        // Coverage measurement
+        "--cov-report=term-missing",
+        // Show missing lines
+        "--cov-report=html"
+        // Generate HTML report (htmlcov/index.html)
+      ],
+      "group": {
+        "kind": "test",
+        "isDefault": true
+        // Finalità: Questo è il default test task
+        // Shortcut: Ctrl+Shift+B (build task)
+      },
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared"
+        // Finalità: Usa terminal condiviso (non nuovo ogni volta)
+      },
+      "problemMatcher": {
+        // Finalità: Parse output pytest → Click error per jump
+        "owner": "python",
+        "fileLocation": ["relative", "${workspaceFolder}"],
+        "pattern": {
+          "regexp": "^(.*):(\\d+):\\s+(.*)",
+          "file": 1,
+          "line": 2,
+          "message": 3
+        }
+      }
+      // Uso: Ctrl+Shift+B → Run tutti test + coverage
+      // Output: Terminal + htmlcov/index.html
+    },
+
+    {
+      "label": "Test: Run Fast (no coverage)",
+      "type": "shell",
+      "command": "${workspaceFolder}/.venv/bin/pytest",
+      "args": [
+        "tests/",
+        "-v",
+        "-x"
+        // Stop at first failure
+      ],
+      "group": "test",
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared"
+      },
+      "problemMatcher": []
+      // Finalità: Test rapidi durante development
+      // Quando: Scrivi codice, vuoi feedback veloce
+      // No coverage = più veloce
+    },
+
+    {
+      "label": "Test: Run Failed Only",
+      "type": "shell",
+      "command": "${workspaceFolder}/.venv/bin/pytest",
+      "args": [
+        "--lf",
+        // Last failed: Run only tests that failed last time
+        "-v"
+      ],
+      "group": "test",
+      "presentation": {
+        "reveal": "always"
+      },
+      "problemMatcher": []
+      // Finalità: Re-run solo test che sono falliti
+      // Quando: Fix bug, vuoi vedere se fix ha funzionato
+      // Workflow: Run all → Alcuni falliscono → Fix → Run failed only
+    },
+
+    {
+      "label": "Test: Watch Mode",
+      "type": "shell",
+      "command": "${workspaceFolder}/.venv/bin/pytest-watch",
+      "args": [
+        "tests/",
+        "--",
+        "-v"
+      ],
+      "isBackground": true,
+      // Finalità: Task che continua a girare in background
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated"
+      },
+      "problemMatcher": []
+      // Finalità: Auto-run tests quando file cambia
+      // Setup: pip install pytest-watch
+      // Uso: Start task → Modifica file → Test auto-run
+      // Stop: Click trash icon in terminal panel
+      // Quando: Development intensivo (TDD style)
+    },
+
+    {
+      "label": "Test: Coverage Report",
+      "type": "shell",
+      "command": "open",
+      "args": ["htmlcov/index.html"],
+      "windows": {
+        "command": "start",
+        "args": ["htmlcov/index.html"]
+      },
+      "linux": {
+        "command": "xdg-open",
+        "args": ["htmlcov/index.html"]
+      },
+      "group": "test",
+      "presentation": {
+        "reveal": "silent"
+      },
+      "problemMatcher": []
+      // Finalità: Apri coverage report HTML in browser
+      // Prerequisito: Run "Test: Run All" prima (genera htmlcov/)
+      // Uso: Dopo test run, vedi coverage visualmente
+      // Output: Browser con coverage highlight (red/green)
+    },
+
+    // ---------------------------------------------------------------------------
+    // CODE QUALITY - Linting & Formatting
+    // ---------------------------------------------------------------------------
+
+    {
+      "label": "Quality: Format All",
+      "type": "shell",
+      "command": "${workspaceFolder}/.venv/bin/black",
+      "args": ["src/", "tests/"],
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared"
+      },
+      "problemMatcher": []
+      // Finalità: Formatta tutto il codice (non solo file aperto)
+      // Quando: Prima di commit (ensure tutto formattato)
+      // Alternative: Format on save (solo file corrente)
+    },
+
+    {
+      "label": "Quality: Run Ruff",
+      "type": "shell",
+      "command": "${workspaceFolder}/.venv/bin/ruff",
+      "args": [
+        "check",
+        "src/",
+        "tests/",
+        "--fix"
+        // Finalità: Auto-fix issues quando possibile
+      ],
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared"
+      },
+      "problemMatcher": {
+        "owner": "python",
+        "fileLocation": ["relative", "${workspaceFolder}"],
+        "pattern": {
+          "regexp": "^(.*):(\\d+):(\\d+):\\s+(.*)",
+          "file": 1,
+          "line": 2,
+          "column": 3,
+          "message": 4
+        }
+      }
+      // Finalità: Lint + auto-fix tutto il progetto
+      // Quando: Prima di commit
+      // Output: Lista issues + auto-fixed
+    },
+
+    {
+      "label": "Quality: Run mypy",
+      "type": "shell",
+      "command": "${workspaceFolder}/.venv/bin/mypy",
+      "args": ["src/structum"],
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared"
+      },
+      "problemMatcher": {
+        "owner": "python",
+        "fileLocation": ["relative", "${workspaceFolder}"],
+        "pattern": {
+          "regexp": "^(.*):(\\d+):\\s+(.*)",
+          "file": 1,
+          "line": 2,
+          "message": 3
+        }
+      }
+      // Finalità: Type checking statico (tutto il progetto)
+      // Quando: Prima di commit (catch type errors)
+      // Più strict di Pylance
+    },
+
+    {
+      "label": "Quality: Run All Checks",
+      "dependsOn": [
+        "Quality: Format All",
+        "Quality: Run Ruff",
+        "Quality: Run mypy"
+      ],
+      "dependsOrder": "sequence",
+      // Finalità: Run in ordine (format → lint → typecheck)
+      "presentation": {
+        "reveal": "always"
+      },
+      "problemMatcher": []
+      // Finalità: Pre-commit check completo
+      // Uso: Prima di commit/push
+      // Run: Format, Lint, Type check in sequenza
+    },
+
+    // ---------------------------------------------------------------------------
+    // BUILD & INSTALL
+    // ---------------------------------------------------------------------------
+
+    {
+      "label": "Build: Install Editable",
+      "type": "shell",
+      "command": "${workspaceFolder}/.venv/bin/pip",
+      "args": ["install", "-e", "."],
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared"
+      },
+      "problemMatcher": []
+      // Finalità: Reinstalla structum in editable mode
+      // Quando: Dopo modifiche a pyproject.toml
+      // Effetto: structum command usa codice corrente
+    },
+
+    {
+      "label": "Build: Install Dev Dependencies",
+      "type": "shell",
+      "command": "${workspaceFolder}/.venv/bin/pip",
+      "args": ["install", "-e", ".[dev]"],
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared"
+      },
+      "problemMatcher": []
+      // Finalità: Installa dipendenze dev (pytest, mypy, ruff, etc.)
+      // Quando: Setup iniziale o aggiornamento dipendenze
+    },
+
+    {
+      "label": "Build: Clean",
+      "type": "shell",
+      "command": "find . -type d -name '__pycache__' -exec rm -r {} + ; find . -type d -name '*.egg-info' -exec rm -r {} + ; find . -type d -name '.pytest_cache' -exec rm -r {} + ; find . -type d -name '.mypy_cache' -exec rm -r {} + ; find . -type d -name 'htmlcov' -exec rm -r {} +",
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared"
+      },
+      "problemMatcher": []
+      // Finalità: Pulisci cache e build artifacts
+      // Quando: Fresh start, problemi strani
+      // Rimuove: __pycache__, .pytest_cache, coverage, etc.
+    },
+
+    // ---------------------------------------------------------------------------
+    // GIT & DOCUMENTATION
+    // ---------------------------------------------------------------------------
+
+    {
+      "label": "Docs: Serve Local",
+      "type": "shell",
+      "command": "${workspaceFolder}/.venv/bin/mkdocs",
+      "args": ["serve"],
+      "isBackground": true,
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated"
+      },
+      "problemMatcher": []
+      // Finalità: Serve docs locally (http://localhost:8000)
+      // Setup: pip install mkdocs mkdocs-material
+      // Uso: Preview docs mentre scrivi
+      // Stop: Trash icon in terminal
+    },
+
+    {
+      "label": "Git: Push Current Branch",
+      "type": "shell",
+      "command": "git",
+      "args": [
+        "push",
+        "-u",
+        "origin",
+        "HEAD"
+      ],
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared"
+      },
+      "problemMatcher": []
+      // Finalità: Push current branch a origin
+      // Quando: Hai committato, vuoi pushare
+      // Alternative: Source Control UI
+    },
+
+    // ---------------------------------------------------------------------------
+    // MAINTENANCE
+    // ---------------------------------------------------------------------------
+
+    {
+      "label": "Maintenance: Update Dependencies",
+      "type": "shell",
+      "command": "${workspaceFolder}/.venv/bin/pip",
+      "args": [
+        "install",
+        "--upgrade",
+        "-e",
+        ".[dev]"
+      ],
+      "presentation": {
+        "reveal": "always"
+      },
+      "problemMatcher": []
+      // Finalità: Aggiorna tutte le dipendenze
+      // Quando: Ogni 1-2 mesi
+      // Warning: Può rompere cose (test dopo)
+    },
+
+    {
+      "label": "Maintenance: Pip List",
+      "type": "shell",
+      "command": "${workspaceFolder}/.venv/bin/pip",
+      "args": ["list", "--format=columns"],
+      "presentation": {
+        "reveal": "always"
+      },
+      "problemMatcher": []
+      // Finalità: Vedi tutte dipendenze installate
+      // Uso: Debug version conflicts
+    }
+  ]
+}
+
+// =============================================================================
+// WORKFLOW ESEMPI
+// =============================================================================
+//
+// TDD (Test-Driven Development):
+// 1. Start "Test: Watch Mode"
+// 2. Scrivi test (fallisce)
+// 3. Scrivi codice (test passa auto)
+// 4. Refactor
+//
+// Pre-Commit:
+// 1. Run "Quality: Run All Checks"
+// 2. Fix issues
+// 3. Run "Test: Run All"
+// 4. Commit via Source Control
+//
+// Debugging:
+// 1. Run "Test: Run Failed Only" → Identifica test fallito
+// 2. Debug via launch.json (F5)
+// 3. Fix
+// 4. Re-run
+//
+// Fresh Start:
+// 1. Run "Build: Clean"
+// 2. Run "Build: Install Dev Dependencies"
+// 3. Run "Test: Run All"
+//
+// =============================================================================
+
+// =============================================================================
+// KEYBINDINGS CUSTOM (opzionali)
+// =============================================================================
+// Puoi aggiungere shortcuts a tasks in keybindings.json:
+//
+// {
+//   "key": "ctrl+shift+t",
+//   "command": "workbench.action.tasks.runTask",
+//   "args": "Test: Run All"
+// }
+//
+// =============================================================================
