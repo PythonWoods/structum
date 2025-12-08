@@ -1,13 +1,19 @@
 # Plugin Development
 
-This guide covers everything you need to create plugins for Structum, whether you're contributing to the core project or building standalone plugins.
+This guide covers everything you need to create plugins for Structum.
 
 ## Overview
 
-Structum's plugin system allows extending functionality with custom commands and processing logic. There are two ways to create plugins:
+Structum's plugin system allows extending functionality with custom commands and processing logic through **external plugins** installed via entry points.
 
-1. **Builtin Plugins** – For contributors to the Structum project
-2. **External Plugins** – Standalone packages published to PyPI
+### Plugin Types
+
+All plugins are external packages, but there are two categories:
+
+1. **Official Plugins** (`structum_*`) – Maintained by PythonWoods team, auto-detected and tagged as [OFFICIAL]
+2. **External Plugins** – Third-party plugins, tagged as [EXTERNAL]
+
+Both types work identically and use the same entry point mechanism. The only difference is the naming convention that triggers automatic official plugin detection.
 
 ## Categories
 
@@ -22,73 +28,23 @@ Plugins are organized into categories:
 
 ---
 
-## Creating a Builtin Plugin (Contributors)
+## Creating a Plugin
 
-If you're contributing to the Structum project and want to add a new plugin:
+All plugins are external packages that use entry points for registration. You can create either:
+- **Official plugins** (structum_*) – Maintained by PythonWoods
+- **External plugins** (any name) – Third-party plugins
 
-### Step 1: Generate the Skeleton
+### Naming Conventions
 
-From the **root of the structum repository**:
+**Official Plugins:**
+- Package name: `structum_<name>` (e.g., `structum_latex`)
+- PyPI name: `structum-<name>` (e.g., `structum-latex`)
+- Auto-detected as [OFFICIAL] by the `structum_` prefix
 
-```bash
-structum plugins new my-plugin --category analysis
-```
-
-This automatically creates the plugin in `src/structum/plugins/my_plugin/`.
-
-### Step 2: Implement Your Plugin
-
-Edit the generated files:
-
-- `plugin.py` – Main plugin class
-- `commands/main.py` – CLI commands (default: `info` command for metadata display)
-- `core/logic.py` – Business logic (commented examples, implement your own functions)
-
-**Development Mode (.dev marker):**
-
-New plugins are created in development mode with a `.dev` marker file. This means:
-- ✅ Plugin exists and can be inspected
-- ❌ Plugin is NOT registered (invisible in normal plugin list)
-- 🔍 Visible with `structum plugins list --show-dev`
-
-### Step 3: Test Your Plugin
-
-**While in development mode:**
-
-```bash
-# View your dev-mode plugin
-structum plugins list --show-dev
-
-# The plugin will show with [DEV MODE] status
-```
-
-**When ready for production:**
-
-```bash
-# Remove the .dev marker
-rm src/structum/plugins/my_plugin/.dev
-
-# Verify it's now registered
-structum plugins list
-
-# Test your plugin (info command is provided by default)
-structum my-plugin info
-
-# Or use your custom commands
-structum my-plugin <your-command>
-```
-
-> **Note**: The `.dev` marker prevents accidental use of incomplete plugins. Remove it only when your plugin is production-ready.
-
-### Step 4: Submit a Pull Request
-
-Commit your changes and open a PR to the `develop` branch.
-
----
-
-## Creating an External Plugin (Standalone Package)
-
-If you want to create a plugin that can be published to PyPI:
+**External Plugins:**
+- Package name: Any valid Python package name
+- PyPI name: Recommended `structum-plugin-<name>` (e.g., `structum-plugin-myfeature`)
+- Tagged as [EXTERNAL] in plugin list
 
 ### Step 1: Generate the Skeleton
 
@@ -367,59 +323,48 @@ Configuration is stored in `~/.config/structum/config.json`.
 
 ## How Plugin Discovery Works
 
-Structum uses different discovery mechanisms for built-in and external plugins to provide a consistent developer experience.
+Structum uses a **single, unified discovery mechanism** via Python entry points for all plugins (both official and external).
 
-### Built-in Plugin Discovery
+### Plugin Loading Process
 
-Built-in plugins are **automatically discovered** via filesystem scanning:
+1. **Entry Point**: Plugin defined in `pyproject.toml` under `[project.entry-points."structum.plugins"]`
+2. **Install**: Plugin installed via pip (`pip install structum-my-plugin`)
+3. **Discovery**: Entry point system automatically loads the plugin class
+4. **Type Detection**: Official plugins (`structum_*`) auto-detected and tagged as [OFFICIAL]
+5. **Register**: Plugin registered in `PluginRegistry` with type metadata
+6. **Conflict Check**: Warns if a plugin with the same name already exists
+7. **Enable/Disable**: Respects user preferences from config file
 
-1. **Scan**: The loader scans `src/structum/plugins/` for directories
-2. **Filter**: Skips directories starting with `_` (e.g., `_wip_plugin`) and special folders
-3. **Import**: Dynamically imports modules with a `plugin.py` file
-4. **Check**: Looks for `.dev` marker file
-5. **Introspect**: Uses reflection to find `PluginBase` subclasses
-6. **Register**: Automatically registers production plugins (without `.dev` marker)
-7. **Track**: Stores dev-mode plugins separately for `--show-dev` inspection
+### Official vs External Detection
 
-**No manual registration required!** Simply create your plugin structure and it's immediately available.
+```python
+# In structum/plugins/loader.py
+is_official = plugin_cls.__module__.startswith("structum_")
 
-**Development Mode Options:**
-
-| Method | Use Case | Visibility |
-|--------|----------|------------|
-| `.dev` marker | **Recommended** - Work in progress | Hidden by default, `--show-dev` to view |
-| `_` prefix | Quick temporary disable | Completely invisible (not even discovered) |
-
-**Workflow comparison:**
-```bash
-# .dev marker (Recommended)
-structum plugins new my-plugin  # Auto-creates .dev
-structum plugins list --show-dev  # Visible in dev mode
-rm .dev  # Promote to production
-
-# _ prefix (Old method)
-mv my_plugin _my_plugin  # Disable
-mv _my_plugin my_plugin  # Enable
+# Result:
+# structum_latex → [OFFICIAL]
+# my_plugin → [EXTERNAL]
 ```
 
-### External Plugin Discovery
+### No Manual Registration Required
 
-External plugins are discovered via **entry points** (standard Python packaging):
+Simply:
+1. Create your plugin structure
+2. Add entry point in `pyproject.toml`
+3. Install with `pip install -e .`
+4. Plugin automatically discovered and loaded
 
-1. **Entry Point**: Defined in `pyproject.toml` under `[project.entry-points."structum.plugins"]`
-2. **Install**: Plugin is installed via pip (`pip install structum-my-plugin`)
-3. **Discovery**: Entry point system loads the plugin class
-4. **Register**: Automatically registered like built-in plugins
-
-Both mechanisms ensure **zero configuration** for plugin developers.
+No filesystem scanning, no .dev markers, no manual registry updates!
 
 ---
 
 ## Best Practices
 
-1. **Separation of Concerns**: Keep CLI code in `commands/`, logic in `core/`
-2. **Type Hints**: Use type hints for all functions
-3. **Error Handling**: Use Typer's error handling and Rich for output
-4. **Testing**: Write tests for your core logic
-5. **Documentation**: Include docstrings and a README
-6. **Auto-discovery Friendly**: Follow the standard plugin structure for automatic registration
+1. **Naming Convention**: Use `structum_*` for official plugins, descriptive names for external
+2. **Separation of Concerns**: Keep CLI code in `commands/`, logic in `core/`
+3. **Type Hints**: Use type hints for all functions
+4. **Entry Points**: Always define proper entry points in `pyproject.toml`
+5. **Error Handling**: Use Typer's error handling and Rich for output
+6. **Testing**: Write tests for your core logic
+7. **Documentation**: Include docstrings and a comprehensive README
+8. **Metadata**: Provide complete plugin metadata (name, version, description, author, category)
