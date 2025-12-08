@@ -16,16 +16,18 @@ class TestPluginsCommand:
     @patch("structum.core.config.get_plugin_enabled")
     def test_list_plugins(self, mock_enabled, mock_registry):
         """Test listing plugins."""
-        mock_registry.list_plugins.return_value = {
+        mock_registry.list_plugins_detailed.return_value = {
             "test-plugin": {
                 "version": "1.0",
                 "category": "utility",
                 "description": "Test",
-                "author": "Me"
+                "author": "Me",
+                "type": "external",
+                "module": "test_module"
             }
         }
         mock_enabled.return_value = True
-        
+
         result = runner.invoke(app, ["list"])
         assert result.exit_code == 0
         assert "test-plugin" in result.stdout
@@ -50,7 +52,7 @@ class TestPluginsCommand:
     @patch("structum.core.config.set_plugin_enabled")
     def test_enable_plugin(self, mock_set, mock_registry):
         """Test enabling a plugin."""
-        mock_registry.list_plugins.return_value = {"test-plugin": {}}
+        mock_registry.list_plugins.return_value = ["test-plugin"]
         
         result = runner.invoke(app, ["enable", "test-plugin"])
         assert result.exit_code == 0

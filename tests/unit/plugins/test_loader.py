@@ -109,7 +109,7 @@ class TestLoader:
         assert metadata.plugin_type.value == "external"
 
     @patch("structum.plugins.loader.entry_points")
-    @patch("structum.plugins.loader.console")
+    @patch("structum.plugins.registry.console")
     def test_conflict_warning(self, mock_console, mock_eps):
         """Test conflict warning when duplicate plugin names are loaded."""
         from structum.plugins.sdk import PluginBase
@@ -142,8 +142,8 @@ class TestLoader:
         app = typer.Typer()
         loader.load_entrypoint_plugins(app)
 
-        # Verify conflict warning was printed
-        assert mock_console.print.call_count >= 2  # At least loading messages
+        # Verify conflict warning was printed (from registry.console)
+        assert mock_console.print.called
         # Check if warning message contains "already registered"
         warning_found = False
         for call in mock_console.print.call_args_list:
