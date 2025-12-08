@@ -3,9 +3,11 @@
 
 """Plugin system for Structum.
 
-This package contains the logic for loading plugins and any built-in plugins.
+This package contains the logic for loading external plugins via entry points.
+Official plugins (structum_*) and third-party plugins are loaded dynamically.
 """
 
 from .loader import load_plugins
+from .registry import PluginRegistry, PluginType, PluginMetadata
 
-__all__ = ["load_plugins"]
+__all__ = ["load_plugins", "PluginRegistry", "PluginType", "PluginMetadata"]

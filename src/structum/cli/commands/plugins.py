@@ -20,72 +20,53 @@ console = Console()
 
 
 @app.command("list")
-def list_plugins(
-    show_dev: bool = typer.Option(
-        False,
-        "--show-dev",
-        help="Show plugins in development mode (.dev marker)",
-    ),
-) -> None:
-    """List all installed plugins."""
+def list_plugins() -> None:
+    """List all installed plugins (official and external)."""
     from structum.core.config import get_plugin_enabled
-    from structum.plugins.loader import get_dev_plugins
 
-    plugins = PluginRegistry.list_plugins()
-    dev_plugins = get_dev_plugins() if show_dev else {}
+    plugins = PluginRegistry.list_plugins_detailed()
 
-    if not plugins and not dev_plugins:
+    if not plugins:
         console.print("[yellow]No plugins found.[/yellow]")
+        console.print("\n[dim]Install plugins with:[/dim] [cyan]pip install structum-<plugin-name>[/cyan]")
         return
 
-    title = "Installed Plugins" + (" (including dev mode)" if show_dev else "")
-    table = Table(title=title)
+    table = Table(title="Installed Plugins")
     table.add_column("Name", style="cyan")
+    table.add_column("Type", style="magenta")
     table.add_column("Category", style="yellow")
     table.add_column("Version", style="green")
     table.add_column("Status")
     table.add_column("Description")
 
-    # Add production plugins
+    # Add all plugins with type information
     for name, info in plugins.items():
         enabled = get_plugin_enabled(name)
         status = "[green]enabled[/green]" if enabled else "[red]disabled[/red]"
+
+        # Format type with visual tag
+        plugin_type = info["type"]
+        type_display = (
+            "[bold green][OFFICIAL][/bold green]"
+            if plugin_type == "official"
+            else "[blue][EXTERNAL][/blue]"
+        )
+
         table.add_row(
             name,
+            type_display,
             info["category"],
             info["version"],
             status,
             info["description"],
         )
 
-    # Add dev mode plugins if requested
-    if show_dev:
-        for name, info in dev_plugins.items():
-            plugin_class = info.get("plugin_class")
-            if plugin_class:
-                table.add_row(
-                    f"{name}*",
-                    getattr(plugin_class, "category", "unknown"),
-                    getattr(plugin_class, "version", "0.1.0"),
-                    "[dim yellow][DEV MODE][/dim yellow]",
-                    getattr(plugin_class, "description", "Development plugin"),
-                )
-            else:
-                # Plugin with errors
-                table.add_row(
-                    f"{name}*",
-                    "unknown",
-                    "unknown",
-                    "[red][ERROR][/red]",
-                    f"Failed to load: {info.get('error', 'Unknown error')}",
-                )
-
     console.print(table)
 
-    if show_dev and dev_plugins:
-        console.print(
-            "\n[dim]* Plugins in development mode (.dev marker present)[/dim]"
-        )
+    # Show legend
+    console.print("\n[dim]Legend:[/dim]")
+    console.print("  [bold green][OFFICIAL][/bold green] - Official plugins maintained by PythonWoods (structum_*)")
+    console.print("  [blue][EXTERNAL][/blue] - Third-party plugins")
 
 
 @app.command("info")
@@ -156,39 +137,24 @@ def new_plugin(
         return
 
     # Smart default: detect if we're in structum project
-    is_structum_project = (Path.cwd() / "src" / "structum" / "plugins").exists()
-
     if output is None:
-        if is_structum_project:
-            output = Path.cwd() / "src" / "structum" / "plugins"
-        else:
-            output = Path.cwd()
+        output = Path.cwd()
 
     try:
         plugin_dir = generate_plugin_skeleton(name, output, category)
         console.print(f"[green]✔ Plugin skeleton created at:[/green] {plugin_dir}")
-        
+
         # Generate proper class name (same logic as skeleton.py)
         class_name = "".join(word.capitalize() for word in name.split("-")) + "Plugin"
 
-        if is_structum_project and output == Path.cwd() / "src" / "structum" / "plugins":
-            # Builtin plugin instructions
-            console.print("\n[bold]Next steps (builtin plugin):[/bold]")
-            console.print(f"  1. Implement your plugin logic in [cyan]{plugin_dir}[/cyan]")
-            console.print(f"  2. View dev plugin with [cyan]structum plugins list --show-dev[/cyan]")
-            console.print(f"  3. When ready, remove dev marker: [cyan]rm {plugin_dir}/.dev[/cyan]")
-            console.print(f"  4. Test your plugin with [cyan]structum {name} run[/cyan]")
-            console.print("\n[dim yellow]ℹ Plugin created in development mode (.dev marker present)[/dim yellow]")
-            console.print("[dim]The plugin will not be registered until .dev file is removed.[/dim]")
-            console.print("[dim]See docs/development/plugins.md for details.[/dim]")
-        else:
-            # External plugin instructions
-            console.print("\n[bold]Next steps (external plugin):[/bold]")
-            console.print("  1. Create package structure with [cyan]pyproject.toml[/cyan]")
-            console.print("  2. Add entry point:")
-            console.print('     [yellow][project.entry-points."structum.plugins"][/yellow]')
-            console.print(f'     [yellow]{name} = "{name.replace("-", "_")}:{class_name}"[/yellow]')
-            console.print("  3. Install with [cyan]pip install -e .[/cyan]")
-            console.print("\n[dim]See docs/development/plugins.md for details.[/dim]")
+        # External plugin instructions
+        console.print("\n[bold]Next steps (external plugin):[/bold]")
+        console.print("  1. Create package structure with [cyan]pyproject.toml[/cyan]")
+        console.print("  2. Add entry point:")
+        console.print('     [yellow][project.entry-points."structum.plugins"][/yellow]')
+        console.print(f'     [yellow]{name} = "{name.replace("-", "_")}:{class_name}"[/yellow]')
+        console.print("  3. Install with [cyan]pip install -e .[/cyan]")
+        console.print("  4. Test your plugin with [cyan]structum {name} info[/cyan]")
+        console.print("\n[dim]See docs/development/plugins.md for details.[/dim]")
     except Exception as e:
         console.print(f"[red]✘ Error creating plugin:[/red] {e}")
