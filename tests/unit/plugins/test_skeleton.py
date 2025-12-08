@@ -31,8 +31,35 @@ class TestSkeleton:
         """Test default category usage."""
         output = tmp_path / "plugins"
         name = "simple"
-        
+
         plugin_path = skeleton.generate_plugin_skeleton(name, output)
-        
+
         content = (plugin_path / "plugin.py").read_text()
         assert 'category = "utility"' in content
+
+    def test_no_dev_marker_created(self, tmp_path):
+        """Test that no .dev marker file is created (removed in v0.2)."""
+        output = tmp_path / "plugins"
+        name = "test-plugin"
+
+        plugin_path = skeleton.generate_plugin_skeleton(name, output)
+
+        # Verify .dev marker does NOT exist
+        dev_marker = plugin_path / ".dev"
+        assert not dev_marker.exists(), ".dev marker should not be created in v0.2"
+
+    def test_external_only_generation(self, tmp_path):
+        """Test that plugin generation is external-only (no built-in support)."""
+        output = tmp_path / "plugins"
+        name = "external-plugin"
+
+        plugin_path = skeleton.generate_plugin_skeleton(name, output)
+
+        # Verify it's a standard external plugin structure
+        assert plugin_path.exists()
+        assert (plugin_path / "plugin.py").exists()
+        assert (plugin_path / "__init__.py").exists()
+
+        # Verify no built-in specific markers or files
+        assert not (plugin_path / ".builtin").exists()
+        assert not (plugin_path / ".dev").exists()

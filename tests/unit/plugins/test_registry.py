@@ -34,11 +34,14 @@ class TestPluginRegistry:
     def test_register_valid_plugin(self):
         """Test registering a valid plugin."""
         PluginRegistry.register(ValidPlugin)
-        
+
         # Check it's registered
         assert "valid-plugin" in PluginRegistry.list_plugins()
-        info = PluginRegistry.list_plugins()["valid-plugin"]
-        assert info["version"] == "1.0.0"
+
+        # Check metadata
+        metadata = PluginRegistry.get_metadata("valid-plugin")
+        assert metadata is not None
+        assert metadata.plugin_class == ValidPlugin
 
     def test_register_invalid_plugin_type(self):
         """Test registering something that isn't a PluginBase."""
@@ -68,7 +71,115 @@ class TestPluginRegistry:
     def test_list_by_category(self):
         """Test listing plugins by category."""
         PluginRegistry.register(ValidPlugin)
-        
+
         categories = PluginRegistry.list_by_category()
         assert "utility" in categories
         assert "valid-plugin" in categories["utility"]
+
+    def test_plugin_type_enum(self):
+        """Test PluginType enum values."""
+        from structum.plugins.registry import PluginType
+
+        assert PluginType.OFFICIAL.value == "official"
+        assert PluginType.EXTERNAL.value == "external"
+
+    def test_plugin_metadata_dataclass(self):
+        """Test PluginMetadata dataclass."""
+        from structum.plugins.registry import PluginMetadata, PluginType
+
+        metadata = PluginMetadata(
+            plugin_class=ValidPlugin,
+            plugin_type=PluginType.EXTERNAL,
+            module_path="test_module",
+            source="entrypoint:test"
+        )
+
+        assert metadata.plugin_class == ValidPlugin
+        assert metadata.plugin_type == PluginType.EXTERNAL
+        assert metadata.module_path == "test_module"
+        assert metadata.source == "entrypoint:test"
+
+    def test_register_as_official(self):
+        """Test registering plugin as official."""
+        PluginRegistry.register(ValidPlugin, is_official=True)
+
+        metadata = PluginRegistry.get_metadata("valid-plugin")
+        assert metadata is not None
+        assert metadata.plugin_type.value == "official"
+
+    def test_register_as_external(self):
+        """Test registering plugin as external (default)."""
+        PluginRegistry.register(ValidPlugin, is_official=False)
+
+        metadata = PluginRegistry.get_metadata("valid-plugin")
+        assert metadata is not None
+        assert metadata.plugin_type.value == "external"
+
+    def test_list_by_type(self):
+        """Test listing plugins by type."""
+        # Create another plugin for testing
+        class OfficialPlugin(PluginBase):
+            name = "official-plugin"
+            version = "1.0.0"
+            category = "utility"
+            def setup(self): pass
+            def register_commands(self, app): pass
+
+        PluginRegistry.register(ValidPlugin, is_official=False)
+        PluginRegistry.register(OfficialPlugin, is_official=True)
+
+        by_type = PluginRegistry.list_by_type()
+
+        assert "official" in by_type
+        assert "external" in by_type
+        assert "official-plugin" in by_type["official"]
+        assert "valid-plugin" in by_type["external"]
+
+    def test_list_plugins_detailed(self):
+        """Test listing plugins with detailed metadata."""
+        PluginRegistry.register(ValidPlugin, is_official=True)
+
+        detailed = PluginRegistry.list_plugins_detailed()
+
+        assert "valid-plugin" in detailed
+        plugin_info = detailed["valid-plugin"]
+        assert plugin_info["version"] == "1.0.0"
+        assert plugin_info["category"] == "utility"
+        assert plugin_info["description"] == "A valid plugin"
+        assert plugin_info["author"] == "Test"
+        assert plugin_info["type"] == "official"
+        assert "module" in plugin_info
+
+    def test_get_metadata_nonexistent(self):
+        """Test getting metadata for non-existent plugin."""
+        metadata = PluginRegistry.get_metadata("nonexistent")
+        assert metadata is None
+
+    def test_conflict_detection(self):
+        """Test conflict detection when registering duplicate names."""
+        from unittest.mock import patch
+
+        # Register first plugin
+        PluginRegistry.register(ValidPlugin, is_official=False)
+
+        # Try to register another with same name (should override with warning)
+        class DuplicatePlugin(PluginBase):
+            name = "valid-plugin"  # Same name
+            version = "2.0.0"
+            category = "utility"
+            def setup(self): pass
+            def register_commands(self, app): pass
+
+        # Patch console to verify warning
+        with patch("structum.plugins.registry.console") as mock_console:
+            PluginRegistry.register(DuplicatePlugin, is_official=True)
+
+            # Verify warning was printed
+            assert mock_console.print.called
+            warning_call = str(mock_console.print.call_args)
+            assert "already registered" in warning_call
+
+        # Verify the second plugin overrode the first
+        metadata = PluginRegistry.get_metadata("valid-plugin")
+        assert metadata is not None
+        assert metadata.plugin_class == DuplicatePlugin
