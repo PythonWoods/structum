@@ -22,35 +22,36 @@ and automatic release generation via **release-please**.
 #### Plugin System
 
 - **Plugin SDK**: `PluginBase` abstract class for standardized plugin development
-- **Plugin Registry**: Centralized plugin management with validation
-- **Plugin Auto-Discovery**: Built-in plugins automatically discovered via filesystem scanning
-  - Uses introspection to find `PluginBase` subclasses
-  - Consistent with external plugin entry point mechanism
-  - Zero-configuration plugin registration
-  - Support for disabling plugins with underscore prefix (`_plugin_name`)
-- **Development Mode (.dev marker)** (2025-12-06): Hybrid system for work-in-progress plugins
-  - New plugins auto-created with `.dev` marker file
-  - Dev-mode plugins NOT registered (invisible by default)
-  - Visible with `structum plugins list --show-dev` flag
-  - Remove `.dev` file to promote plugin to production
-  - Better developer workflow with clear visibility and control
-- **Enterprise Plugin Template** (2025-12-06): Professional skeleton for new plugins
-  - Command: `run` (replaces "hello world" example)
-  - Arguments: Path with validation and resolution
-  - Options: `--output`, `--dry-run`, `--verbose`
-  - Full type hints with `Path`, `Optional`
-  - Comprehensive docstrings with Args/Returns
-  - TODO markers for clear implementation guidance
-  - Separation of concerns: CLI in `commands/`, logic in `core/`
+- **Plugin Registry**: Centralized plugin management with validation and type tracking
+  - **PluginType enum** (2025-12-08): OFFICIAL vs EXTERNAL distinction
+  - **PluginMetadata dataclass** (2025-12-08): Track plugin type, module path, source
+  - Conflict detection with warning messages
+  - `list_by_type()` method for grouping plugins
+  - `list_plugins_detailed()` with full metadata including type
+- **Plugin Loading** (2025-12-08): External plugins via entry points only
+  - **BREAKING**: Built-in plugins no longer supported
+  - **BREAKING**: Filesystem scanning removed
+  - **BREAKING**: .dev marker system removed
+  - Automatic official plugin detection (`structum_*` packages)
+  - Entry point group: `structum.plugins`
+  - Visual tags: [OFFICIAL] for structum_* packages, [EXTERNAL] for third-party
+- **Plugin Template** (2025-12-06/2025-12-08): Professional skeleton for external plugins
+  - Default command: `info` (displays plugin metadata)
+  - `PLUGIN_INFO` constant with name, version, description, category
+  - Commented examples for adding custom commands
+  - Professional output formatting with plugin metadata
+  - Directory output handling (auto-generates filename for directories)
 - **Plugin CLI**: Full management commands
-  - `structum plugins list` - List plugins with category/status
-  - `structum plugins list --show-dev` - Include dev-mode plugins
+  - `structum plugins list` - List plugins with type distinction ([OFFICIAL]/[EXTERNAL])
+  - **REMOVED**: `--show-dev` flag (no longer needed)
   - `structum plugins info <name>` - Show plugin details
   - `structum plugins enable/disable <name>` - Manage plugin state
-  - `structum plugins new <name>` - Generate skeleton (creates in dev mode)
+  - `structum plugins new <name>` - Generate external plugin skeleton
 - **Plugin Categories**: `analysis`, `export`, `formatting`, `utility`
 - **Plugin Validation**: Auto-validates `name`, `version`, `category` on load
 - **Configuration Persistence**: State stored in `~/.config/structum/config.json`
+
+**Migration Note**: See `Migration_Path.md` and `Migration_Path - TODO.md` for complete refactoring details.
 
 #### Documentation
 
@@ -68,6 +69,47 @@ and automatic release generation via **release-please**.
 - Plugin `__init__.py` now only exports, logic in `plugin.py`
 - Modern type hints (Python 3.11+ PEP 585/604)
 - Migrated CLI from Click to Typer
+
+#### Plugin System Refactoring (Phase 2 - 2025-12-08)
+
+- **Simplified Plugin Loader** (`loader.py`):
+  - Removed `load_builtin_plugins()` function (~100 lines)
+  - Removed `get_dev_plugins()` and `_dev_plugins` global registry
+  - Removed `DevPluginInfo` TypedDict
+  - Removed filesystem scanning for built-in plugins
+  - Removed .dev marker tracking system
+  - Reduced from 186 to 80 lines (**-57%**)
+  - Added automatic official plugin detection (structum_*)
+  - Added conflict warnings for duplicate plugins
+
+- **Enhanced Plugin Registry** (`registry.py`):
+  - Added `PluginType` enum (OFFICIAL, EXTERNAL)
+  - Added `PluginMetadata` dataclass for type tracking
+  - Updated `_plugins` dict to store metadata instead of bare classes
+  - Added `is_official` parameter to `register()` method
+  - Added conflict detection with console warnings
+  - Added `get_metadata()` method
+  - Added `list_plugins_detailed()` with type information
+  - Added `list_by_type()` method
+  - Updated all methods to work with metadata structure
+  - Expanded from 105 to 187 lines (+78% for metadata tracking)
+
+- **Removed Built-in Plugin Infrastructure**:
+  - Deleted `src/structum/plugins/sample/` directory (6 files)
+  - Removed all .dev marker references
+  - Removed `--show-dev` flag from CLI
+  - Removed dev mode instructions
+  - Updated docstrings to reflect external-only architecture
+
+- **Simplified Plugin Skeleton Generator** (`skeleton.py`):
+  - Removed .dev marker creation logic
+  - Removed `is_builtin` detection
+  - Simplified to external-only plugin generation
+  - Updated CLI instructions for external plugins
+
+**Net Impact**: -138 lines (11 files changed, -305 deleted, +167 added)
+**Documentation**: See `Migration_Path.md` and `Migration_Path - TODO.md`
+**Commits**: `cc32d1a` (Phase 2 - Core Refactoring)
 
 ### 📚 Documentation
 
