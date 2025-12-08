@@ -519,10 +519,10 @@ PATCH: Bug fixes
 
 ## 📚 Related Documents
 
-- [Vision & Mission](./VISION.md) - Why we exist
-- [Migration Path](../Migration_Path.md) - Plugin system refactoring
-- [Contributing Guide](../CONTRIBUTING.md) - How to contribute
-- [Plugin Development](./development/plugins.md) - Build plugins
+- [Vision & Mission](VISION.md) - Why we exist
+- [Migration Path](Migration_Path.md) - Plugin system refactoring (To be created)
+- [Contributing Guide](CONTRIBUTING.md) - How to contribute (To be created)
+- [Plugin Development](docs/development/plugins.md) - Build plugins (To be created)
 
 ---
 
