@@ -97,8 +97,12 @@ and automatic release generation via **release-please**.
   - Updated plugin skeleton template to include this fix automatically
 
 - **Plugin Template** (2025-12-06):
-  - Fixed `IsADirectoryError` when `--output` points to a directory in enterprise template
+  - Fixed `IsADirectoryError` when `--output` points to a directory
   - Template now automatically generates `results.txt` filename when output is a directory
-  - Maintains backward compatibility with file paths
+  - **BREAKING**: Changed default template from `run` command to `info` command only
+  - New template provides metadata display command, developers implement custom commands
+  - Plugin metadata (name, version, description, category) available via `PLUGIN_INFO` constant
+  - Simplified core logic template with commented examples instead of placeholder implementation
+  - Professional output format with plugin name, version, and structured information
 
 ---

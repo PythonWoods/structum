@@ -41,8 +41,8 @@ This automatically creates the plugin in `src/structum/plugins/my_plugin/`.
 Edit the generated files:
 
 - `plugin.py` – Main plugin class
-- `commands/main.py` – CLI commands (default: `run` command)
-- `core/logic.py` – Business logic
+- `commands/main.py` – CLI commands (default: `info` command for metadata display)
+- `core/logic.py` – Business logic (commented examples, implement your own functions)
 
 **Development Mode (.dev marker):**
 
@@ -71,8 +71,11 @@ rm src/structum/plugins/my_plugin/.dev
 # Verify it's now registered
 structum plugins list
 
-# Test your plugin
-structum my-plugin run
+# Test your plugin (info command is provided by default)
+structum my-plugin info
+
+# Or use your custom commands
+structum my-plugin <your-command>
 ```
 
 > **Note**: The `.dev` marker prevents accidental use of incomplete plugins. Remove it only when your plugin is production-ready.
@@ -214,118 +217,122 @@ __all__ = ["MyPlugin"]
 
 #### `commands/main.py`
 
-Define your CLI commands using the enterprise-grade `run` template:
+The generated template provides a basic `info` command that displays plugin metadata. Add your custom commands as needed:
 
 ```python
-from pathlib import Path
-
 import typer
-
-from ..core.logic import process
 
 app = typer.Typer(
     help="My plugin commands.",
     no_args_is_help=True  # Show help when no subcommand is provided
 )
 
+# Plugin metadata
+PLUGIN_INFO = {
+    "name": "my-plugin",
+    "version": "0.1.0",
+    "description": "My plugin description",
+    "category": "utility",
+}
 
-@app.command("run")
-def run_command(
-    path: Path = typer.Argument(
-        Path("."),
-        help="Path to process",
-        exists=True,
-        resolve_path=True,
-    ),
-    output: Path | None = typer.Option(
-        None,
-        "--output",
-        "-o",
-        help="Output file path (optional)",
-    ),
-    dry_run: bool = typer.Option(
-        False,
-        "--dry-run",
-        help="Preview changes without applying them",
-    ),
-    verbose: bool = typer.Option(
-        False,
-        "--verbose",
-        "-v",
-        help="Enable verbose output",
-    ),
-) -> None:
-    """Execute the plugin's main functionality."""
-    result = process(
-        path=path,
-        output=output,
-        dry_run=dry_run,
-        verbose=verbose,
-    )
 
-    if verbose:
-        typer.echo(f"[my-plugin] Processing completed")
+@app.command("info")
+def info_command() -> None:
+    """Display plugin information and metadata."""
+    output_lines = [
+        f"✓ {PLUGIN_INFO['name']} v{PLUGIN_INFO['version']}",
+        f"  {PLUGIN_INFO['description']}",
+        "",
+        f"Category: {PLUGIN_INFO['category']}",
+        "",
+        "Available commands:",
+        "  info     - Display this information",
+        "  # TODO: Add your commands here",
+    ]
+    typer.echo("\n".join(output_lines))
 
-    typer.echo(result)
+
+# Add your custom commands here
+# Example:
+#
+# @app.command("process")
+# def process_command(
+#     path: Path = typer.Argument(..., help="Path to process"),
+#     output: Path | None = typer.Option(None, "--output", "-o"),
+# ) -> None:
+#     """Process files."""
+#     from ..core.logic import process_data
+#     result = process_data(path, plugin_info=PLUGIN_INFO)
+#     typer.echo(result)
 ```
 
 **Template Features:**
-- ✅ `Path` arguments with validation
-- ✅ Enterprise options: `--output`, `--dry-run`, `--verbose`
+- ✅ `PLUGIN_INFO` constant with metadata (name, version, description, category)
+- ✅ Default `info` command for displaying plugin information
+- ✅ Commented examples showing how to add custom commands
 - ✅ Type safety with type hints
-- ✅ Clear separation: CLI → core logic
-- ✅ Professional parameter names
+- ✅ Professional output formatting
 
 > **Important**: Always include `no_args_is_help=True` to maintain consistency with other Structum commands. This ensures users see helpful command lists instead of error messages when invoking your plugin without arguments.
 
 #### `core/logic.py`
 
-Keep business logic separate from CLI with the enterprise template:
+Keep business logic separate from CLI commands. The template provides commented examples:
 
 ```python
 from pathlib import Path
 
 
-def process(
-    path: Path,
-    output: Path | None = None,
-    dry_run: bool = False,
-    verbose: bool = False,
-) -> str:
-    """Process the given path and return results.
-
-    Args:
-        path: Path to process
-        output: Optional output file path
-        dry_run: If True, preview changes without applying
-        verbose: Enable verbose logging
-
-    Returns:
-        Result message
-    """
-    if dry_run:
-        return f"[DRY RUN] Would process: {path}"
-
-    if verbose:
-        print(f"Processing {path}...")
-
-    # TODO: Add your implementation here
-    result = f"Processed {path} successfully"
-
-    if output:
-        output.write_text(result)
-        return f"Results written to {output}"
-
-    return result
+# TODO: Implement your plugin's core business logic here
+#
+# Example function:
+#
+# def process_data(
+#     path: Path,
+#     plugin_info: dict[str, str] | None = None,
+# ) -> dict[str, any]:
+#     """Process data from the given path.
+#
+#     Args:
+#         path: Path to process
+#         plugin_info: Plugin metadata (name, version, description, category)
+#
+#     Returns:
+#         Dictionary with processing results
+#     """
+#     plugin_name = plugin_info.get("name", "unknown") if plugin_info else "unknown"
+#
+#     # Your implementation here
+#     result = {
+#         "plugin": plugin_name,
+#         "processed": str(path),
+#         "status": "success",
+#     }
+#
+#     return result
 ```
 
-**Template includes:**
-- ✅ Full type hints
-- ✅ Comprehensive docstring
-- ✅ Dry-run support
-- ✅ Verbose logging
-- ✅ Optional file output
-- ✅ TODO markers for implementation
+**Best Practices:**
+- ✅ Implement your own functions based on plugin requirements
+- ✅ Use `plugin_info` parameter to access metadata (name, version, etc.)
+- ✅ Keep business logic separate from CLI command handling
+- ✅ Use full type hints and comprehensive docstrings
+- ✅ Return structured data (dict, dataclass) or formatted strings
+
+**Professional Output Example:**
+
+```python
+def format_output(data: dict, plugin_info: dict) -> str:
+    """Format results with plugin metadata."""
+    lines = [
+        f"✓ {plugin_info['name']} v{plugin_info['version']}",
+        f"  {plugin_info['description']}",
+        "",
+        f"Status: {data['status']}",
+        f"Processed: {data['processed']}",
+    ]
+    return "\n".join(lines)
+```
 
 ---
 
