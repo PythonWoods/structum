@@ -3,22 +3,46 @@
 
 """Plugin Registry for Structum."""
 
+from dataclasses import dataclass
+from enum import Enum
+
+from rich.console import Console
 
 from structum.plugins.sdk import CATEGORIES, PluginBase
+
+console = Console()
+
+
+class PluginType(Enum):
+    """Type of plugin (official vs external)."""
+
+    OFFICIAL = "official"  # structum_* packages (maintained by PythonWoods)
+    EXTERNAL = "external"  # Third-party plugins
+
+
+@dataclass
+class PluginMetadata:
+    """Metadata for a registered plugin."""
+
+    plugin_class: type[PluginBase]
+    plugin_type: PluginType
+    module_path: str
+    source: str  # Entry point name
 
 
 class PluginRegistry:
     """Central registry for all plugins."""
 
-    _plugins: dict[str, type[PluginBase]] = {}
+    _plugins: dict[str, PluginMetadata] = {}
     _instances: dict[str, PluginBase] = {}
 
     @classmethod
-    def register(cls, plugin_cls: type[PluginBase]) -> None:
-        """Register a plugin class.
+    def register(cls, plugin_cls: type[PluginBase], is_official: bool = False) -> None:
+        """Register a plugin class with type information.
 
         Args:
             plugin_cls: The plugin class to register.
+            is_official: True if this is an official plugin (structum_*).
 
         Raises:
             TypeError: If plugin doesn't inherit from PluginBase.
@@ -42,7 +66,27 @@ class PluginRegistry:
                 f"Valid categories: {', '.join(CATEGORIES.keys())}"
             )
 
-        cls._plugins[plugin_cls.name] = plugin_cls
+        # Check for conflicts
+        plugin_name = plugin_cls.name
+        if plugin_name in cls._plugins:
+            existing = cls._plugins[plugin_name]
+            console.print(
+                f"[yellow]⚠ WARNING: Plugin '{plugin_name}' already registered. "
+                f"Overriding {existing.module_path} with {plugin_cls.__module__}[/yellow]"
+            )
+
+        # Determine plugin type
+        plugin_type = PluginType.OFFICIAL if is_official else PluginType.EXTERNAL
+
+        # Create metadata and register
+        metadata = PluginMetadata(
+            plugin_class=plugin_cls,
+            plugin_type=plugin_type,
+            module_path=plugin_cls.__module__,
+            source=f"entrypoint:{plugin_name}",
+        )
+
+        cls._plugins[plugin_name] = metadata
 
     @classmethod
     def get(cls, name: str) -> PluginBase | None:
@@ -59,28 +103,66 @@ class PluginRegistry:
     @classmethod
     def load_all(cls) -> None:
         """Instantiate and setup all registered plugins."""
-        for name, plugin_cls in cls._plugins.items():
+        for name, metadata in cls._plugins.items():
             if name not in cls._instances:
-                instance = plugin_cls()
+                instance = metadata.plugin_class()
                 instance.setup()
                 cls._instances[name] = instance
 
     @classmethod
-    def list_plugins(cls) -> dict[str, dict[str, str]]:
-        """List all registered plugins with metadata.
+    def list_plugins(cls) -> list[str]:
+        """List all registered plugin names.
 
         Returns:
-            Dictionary of plugin info.
+            List of plugin names.
+        """
+        return list(cls._plugins.keys())
+
+    @classmethod
+    def get_metadata(cls, name: str) -> PluginMetadata | None:
+        """Get metadata for a plugin.
+
+        Args:
+            name: The name of the plugin.
+
+        Returns:
+            Plugin metadata or None if not found.
+        """
+        return cls._plugins.get(name)
+
+    @classmethod
+    def list_plugins_detailed(cls) -> dict[str, dict[str, str]]:
+        """List all registered plugins with detailed metadata.
+
+        Returns:
+            Dictionary of plugin info including type.
         """
         return {
             name: {
-                "version": plugin.version,
-                "category": plugin.category,
-                "description": plugin.description,
-                "author": plugin.author,
+                "version": metadata.plugin_class.version,
+                "category": metadata.plugin_class.category,
+                "description": metadata.plugin_class.description,
+                "author": metadata.plugin_class.author,
+                "type": metadata.plugin_type.value,
+                "module": metadata.module_path,
             }
-            for name, plugin in cls._plugins.items()
+            for name, metadata in cls._plugins.items()
         }
+
+    @classmethod
+    def list_by_type(cls) -> dict[str, list[str]]:
+        """List plugins grouped by type (official vs external).
+
+        Returns:
+            Dictionary mapping plugin type to list of plugin names.
+        """
+        result: dict[str, list[str]] = {
+            PluginType.OFFICIAL.value: [],
+            PluginType.EXTERNAL.value: [],
+        }
+        for name, metadata in cls._plugins.items():
+            result[metadata.plugin_type.value].append(name)
+        return result
 
     @classmethod
     def list_by_category(cls) -> dict[str, list[str]]:
@@ -90,8 +172,8 @@ class PluginRegistry:
             Dictionary mapping category to list of plugin names.
         """
         result: dict[str, list[str]] = {}
-        for name, plugin in cls._plugins.items():
-            category = plugin.category
+        for name, metadata in cls._plugins.items():
+            category = metadata.plugin_class.category
             if category not in result:
                 result[category] = []
             result[category].append(name)

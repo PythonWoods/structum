@@ -181,15 +181,4 @@ def generate_plugin_skeleton(
     (core_dir / "__init__.py").write_text(CORE_INIT_TEMPLATE.format(**context))
     (core_dir / "logic.py").write_text(CORE_LOGIC_TEMPLATE.format(**context))
 
-    # Create .dev marker for built-in plugins (development mode by default)
-    # Check if we're in the structum project (creating a built-in plugin)
-    is_builtin = "structum" in str(output_dir) and "plugins" in str(output_dir)
-    if is_builtin:
-        dev_marker = plugin_dir / ".dev"
-        dev_marker.write_text(
-            "# This file marks the plugin as being in development mode.\n"
-            "# The plugin will not be registered until this file is removed.\n"
-            "# Remove this file when the plugin is ready for production use.\n"
-        )
-
     return plugin_dir
