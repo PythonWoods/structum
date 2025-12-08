@@ -136,7 +136,7 @@ and automatic release generation via **release-please**.
 **Documentation**: Updated `Migration_Path - TODO.md`
 **Commits**: `07c739d` (Phase 3 - CLI & Config Verification)
 
-#### Documentation Updates (Phase 4 - 2025-12-08)
+#### Documentation & Testing (Phase 4 - 2025-12-08)
 
 - **Plugin Development Guide** (`docs/development/plugins.md`):
   - Removed "Creating a Builtin Plugin" section (lines 25-88, ~63 lines)
@@ -155,16 +155,48 @@ and automatic release generation via **release-please**.
   - Included FAQ section addressing common questions
   - Provided examples for official vs external plugin distinction
 
+- **Unit Test Updates**:
+  - **test_loader.py**:
+    - Removed `test_load_builtin_plugins()` (built-in support removed)
+    - Added `test_official_plugin_detection()` (structum_* auto-detection)
+    - Added `test_external_plugin_detection()` (external plugin tagging)
+    - Updated `test_conflict_warning()` (registry console patching)
+  - **test_registry.py**:
+    - Fixed `test_register_valid_plugin()` (list[str] compatibility)
+    - Added `test_plugin_type_enum()` (PluginType.OFFICIAL/EXTERNAL)
+    - Added `test_plugin_metadata_dataclass()` (metadata structure)
+    - Added `test_register_as_official/external()` (type registration)
+    - Added `test_list_by_type()` (plugin grouping)
+    - Added `test_list_plugins_detailed()` (full metadata)
+    - Added `test_get_metadata_nonexistent()` (edge case)
+    - Added `test_conflict_detection()` (override warning)
+  - **test_skeleton.py**:
+    - Added `test_no_dev_marker_created()` (.dev removal verification)
+    - Added `test_external_only_generation()` (external-only validation)
+  - **test_plugins_cmd.py**:
+    - Fixed `test_list_plugins()` (list_plugins_detailed API)
+    - Fixed `test_enable_plugin()` (list[str] return value)
+
 - **Migration Tracking** (`Migration_Path - TODO.md`):
   - Updated to reflect Phase 4 completion
-  - Marked Task 4.1 (documentation) as completed
-  - Marked Task 4.3 (migration guide) as completed
-  - Deferred Task 4.2 (unit tests) to post-release
-  - Updated status to "READY FOR RELEASE"
+  - Marked all tasks (4.1, 4.2, 4.3) as completed
+  - Updated status to "Phase 4 COMPLETED - READY FOR RELEASE"
 
-**Net Impact**: Documentation improvements (-55 lines in plugins.md, +262 lines migration guide)
-**Testing Status**: Core functionality manually verified in Phase 3, unit tests deferred to post-release
-**Commits**: TBD (Phase 4 - Documentation & Migration Guide)
+**Net Impact**: Documentation improvements (-55 lines in plugins.md, +262 lines migration guide) + comprehensive test coverage
+**Testing Status**: All unit tests passing, full coverage for metadata system
+**Commits**: Multiple Phase 4 commits (documentation, tests, fixes)
+
+#### Version Management (2025-12-08)
+
+- **Version Bump**: Updated from 0.0.1 to **0.2.0**
+  - Reflects major refactoring with breaking changes
+  - Semantic versioning: pre-1.0, breaking changes = minor bump
+  - All documentation aligned with v0.2 release
+  - Updated `src/structum/__about__.py`
+- **Release Preparation**:
+  - Merged `dev-refactoring` branch into `develop`
+  - Tagged release as `v0.2.0`
+  - 20 files changed: 2109 insertions(+), 459 deletions(-)
 
 ### 📚 Documentation
 
