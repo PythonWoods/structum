@@ -68,18 +68,17 @@ class TestPluginsCommand:
         # Patch the source since it is imported inside the function
         with patch("structum.plugins.skeleton.generate_plugin_skeleton") as mock_gen:
             mock_gen.return_value = tmp_path / "my-plugin"
-            
-            # Simulate "outside" structum project by creating a bare temp dir
-            with runner.isolated_filesystem(temp_dir=tmp_path):
-                result = runner.invoke(app, ["new", "my-plugin"])
-                
-                assert result.exit_code == 0
-                mock_gen.assert_called_once()
-                assert mock_gen.call_args[0][0] == "my-plugin"
-                assert "Plugin package created" in result.stdout
 
-    def test_new_plugin_invalid_category(self):
+            # Test with required --output parameter
+            result = runner.invoke(app, ["new", "my-plugin", "--output", str(tmp_path)])
+
+            assert result.exit_code == 0
+            mock_gen.assert_called_once()
+            assert mock_gen.call_args[0][0] == "my-plugin"
+            assert "Plugin package created" in result.stdout
+
+    def test_new_plugin_invalid_category(self, tmp_path):
         """Test invalid category."""
-        result = runner.invoke(app, ["new", "my-plugin", "--category", "invalid"])
+        result = runner.invoke(app, ["new", "my-plugin", "--output", str(tmp_path), "--category", "invalid"])
         assert result.exit_code == 0 # Typer defaults to 0 but prints error if not Exception
         assert "Invalid category" in result.stdout

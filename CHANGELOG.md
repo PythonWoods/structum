@@ -47,6 +47,10 @@ and automatic release generation via **release-please**.
   - `structum plugins info <name>` - Show plugin details
   - `structum plugins enable/disable <name>` - Manage plugin state
   - `structum plugins new <name>` - Generate external plugin skeleton
+  - **Enhanced Error Handling** (2025-12-09): Helpful messages when attempting to use disabled plugins
+    - Disabled plugins now show: "Plugin 'X' is disabled. Enable it with: structum plugins enable X"
+    - Clear distinction between "not installed" vs "disabled" error messages
+    - Enterprise-grade UX: self-service guidance for users
 - **Plugin Categories**: `analysis`, `export`, `formatting`, `utility`
 - **Plugin Validation**: Auto-validates `name`, `version`, `category` on load
 - **Configuration Persistence**: State stored in `~/.config/structum/config.json`

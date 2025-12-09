@@ -117,7 +117,7 @@ def disable_plugin(name: str) -> None:
 def new_plugin(
     name: str = typer.Argument(..., help="Plugin name (kebab-case, e.g. my-plugin)"),
     output: Path = typer.Option(
-        None, "--output", "-o", help="Output directory (default: auto-detect)"
+        ..., "--output", "-o", help="Output directory where the plugin will be created"
     ),
     category: str = typer.Option(
         "utility",
@@ -135,10 +135,6 @@ def new_plugin(
             f"Valid: {', '.join(CATEGORIES.keys())}[/red]"
         )
         return
-
-    # Smart default: detect if we're in structum project
-    if output is None:
-        output = Path.cwd()
 
     try:
         plugin_dir = generate_plugin_skeleton(name, output, category)

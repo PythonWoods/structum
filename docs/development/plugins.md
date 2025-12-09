@@ -48,11 +48,13 @@ All plugins are external packages that use entry points for registration. You ca
 
 ### Step 1: Generate the Plugin Package
 
-From your preferred directory:
+Generate the plugin by specifying its name and where to create it:
 
 ```bash
-structum plugins new my-awesome-plugin --category export --output ~/projects/
+structum plugins new my-awesome-plugin --output ~/projects/ --category export
 ```
+
+> **Note**: The `--output` parameter is **required** - you explicitly specify where the plugin project will be created.
 
 This automatically creates a **complete, standalone, ready-to-install** Python package at `~/projects/my-awesome-plugin/`:
 
@@ -315,15 +317,58 @@ Invalid plugins are rejected with a descriptive error message.
 
 ## Plugin Configuration
 
-Plugins can be enabled/disabled via CLI:
+### Enable/Disable Plugins
+
+Plugins can be temporarily disabled without uninstalling them. This is useful for:
+
+- **Debugging**: Temporarily disable problematic plugins without losing the installation
+- **Testing**: Compare behavior with/without specific plugins
+- **Environment-specific configuration**: Different plugin sets for dev vs production
+- **Quick toggling**: Enable/disable plugins faster than uninstall/reinstall
 
 ```bash
-structum plugins disable my-plugin  # Disable
-structum plugins enable my-plugin   # Enable
-structum plugins list               # Check status
+# Disable a plugin (keeps it installed but inactive)
+structum plugins disable my-plugin
+
+# Enable a previously disabled plugin
+structum plugins enable my-plugin
+
+# Check status of all plugins
+structum plugins list
 ```
 
-Configuration is stored in `~/.config/structum/config.json`.
+### Disabled Plugin Behavior
+
+When you try to use a disabled plugin, you'll see a helpful message:
+
+```bash
+$ structum my-plugin info
+⚠ Plugin 'my-plugin' is disabled.
+Enable it with: structum plugins enable my-plugin
+```
+
+This is different from the error shown when a plugin is not installed:
+
+```bash
+$ structum nonexistent-plugin
+No such command 'nonexistent-plugin'
+```
+
+### Configuration Storage
+
+Plugin settings are stored in `~/.config/structum/config.json`:
+
+```json
+{
+  "plugins": {
+    "my-plugin": {
+      "enabled": false
+    }
+  }
+}
+```
+
+By default, all installed plugins are enabled unless explicitly disabled.
 
 ---
 
