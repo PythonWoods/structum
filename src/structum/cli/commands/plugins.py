@@ -21,7 +21,7 @@ console = Console()
 
 @app.command("list")
 def list_plugins() -> None:
-    """List all installed plugins (official and external)."""
+    """List all installed plugins (official and community)."""
     from structum.core.config import get_plugin_enabled
 
     plugins = PluginRegistry.list_plugins_detailed()
@@ -49,7 +49,7 @@ def list_plugins() -> None:
         type_display = (
             "[bold green][OFFICIAL][/bold green]"
             if plugin_type == "official"
-            else "[blue][EXTERNAL][/blue]"
+            else "[blue][COMMUNITY][/blue]"
         )
 
         table.add_row(
@@ -66,7 +66,7 @@ def list_plugins() -> None:
     # Show legend
     console.print("\n[dim]Legend:[/dim]")
     console.print("  [bold green][OFFICIAL][/bold green] - Official plugins maintained by PythonWoods (structum_*)")
-    console.print("  [blue][EXTERNAL][/blue] - Third-party plugins")
+    console.print("  [blue][COMMUNITY][/blue] - Community plugins")
 
 
 @app.command("info")
@@ -78,11 +78,27 @@ def plugin_info(name: str) -> None:
         console.print(f"[red]Plugin '{name}' not found.[/red]")
         return
 
+    # Get metadata from package (pyproject.toml)
+    pkg_meta = PluginRegistry.get_package_metadata(name)
+    plugin_metadata = PluginRegistry.get_metadata(name)
+
     console.print(f"[bold cyan]Plugin:[/bold cyan] {plugin.name}")
     console.print(f"[bold yellow]Category:[/bold yellow] {plugin.category}")
-    console.print(f"[bold green]Version:[/bold green] {plugin.version}")
-    console.print(f"[bold]Author:[/bold] {plugin.author}")
-    console.print(f"[bold]Description:[/bold] {plugin.description}")
+    console.print(f"[bold green]Version:[/bold green] {pkg_meta.get('version', 'unknown')}")
+    console.print(f"[bold]Author:[/bold] {pkg_meta.get('author', 'unknown')}")
+    if pkg_meta.get('author_email'):
+        console.print(f"[bold]Email:[/bold] {pkg_meta['author_email']}")
+    console.print(f"[bold]Description:[/bold] {pkg_meta.get('description', '')}")
+    if pkg_meta.get('license'):
+        console.print(f"[bold]License:[/bold] {pkg_meta['license']}")
+
+    # Show type and module info
+    if plugin_metadata:
+        plugin_type = "[bold green][OFFICIAL][/bold green]" if plugin_metadata.plugin_type.value == "official" else "[blue][COMMUNITY][/blue]"
+        console.print(f"[bold]Type:[/bold] {plugin_type}")
+        console.print(f"[bold]Module:[/bold] {plugin_metadata.module_path}")
+        if plugin_metadata.distribution_name:
+            console.print(f"[bold]Package:[/bold] {plugin_metadata.distribution_name}")
 
 
 @app.command("enable")
@@ -126,7 +142,7 @@ def new_plugin(
         help=f"Plugin category ({', '.join(CATEGORIES.keys())})",
     ),
 ) -> None:
-    """Generate a new plugin skeleton."""
+    """Generate a new plugin skeleton with interactive prompts."""
     from structum.plugins.skeleton import generate_plugin_skeleton
 
     if category not in CATEGORIES:
@@ -136,10 +152,36 @@ def new_plugin(
         )
         return
 
+    # Interactive prompts (like npm init)
+    console.print(f"\n[bold cyan]Creating plugin: {name}[/bold cyan]")
+    console.print("[dim]Press Enter to use default values shown in brackets.[/dim]\n")
+
     try:
-        plugin_dir = generate_plugin_skeleton(name, output, category)
-        console.print(f"[green]✔ Plugin package created at:[/green] {plugin_dir}")
+        # Collect metadata interactively
+        author_name = typer.prompt("Author name", default="Your Name")
+        author_email = typer.prompt("Author email", default="your.email@example.com")
+
+        default_description = f"{name.replace('-', ' ').title()} plugin for Structum"
+        description = typer.prompt("Description", default=default_description)
+
+        version = typer.prompt("Version", default="0.1.0")
+        license_type = typer.prompt("License", default="Apache-2.0")
+
+        # Generate plugin with collected metadata
+        plugin_dir = generate_plugin_skeleton(
+            name=name,
+            output_dir=output,
+            category=category,
+            author_name=author_name,
+            author_email=author_email,
+            description=description,
+            version=version,
+            license_type=license_type,
+        )
+
+        console.print(f"\n[green]✔ Plugin package created at:[/green] {plugin_dir}")
         console.print(f"[dim]   Package name:[/dim] [cyan]structum-plugin-{name}[/cyan]")
+        console.print(f"[dim]   Author:[/dim] [cyan]{author_name} <{author_email}>[/cyan]")
 
         # Show package structure
         console.print("\n[bold]Generated files:[/bold]")

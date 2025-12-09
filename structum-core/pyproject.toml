@@ -1,0 +1,117 @@
+# SPDX-License-Identifier: Apache-2.0
+# SPDX-FileCopyrightText: 2025 PythonWoods
+
+[build-system]
+requires = ["hatchling>=1.25"]
+build-backend = "hatchling.build"
+
+[project]
+name = "structum-core"
+dynamic = ["version"]
+description = "Enterprise-grade plugin framework for building extensible CLI applications"
+readme = "README.md"
+license = { text = "Apache-2.0" }
+authors = [{ name = "PythonWoods", email = "info@pythonwoods.com" }]
+requires-python = ">=3.11"
+keywords = [
+  "cli",
+  "plugin",
+  "framework",
+  "enterprise",
+  "extensible",
+  "architecture",
+]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Intended Audience :: Developers",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "License :: OSI Approved :: Apache Software License",
+  "Operating System :: OS Independent",
+  "Topic :: Software Development :: Libraries :: Application Frameworks",
+  "Topic :: System :: Software Distribution",
+]
+
+# Minimal core dependencies only
+dependencies = [
+  "typer>=0.12",
+  "rich>=13.0",
+  "pydantic>=2.0",
+  "pydantic-settings>=2.0",
+]
+
+[project.scripts]
+structum = "structum.cli.bootstrap:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/structum"]
+
+[tool.hatch.version]
+path = "src/structum/__about__.py"
+
+[tool.hatch.build.targets.sdist]
+include = ["src/**", "README.md", "LICENSE"]
+
+# -----------------------------------------
+# Dev Environments
+# -----------------------------------------
+
+[project.optional-dependencies]
+dev = [
+  "pytest>=8",
+  "pytest-cov>=4",
+  "mypy>=1.11",
+  "ruff>=0.5",
+  "types-setuptools",
+]
+docs = ["mkdocs>=1.5", "mkdocs-material>=9.5"]
+
+# Enterprise features (optional)
+monitoring = [
+  "prometheus-client>=0.19",
+  "opentelemetry-api>=1.20",
+  "opentelemetry-sdk>=1.20",
+]
+security = [
+  "cryptography>=41.0",
+]
+
+# -----------------------------------------
+# Ruff configuration
+# -----------------------------------------
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "UP", "B"]
+ignore = ["E501", "B008"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["structum"]
+section-order = [
+  "future",
+  "standard-library",
+  "third-party",
+  "first-party",
+  "local-folder",
+]
+
+# -----------------------------------------
+# mypy configuration
+# -----------------------------------------
+[tool.mypy]
+python_version = "3.11"
+strict = true
+ignore_missing_imports = true
+check_untyped_defs = true
+
+# -----------------------------------------
+# pytest
+# -----------------------------------------
+[tool.pytest.ini_options]
+minversion = "8.0"
+python_files = "test_*.py"
+testpaths = ["tests"]
+addopts = "--cov=structum --cov-report=term-missing"

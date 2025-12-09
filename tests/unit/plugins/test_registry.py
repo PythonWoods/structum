@@ -81,7 +81,7 @@ class TestPluginRegistry:
         from structum.plugins.registry import PluginType
 
         assert PluginType.OFFICIAL.value == "official"
-        assert PluginType.EXTERNAL.value == "external"
+        assert PluginType.COMMUNITY.value == "community"
 
     def test_plugin_metadata_dataclass(self):
         """Test PluginMetadata dataclass."""
@@ -89,15 +89,17 @@ class TestPluginRegistry:
 
         metadata = PluginMetadata(
             plugin_class=ValidPlugin,
-            plugin_type=PluginType.EXTERNAL,
+            plugin_type=PluginType.COMMUNITY,
             module_path="test_module",
-            source="entrypoint:test"
+            source="entrypoint:test",
+            distribution_name="structum-plugin-test"
         )
 
         assert metadata.plugin_class == ValidPlugin
-        assert metadata.plugin_type == PluginType.EXTERNAL
+        assert metadata.plugin_type == PluginType.COMMUNITY
         assert metadata.module_path == "test_module"
         assert metadata.source == "entrypoint:test"
+        assert metadata.distribution_name == "structum-plugin-test"
 
     def test_register_as_official(self):
         """Test registering plugin as official."""
@@ -107,13 +109,13 @@ class TestPluginRegistry:
         assert metadata is not None
         assert metadata.plugin_type.value == "official"
 
-    def test_register_as_external(self):
-        """Test registering plugin as external (default)."""
+    def test_register_as_community(self):
+        """Test registering plugin as community (default)."""
         PluginRegistry.register(ValidPlugin, is_official=False)
 
         metadata = PluginRegistry.get_metadata("valid-plugin")
         assert metadata is not None
-        assert metadata.plugin_type.value == "external"
+        assert metadata.plugin_type.value == "community"
 
     def test_list_by_type(self):
         """Test listing plugins by type."""
@@ -131,9 +133,9 @@ class TestPluginRegistry:
         by_type = PluginRegistry.list_by_type()
 
         assert "official" in by_type
-        assert "external" in by_type
+        assert "community" in by_type
         assert "official-plugin" in by_type["official"]
-        assert "valid-plugin" in by_type["external"]
+        assert "valid-plugin" in by_type["community"]
 
     def test_list_plugins_detailed(self):
         """Test listing plugins with detailed metadata."""

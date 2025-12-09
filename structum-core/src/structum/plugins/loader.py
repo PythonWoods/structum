@@ -14,7 +14,7 @@ from importlib.metadata import entry_points
 import typer
 from rich.console import Console
 
-from structum.core.config import get_plugin_enabled
+from structum.config.manager import get_plugin_enabled
 
 from .registry import PluginRegistry
 
