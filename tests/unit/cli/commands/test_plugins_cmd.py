@@ -76,7 +76,7 @@ class TestPluginsCommand:
                 assert result.exit_code == 0
                 mock_gen.assert_called_once()
                 assert mock_gen.call_args[0][0] == "my-plugin"
-                assert "Plugin skeleton created" in result.stdout
+                assert "Plugin package created" in result.stdout
 
     def test_new_plugin_invalid_category(self):
         """Test invalid category."""

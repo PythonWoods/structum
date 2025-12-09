@@ -46,7 +46,7 @@ All plugins are external packages that use entry points for registration. You ca
 - PyPI name: Recommended `structum-plugin-<name>` (e.g., `structum-plugin-myfeature`)
 - Tagged as [EXTERNAL] in plugin list
 
-### Step 1: Generate the Skeleton
+### Step 1: Generate the Plugin Package
 
 From your preferred directory:
 
@@ -54,65 +54,71 @@ From your preferred directory:
 structum plugins new my-awesome-plugin --category export --output ~/projects/
 ```
 
-This creates `~/projects/my_awesome_plugin/`.
-
-### Step 2: Create Package Structure
-
-Add these files to make it a proper Python package:
+This automatically creates a **complete, standalone, ready-to-install** Python package at `~/projects/my-awesome-plugin/`:
 
 ```
-my_awesome_plugin/
-├── pyproject.toml      # NEW
-├── README.md           # NEW
-├── src/
-│   └── my_awesome_plugin/
-│       ├── __init__.py
-│       ├── plugin.py
-│       ├── commands/
-│       │   ├── __init__.py
-│       │   └── main.py
-│       └── core/
-│           ├── __init__.py
-│           └── logic.py
+~/projects/my-awesome-plugin/         # ← Standalone project, like any Python package
+├── pyproject.toml                    # ✅ Pre-configured with entry point
+├── README.md                         # ✅ Documentation template
+├── .gitignore                        # ✅ Git ignore rules
+└── src/
+    └── my_awesome_plugin/
+        ├── __init__.py
+        ├── plugin.py
+        ├── commands/
+        │   ├── __init__.py
+        │   └── main.py
+        └── core/
+            ├── __init__.py
+            └── logic.py
 ```
 
-### Step 3: Configure `pyproject.toml`
+The generated `pyproject.toml` is **already fully configured** with:
+- Package name: `structum-plugin-my-awesome-plugin`
+- Entry point: `my-awesome-plugin = "my_awesome_plugin:MyAwesomePluginPlugin"`
+- Dependencies: `structum>=0.2.0`, `typer>=0.12.0`, `rich>=13.0`
+- Build system: `hatchling` with modern `src/` layout
 
-```toml
-[project]
-name = "structum-my-awesome-plugin"
-version = "0.1.0"
-description = "My awesome Structum plugin"
-requires-python = ">=3.11"
-dependencies = [
-    "structum>=0.1.0",
-    "typer>=0.9.0",
-]
+> **No manual configuration needed!** The plugin is a complete Python package ready to install, develop, git commit, and publish to PyPI.
 
-[project.entry-points."structum.plugins"]
-my-awesome-plugin = "my_awesome_plugin:MyAwesomePluginPlugin"
-
-[build-system]
-requires = ["hatchling"]
-build-backend = "hatchling.build"
-```
-
-> **Important**: The entry point format is:
-> ```
-> plugin-name = "package_name:PluginClassName"
-> ```
-
-### Step 4: Install Locally for Testing
+### Step 2: Install and Test Locally
 
 ```bash
-cd ~/projects/my_awesome_plugin
+cd ~/projects/my-awesome-plugin
 pip install -e .
+
+# Test your plugin
+structum my-awesome-plugin info
 
 # Verify it's loaded
 structum plugins list
 ```
 
-### Step 5: Publish to PyPI
+### Step 3: Implement Your Plugin
+
+Edit the generated files to add your functionality:
+
+1. **Add commands** in `src/my_awesome_plugin/commands/main.py`:
+   ```python
+   @app.command("process")
+   def process_command(path: Path = typer.Argument(...)):
+       """Process files."""
+       from ..core.logic import process_data
+       result = process_data(path)
+       typer.echo(result)
+   ```
+
+2. **Add business logic** in `src/my_awesome_plugin/core/logic.py`:
+   ```python
+   def process_data(path: Path) -> str:
+       """Your core functionality here."""
+       return f"Processed: {path}"
+   ```
+
+3. **Update metadata** in `src/my_awesome_plugin/plugin.py`:
+   - Change `author`, `description`, `version`
+
+### Step 4: Publish to PyPI
 
 ```bash
 pip install build twine
@@ -123,7 +129,7 @@ twine upload dist/*
 Users can then install your plugin with:
 
 ```bash
-pip install structum-my-awesome-plugin
+pip install structum-plugin-my-awesome-plugin
 ```
 
 ---

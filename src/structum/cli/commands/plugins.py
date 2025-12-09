@@ -142,19 +142,24 @@ def new_plugin(
 
     try:
         plugin_dir = generate_plugin_skeleton(name, output, category)
-        console.print(f"[green]✔ Plugin skeleton created at:[/green] {plugin_dir}")
+        console.print(f"[green]✔ Plugin package created at:[/green] {plugin_dir}")
+        console.print(f"[dim]   Package name:[/dim] [cyan]structum-plugin-{name}[/cyan]")
 
-        # Generate proper class name (same logic as skeleton.py)
-        class_name = "".join(word.capitalize() for word in name.split("-")) + "Plugin"
+        # Show package structure
+        console.print("\n[bold]Generated files:[/bold]")
+        console.print("  📄 [cyan]pyproject.toml[/cyan] - Package configuration with entry point")
+        console.print("  📄 [cyan]README.md[/cyan] - Documentation template")
+        console.print("  📄 [cyan].gitignore[/cyan] - Git ignore rules")
+        console.print(f"  📁 [cyan]src/{name.replace('-', '_')}/[/cyan] - Plugin source code")
 
-        # External plugin instructions
-        console.print("\n[bold]Next steps (external plugin):[/bold]")
-        console.print("  1. Create package structure with [cyan]pyproject.toml[/cyan]")
-        console.print("  2. Add entry point:")
-        console.print('     [yellow][project.entry-points."structum.plugins"][/yellow]')
-        console.print(f'     [yellow]{name} = "{name.replace("-", "_")}:{class_name}"[/yellow]')
-        console.print("  3. Install with [cyan]pip install -e .[/cyan]")
-        console.print("  4. Test your plugin with [cyan]structum {name} info[/cyan]")
-        console.print("\n[dim]See docs/development/plugins.md for details.[/dim]")
+        # Installation instructions
+        console.print("\n[bold]Next steps:[/bold]")
+        console.print(f"  1. [yellow]cd {plugin_dir.name}[/yellow]")
+        console.print("  2. [yellow]pip install -e .[/yellow]  [dim](install in development mode)[/dim]")
+        console.print(f"  3. [yellow]structum {name} info[/yellow]  [dim](test your plugin)[/dim]")
+        console.print("  4. [yellow]structum plugins list[/yellow]  [dim](verify installation)[/dim]")
+
+        console.print("\n[dim]💡 Edit src/{}/commands/main.py to add your commands[/dim]".format(name.replace("-", "_")))
+        console.print("[dim]   See README.md for detailed instructions[/dim]")
     except Exception as e:
         console.print(f"[red]✘ Error creating plugin:[/red] {e}")
