@@ -20,11 +20,12 @@ Structum is being transformed from a monolithic CLI tool into a **minimal enterp
 - ✅ Added security framework (`structum.security.validator`)
 - ✅ Tested core package independently
 
-#### Phase 2: Plugin Extraction 🔄 IN PROGRESS (4/5 completed)
+#### Phase 2: Plugin Extraction ✅ COMPLETED (5/5 completed)
+
 - ✅ **structum_tree** (v2.0.0-alpha.1) - Tree visualization plugin
 - ✅ **structum_archive** (v2.0.0-alpha.1) - Code archiving plugin
 - ✅ **structum_clean** (v2.0.0-alpha.1) - Cleanup utilities plugin
-- ⏳ **structum_docs** - Documentation management (pending)
+- ✅ **structum_docs** (v2.0.0-alpha.1) - Documentation management plugin
 - ✅ **structum_plugins** (v2.0.0-alpha.1) - Plugin management plugin
 
 #### Phase 3: Meta-Package ⏳ PENDING
@@ -63,13 +64,13 @@ structum --help
 #   - [COMMUNITY] demo, demo2
 ```
 
-#### Next Steps: Complete Phase 2
+#### Next Steps: Begin Phase 3
 
-**Remaining Plugins to Extract**:
+**Phase 2 is now COMPLETE!** All 5 official plugins have been successfully extracted.
 
-1. `structum_docs` - Extract from `src/structum/cli/commands/docs.py` and `src/structum/core/docs.py`
+**Next Phase**: Create the meta-package that bundles all official plugins.
 
-**Pattern to Follow** (same as tree and archive):
+**Pattern to Follow** (for meta-package):
 ```bash
 # For each plugin (example: clean):
 mkdir -p structum_clean/src/structum_clean
@@ -133,11 +134,13 @@ structum/
 │   │   └── plugin.py           # PluginsPlugin class
 │   └── pyproject.toml          # v2.0.0-alpha.1
 │
-├── src/structum/               # ⚠️ Legacy monolith (being replaced)
-│   ├── cli/commands/           # Extract from here
-│   │   └── docs.py            # → structum_docs
-│   └── core/
-│       └── docs.py            # → structum_docs/core.py
+├── structum_docs/              # ✅ Plugin 5 complete
+│   ├── src/structum_docs/
+│   │   ├── plugin.py           # DocsPlugin class
+│   │   └── core.py             # docs management logic
+│   └── pyproject.toml          # v2.0.0-alpha.1
+│
+├── src/structum/               # ⚠️ Legacy monolith (can be deprecated)
 │
 ├── ARCHITECTURE_V2.md          # Complete architecture design
 └── CLAUDE.md                   # This file
@@ -263,6 +266,36 @@ structum plugins new awesome-tool --output ~/projects/ --category utility
 
 ---
 
+#### 6. structum_docs (v2.0.0-alpha.1)
+
+**Purpose**: Documentation management plugin
+**Location**: `structum_docs/`
+**Entry Point**: `docs = "structum_docs.plugin:DocsPlugin"`
+**Dependencies**: `structum-core>=2.0.0a1`, `rich>=13.0`
+
+**Features**:
+
+- Serve documentation locally with live reload
+- Deploy documentation to GitHub Pages
+- Custom server address and port configuration
+- Custom deployment commit messages
+- Force deployment option
+- Integrates with MkDocs
+
+**Usage**:
+
+```bash
+structum docs serve
+structum docs serve --dev-addr 0.0.0.0:8080
+structum docs deploy
+structum docs deploy --message "Update docs for v2.0.0"
+structum docs deploy --force
+```
+
+**Note**: Requires MkDocs to be installed (`pip install mkdocs mkdocs-material`).
+
+---
+
 ### Plugin Dependency Graph
 
 ```
@@ -273,8 +306,8 @@ structum-core (foundation)
     │       └─→ structum_archive (depends on tree)
     │
     ├─→ structum_clean (no plugin dependencies)
-    ├─→ structum_plugins (no plugin dependencies)
-    └─→ structum_docs (pending)
+    ├─→ structum_docs (no plugin dependencies)
+    └─→ structum_plugins (no plugin dependencies)
 ```
 
 ---

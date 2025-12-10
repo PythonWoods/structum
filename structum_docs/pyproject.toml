@@ -1,0 +1,39 @@
+# SPDX-License-Identifier: Apache-2.0
+# SPDX-FileCopyrightText: 2025 PythonWoods
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "structum_docs"
+dynamic = ["version"]
+description = "Official documentation management plugin for Structum"
+readme = "README.md"
+requires-python = ">=3.11"
+license = "Apache-2.0"
+authors = [
+    { name = "PythonWoods", email = "contact@pythonwoods.com" },
+]
+keywords = ["structum", "plugin", "documentation", "mkdocs"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: Apache Software License",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+]
+
+dependencies = [
+    "structum-core>=2.0.0a1",
+    "rich>=13.0",
+]
+
+[project.entry-points."structum.plugins"]
+docs = "structum_docs.plugin:DocsPlugin"
+
+[tool.hatch.version]
+path = "src/structum_docs/__about__.py"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/structum_docs"]
