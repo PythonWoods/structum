@@ -20,12 +20,12 @@ Structum is being transformed from a monolithic CLI tool into a **minimal enterp
 - ✅ Added security framework (`structum.security.validator`)
 - ✅ Tested core package independently
 
-#### Phase 2: Plugin Extraction 🔄 IN PROGRESS (2/5 completed)
+#### Phase 2: Plugin Extraction 🔄 IN PROGRESS (4/5 completed)
 - ✅ **structum_tree** (v2.0.0-alpha.1) - Tree visualization plugin
 - ✅ **structum_archive** (v2.0.0-alpha.1) - Code archiving plugin
-- ⏳ **structum_clean** - Cleanup utilities (pending)
+- ✅ **structum_clean** (v2.0.0-alpha.1) - Cleanup utilities plugin
 - ⏳ **structum_docs** - Documentation management (pending)
-- ⏳ **structum_plugins** - Plugin management (pending)
+- ✅ **structum_plugins** (v2.0.0-alpha.1) - Plugin management plugin
 
 #### Phase 3: Meta-Package ⏳ PENDING
 - ⏳ Create `structum` meta-package
@@ -65,10 +65,9 @@ structum --help
 
 #### Next Steps: Complete Phase 2
 
-**Remaining Plugins to Extract** (in this order):
-1. `structum_clean` - Extract from `src/structum/cli/commands/clean.py` and `src/structum/core/clean.py`
-2. `structum_docs` - Extract from `src/structum/cli/commands/docs.py` and `src/structum/core/docs.py`
-3. `structum_plugins` - Extract from `src/structum/cli/commands/plugins.py` and `src/structum/plugins/skeleton.py`
+**Remaining Plugins to Extract**:
+
+1. `structum_docs` - Extract from `src/structum/cli/commands/docs.py` and `src/structum/core/docs.py`
 
 **Pattern to Follow** (same as tree and archive):
 ```bash
@@ -123,13 +122,21 @@ structum/
 │   │   └── core.py             # archiving logic
 │   └── pyproject.toml          # v2.0.0-alpha.1
 │
+├── structum_clean/             # ✅ Plugin 3 complete
+│   ├── src/structum_clean/
+│   │   ├── plugin.py           # CleanPlugin class
+│   │   └── core.py             # cleanup logic
+│   └── pyproject.toml          # v2.0.0-alpha.1
+│
+├── structum_plugins/           # ✅ Plugin 4 complete
+│   ├── src/structum_plugins/
+│   │   └── plugin.py           # PluginsPlugin class
+│   └── pyproject.toml          # v2.0.0-alpha.1
+│
 ├── src/structum/               # ⚠️ Legacy monolith (being replaced)
 │   ├── cli/commands/           # Extract from here
-│   │   ├── clean.py           # → structum_clean
-│   │   ├── docs.py            # → structum_docs
-│   │   └── plugins.py         # → structum_plugins
+│   │   └── docs.py            # → structum_docs
 │   └── core/
-│       ├── clean.py           # → structum_clean/core.py
 │       └── docs.py            # → structum_docs/core.py
 │
 ├── ARCHITECTURE_V2.md          # Complete architecture design
@@ -204,6 +211,58 @@ structum archive . --split-folder --output docs/
 
 ---
 
+#### 4. structum_clean (v2.0.0-alpha.1)
+
+**Purpose**: Cleanup utilities plugin
+**Location**: `structum_clean/`
+**Entry Point**: `clean = "structum_clean.plugin:CleanPlugin"`
+**Dependencies**: `structum-core>=2.0.0a1`, `rich>=13.0`
+
+**Features**:
+
+- Recursively removes `__pycache__` directories
+- Optional virtual environment protection (--skip-venv)
+- Verbose/quiet output modes
+- Rich-formatted console output
+- Error handling and statistics
+
+**Usage**:
+
+```bash
+structum clean .
+structum clean src --quiet
+structum clean . --skip-venv
+```
+
+---
+
+#### 5. structum_plugins (v2.0.0-alpha.1)
+
+**Purpose**: Plugin management plugin
+**Location**: `structum_plugins/`
+**Entry Point**: `plugins = "structum_plugins.plugin:PluginsPlugin"`
+**Dependencies**: `structum-core>=2.0.0a1`, `rich>=13.0`
+
+**Features**:
+
+- List all installed plugins with metadata
+- Show detailed plugin information
+- Enable/disable plugins without uninstalling
+- Generate new plugin skeletons with interactive prompts
+- Distinguish between official and community plugins
+
+**Usage**:
+
+```bash
+structum plugins list
+structum plugins info tree
+structum plugins enable my-plugin
+structum plugins disable my-plugin
+structum plugins new awesome-tool --output ~/projects/ --category utility
+```
+
+---
+
 ### Plugin Dependency Graph
 
 ```
@@ -213,9 +272,9 @@ structum-core (foundation)
     │       ↓
     │       └─→ structum_archive (depends on tree)
     │
-    ├─→ structum_clean (pending)
-    ├─→ structum_docs (pending)
-    └─→ structum_plugins (pending)
+    ├─→ structum_clean (no plugin dependencies)
+    ├─→ structum_plugins (no plugin dependencies)
+    └─→ structum_docs (pending)
 ```
 
 ---
