@@ -24,15 +24,32 @@ structum_archive/           # Archive plugin
 
 ## Running Tests
 
-### Run All Tests (Monorepo)
+### Run All Tests (Monorepo) - Recommended
+
+```bash
+hatch run test
+```
+
+Or directly:
 
 ```bash
 ./scripts/run-tests.sh
 ```
 
 This runs tests for:
+
 - Core framework (structum)
 - All official plugins (tree, archive, clean, docs, plugins)
+
+**Current Test Results (2025-12-11):**
+
+- ✅ All 6 packages: 35 tests passing
+- ✅ structum core: 8 tests, 49% coverage
+- ✅ structum_tree: 5 tests passing
+- ✅ structum_archive: 6 tests passing
+- ✅ structum_clean: 6 tests passing
+- ✅ structum_docs: 6 tests passing
+- ✅ structum_plugins: 6 tests passing
 
 ### Run Tests for Specific Package
 
