@@ -6,7 +6,7 @@ requires = ["hatchling>=1.25"]
 build-backend = "hatchling.build"
 
 [project]
-name = "structum-core"
+name = "structum"
 dynamic = ["version"]
 description = "Enterprise-grade plugin framework for building extensible CLI applications"
 readme = "README.md"
@@ -58,6 +58,23 @@ include = ["src/**", "README.md", "LICENSE"]
 # -----------------------------------------
 
 [project.optional-dependencies]
+# Official plugins
+tree = ["structum_tree>=2.0.0a1"]
+archive = ["structum_archive>=2.0.0a1"]
+clean = ["structum_clean>=2.0.0a1"]
+docs = ["structum_docs>=2.0.0a1"]
+plugins = ["structum_plugins>=2.0.0a1"]
+
+# Convenience bundles
+full = [
+  "structum_tree>=2.0.0a1",
+  "structum_archive>=2.0.0a1",
+  "structum_clean>=2.0.0a1",
+  "structum_docs>=2.0.0a1",
+  "structum_plugins>=2.0.0a1",
+]
+
+# Development tools
 dev = [
   "pytest>=8",
   "pytest-cov>=4",
@@ -65,7 +82,7 @@ dev = [
   "ruff>=0.5",
   "types-setuptools",
 ]
-docs = ["mkdocs>=1.5", "mkdocs-material>=9.5"]
+mkdocs = ["mkdocs>=1.5", "mkdocs-material>=9.5"]
 
 # Enterprise features (optional)
 monitoring = [

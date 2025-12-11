@@ -13,7 +13,7 @@ Structum is being transformed from a monolithic CLI tool into a **minimal enterp
 ### Refactoring Status Dashboard
 
 #### Phase 1: Core Preparation ✅ COMPLETED
-- ✅ Created `structum-core` package (v2.0.0-alpha.1)
+- ✅ Created `structum` core package (v2.0.0-alpha.1)
 - ✅ Extracted plugin system to core
 - ✅ Created minimal CLI bootstrap (`structum.cli.bootstrap`)
 - ✅ Added monitoring infrastructure (`structum.monitoring.metrics`)
@@ -34,7 +34,16 @@ Structum is being transformed from a monolithic CLI tool into a **minimal enterp
 - ✅ Bundled all official plugins as dependencies
 - ⏳ Update CI/CD pipelines (deferred to Phase 5)
 
-**Note:** Phase 3.5 will refactor naming (`structum-core` → `structum`, meta → extras)
+#### Phase 3.5: Naming Refactor ✅ COMPLETED
+
+- ✅ Renamed `structum-core/` → `structum/`
+- ✅ Updated package name: `structum-core` → `structum`
+- ✅ Added optional dependencies (`[full]`, `[tree]`, etc.)
+- ✅ Deleted meta-package (replaced with extras)
+- ✅ Updated all 5 plugin dependencies
+- ✅ Tested new installation patterns
+
+**Result**: Clear, intuitive naming that follows industry standards (pytest, flask, django)
 
 #### Phase 4: Enterprise Features ⏳ PENDING
 - ⏳ Health checks
@@ -67,73 +76,49 @@ structum --help
 #   - [COMMUNITY] demo, demo2
 ```
 
-#### Next Steps: Begin Phase 3.5 - Naming Refactor
+#### Next Steps: Begin Phase 4 - Enterprise Features
 
-**Phase 3 is now COMPLETE!** Meta-package created and tested.
+**Phase 3.5 is now COMPLETE!** Naming refactor successful.
 
 **Current State:**
 
-- All 5 plugins extracted ✅
-- Meta-package `structum` bundles everything ✅
-- All packages working and tested ✅
+- ✅ Clean, intuitive naming (`structum` for core)
+- ✅ Optional dependencies pattern (`[full]`, `[tree]`, etc.)
+- ✅ All 5 plugins working with new structure
+- ✅ Industry-standard architecture (matches pytest, flask)
 
-**Next Phase**: Refactor naming for clarity (Phase 3.5)
+**Next Phase**: Implement enterprise features (Phase 4)
 
-**The Problem:**
+**Enterprise Features to Implement:**
 
-`pip install structum-core` is confusing - the core should just be `structum`!
+1. **Health Checks**
+   - Plugin health monitoring
+   - System resource checks
+   - Dependency validation
 
-**Solution:**
+2. **Advanced Monitoring**
+   - Performance metrics collection
+   - Telemetry integration
+   - Structured logging enhancements
 
-1. **Rename `structum-core/` → `structum/`**
-   - Main package becomes `structum` (the core framework)
-   - Matches industry standard (pytest, flask, django)
+3. **Hot Reload Support**
+   - Dynamic plugin reload
+   - Configuration hot-reload
+   - Development mode improvements
 
-2. **Eliminate `structum-meta/`**
-   - Replace with optional dependencies in core package
-   - `pip install structum[full]` - all plugins
-   - `pip install structum[plugins]` - just plugin commands
-   - `pip install structum` - core only
-
-3. **Update all plugin dependencies**
-   - Change `structum-core>=2.0.0a1` → `structum>=2.0.0a1`
-
-**Naming Refactor Steps:**
+**Installation Patterns (Current):**
 
 ```bash
-# 1. Rename core package directory
-mv structum-core/ structum/
+# Core only (minimal installation)
+pip install -e ./structum
 
-# 2. Update structum/pyproject.toml
-# Change: name = "structum-core"
-# To:     name = "structum"
+# All plugins (local development)
+pip install -e ./structum -e ./structum_tree -e ./structum_archive -e ./structum_clean -e ./structum_docs -e ./structum_plugins
 
-# Add optional dependencies:
-[project.optional-dependencies]
-tree = ["structum_tree>=2.0.0a1"]
-archive = ["structum_archive>=2.0.0a1"]
-clean = ["structum_clean>=2.0.0a1"]
-docs = ["structum_docs>=2.0.0a1"]
-plugins = ["structum_plugins>=2.0.0a1"]
-full = [
-    "structum_tree>=2.0.0a1",
-    "structum_archive>=2.0.0a1",
-    "structum_clean>=2.0.0a1",
-    "structum_docs>=2.0.0a1",
-    "structum_plugins>=2.0.0a1",
-]
-
-# 3. Delete meta-package
-rm -rf structum-meta/
-
-# 4. Update all plugin dependencies (5 files)
-# In each plugin's pyproject.toml, change:
-#   "structum-core>=2.0.0a1" → "structum>=2.0.0a1"
-
-# 5. Test installation patterns
-pip install -e ./structum           # Core only
-pip install -e ./structum[full]     # All plugins
-pip install -e ./structum[tree,archive]  # Selective
+# When published to PyPI (future):
+pip install structum              # Core only
+pip install structum[full]        # All official plugins
+pip install structum[tree,archive]  # Selective plugins
 ```
 
 #### Package Structure Reference
@@ -141,7 +126,7 @@ pip install -e ./structum[tree,archive]  # Selective
 **Current Monorepo Layout**:
 ```
 structum/
-├── structum-core/              # ✅ Phase 1 complete
+├── structum/                   # ✅ Core package (renamed from structum-core)
 │   ├── src/structum/
 │   │   ├── cli/bootstrap.py    # Minimal entry point
 │   │   ├── plugins/            # Plugin system

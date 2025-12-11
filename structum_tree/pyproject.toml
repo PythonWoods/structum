@@ -25,7 +25,7 @@ classifiers = [
 ]
 
 dependencies = [
-    "structum-core>=2.0.0a1",
+    "structum>=2.0.0a1",
     "rich>=13.0",
 ]
 
