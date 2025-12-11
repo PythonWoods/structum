@@ -17,6 +17,14 @@ Complete architectural redesign transforming Structum into an enterprise-grade p
 
 ### ✨ Features
 
+#### Phase 3.7: Test Configuration (2025-12-11)
+
+- **Monorepo Test Runner**: Added `run-tests.sh` to run all package tests
+- **Color-Coded Output**: Pass/fail indicators with summary report
+- **Testing Documentation**: Complete `TESTING.md` guide for contributors
+- **Coverage Targets**: Core 85%+, plugins 70%+
+- **Package-Specific Tests**: Independent test suites per package
+
 #### Phase 3.6: Development Tooling (2025-12-11)
 
 - **Development Setup Script**: Added `dev-setup.sh` for one-command environment setup
