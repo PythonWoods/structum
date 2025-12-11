@@ -817,36 +817,51 @@ python -m structum --help
 4. Performance benchmarks (startup time, memory)
 5. Security tests for sandboxing
 
-### Migration Checklist
+### Refactoring Progress Checklist
 
-Use this to track progress:
+Track the v2.0 refactoring progress:
 
-- [ ] Phase 1: Core Preparation
-  - [ ] Create directory structure
-  - [ ] Move plugin system
-  - [ ] Add monitoring infrastructure
-  - [ ] Add security framework
-  - [ ] Create bootstrap CLI
-- [ ] Phase 2: Plugin Extraction
-  - [ ] Extract tree → structum_tree
-  - [ ] Extract archive → structum_archive
-  - [ ] Extract clean → structum_clean
-  - [ ] Extract docs → structum_docs
-  - [ ] Extract plugins → structum_plugins
-- [ ] Phase 3: Meta-Package
-  - [ ] Create structum meta-package
-  - [ ] Configure dependencies
-  - [ ] Update CI/CD
-- [ ] Phase 4: Enterprise Features
-  - [ ] Health checks
-  - [ ] Monitoring
-  - [ ] Security
-  - [ ] Hot reload
-  - [ ] Multi-environment
-- [ ] Phase 5: Release
-  - [ ] Update docs
-  - [ ] Migration guide
-  - [ ] Release v2.0.0
+**Phase 1: Core Preparation** ✅ COMPLETED
+
+- [x] Create `structum/` core package structure
+- [x] Move plugin system to core
+- [x] Add monitoring infrastructure
+- [x] Add security framework
+- [x] Create bootstrap CLI
+
+**Phase 2: Plugin Extraction** ✅ COMPLETED (5/5)
+
+- [x] Extract tree → `structum_tree`
+- [x] Extract archive → `structum_archive`
+- [x] Extract clean → `structum_clean`
+- [x] Extract docs → `structum_docs`
+- [x] Extract plugins → `structum_plugins`
+
+**Phase 3: Distribution & Tooling** ✅ COMPLETED
+
+- [x] Phase 3.0: Meta-package (later replaced by extras)
+- [x] Phase 3.5: Naming refactor (`structum-core` → `structum`)
+- [x] Phase 3.6: Development tooling (`scripts/dev-setup.sh`)
+- [x] Phase 3.7: Test configuration (`scripts/run-tests.sh`, `TESTING.md`)
+- [x] Phase 3.8: Build scripts (`scripts/build-all.sh`, hatch tasks)
+- [x] Phase 3.9: CI/CD configuration (GitHub Actions, pre-commit)
+
+**Phase 4: Enterprise Features** ⏳ IN PROGRESS
+
+- [ ] Health checks (plugin health monitoring)
+- [ ] Advanced monitoring (metrics, telemetry)
+- [ ] Security enhancements (sandboxing)
+- [ ] Hot reload support (dynamic plugin reload)
+- [ ] Multi-environment configuration
+
+**Phase 5: Documentation & Release** ⏳ PENDING
+
+- [ ] Update all documentation for v2.0
+- [ ] Create migration guide (v1.x → v2.0)
+- [ ] Clean up obsolete files (`src/structum/` monolith)
+- [ ] Prepare PyPI packages for publishing
+- [ ] Release v2.0.0-beta.1
+- [ ] Release v2.0.0 (stable)
 
 ---
 
