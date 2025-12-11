@@ -85,6 +85,11 @@ while [[ $# -gt 0 ]]; do
     esac
 done
 
+# Install all packages in editable mode first
+echo "📦 Installing packages in editable mode..."
+pip install -e ./structum -e ./structum_tree -e ./structum_archive -e ./structum_clean -e ./structum_docs -e ./structum_plugins --quiet
+echo ""
+
 # Test all packages in order
 echo "Running tests for all packages..."
 echo ""
