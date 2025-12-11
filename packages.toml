@@ -1,0 +1,40 @@
+# SPDX-License-Identifier: Apache-2.0
+# SPDX-FileCopyrightText: 2025 PythonWoods
+
+# Monorepo package registry for Structum v2.0
+# Used by scripts and CI to discover and operate on all packages.
+
+[packages.structum]
+path = "structum"
+publish = true
+type = "core"
+
+[packages.structum_tree]
+path = "structum_tree"
+publish = true
+type = "plugin"
+category = "tree"
+
+[packages.structum_archive]
+path = "structum_archive"
+publish = true
+type = "plugin"
+category = "archive"
+
+[packages.structum_clean]
+path = "structum_clean"
+publish = true
+type = "plugin"
+category = "clean"
+
+[packages.structum_plugins]
+path = "structum_plugins"
+publish = true
+type = "plugin"
+category = "management"
+
+[packages.structum_docs]
+path = "structum_docs"
+publish = true
+type = "plugin"
+category = "docs"
