@@ -11,7 +11,7 @@ Structum's plugin system allows extending functionality with custom commands and
 All plugins are external packages, but there are two categories:
 
 1. **Official Plugins** (`structum_*`) – Maintained by PythonWoods team, auto-detected and tagged as [OFFICIAL]
-2. **External Plugins** – Third-party plugins, tagged as [EXTERNAL]
+2. **Community Plugins** – Third-party plugins, tagged as [COMMUNITY]
 
 Both types work identically and use the same entry point mechanism. The only difference is the naming convention that triggers automatic official plugin detection.
 
@@ -32,7 +32,7 @@ Plugins are organized into categories:
 
 All plugins are external packages that use entry points for registration. You can create either:
 - **Official plugins** (structum_*) – Maintained by PythonWoods
-- **External plugins** (any name) – Third-party plugins
+- **Community plugins** (any name) – Third-party plugins
 
 ### Naming Conventions
 
@@ -41,10 +41,10 @@ All plugins are external packages that use entry points for registration. You ca
 - PyPI name: `structum-<name>` (e.g., `structum-latex`)
 - Auto-detected as [OFFICIAL] by the `structum_` prefix
 
-**External Plugins:**
+**Community Plugins:**
 - Package name: Any valid Python package name
 - PyPI name: Recommended `structum-plugin-<name>` (e.g., `structum-plugin-myfeature`)
-- Tagged as [EXTERNAL] in plugin list
+- Tagged as [COMMUNITY] in plugin list
 
 ### Step 1: Generate the Plugin Package
 
@@ -386,7 +386,7 @@ Structum uses a **single, unified discovery mechanism** via Python entry points 
 6. **Conflict Check**: Warns if a plugin with the same name already exists
 7. **Enable/Disable**: Respects user preferences from config file
 
-### Official vs External Detection
+### Official vs Community Detection
 
 ```python
 # In structum/plugins/loader.py
@@ -394,7 +394,7 @@ is_official = plugin_cls.__module__.startswith("structum_")
 
 # Result:
 # structum_latex → [OFFICIAL]
-# my_plugin → [EXTERNAL]
+# my_plugin → [COMMUNITY]
 ```
 
 ### No Manual Registration Required
