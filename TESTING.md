@@ -27,7 +27,7 @@ structum_archive/           # Archive plugin
 ### Run All Tests (Monorepo)
 
 ```bash
-./run-tests.sh
+./scripts/run-tests.sh
 ```
 
 This runs tests for:
@@ -51,7 +51,7 @@ cd structum_tree && pytest
 cd structum && pytest --cov=structum --cov-report=term-missing
 
 # All packages (future enhancement)
-./run-tests.sh --coverage
+./scripts/run-tests.sh --coverage
 ```
 
 ## Test Organization
@@ -168,7 +168,7 @@ Tests run automatically on:
 
 GitHub Actions workflow runs:
 ```bash
-./run-tests.sh
+./scripts/run-tests.sh
 ```
 
 ## Troubleshooting
@@ -179,7 +179,7 @@ If pytest can't find tests:
 
 ```bash
 # Ensure packages are installed in editable mode
-./dev-setup.sh
+./scripts/dev-setup.sh
 
 # Or manually
 pip install -e ./structum

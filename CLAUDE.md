@@ -64,6 +64,17 @@ Structum is being transformed from a monolithic CLI tool into a **minimal enterp
 
 **Result**: Clear testing strategy and tooling for monorepo
 
+#### Phase 3.8: Build and Development Scripts ✅ COMPLETED
+
+- ✅ Organized scripts into `scripts/` directory
+- ✅ Created build automation (`build-all.sh`, `clean-builds.sh`)
+- ✅ Implemented hatch task runner (industry-standard)
+- ✅ Created `scripts/README.md` comprehensive documentation
+- ✅ Created root `pyproject.toml` with hatch scripts
+- ✅ Updated `TESTING.md` script references
+
+**Result**: Professional development workflow with industry-standard tooling (hatch, not Make/tox/just)
+
 #### Phase 4: Enterprise Features ⏳ PENDING
 - ⏳ Health checks
 - ⏳ Advanced monitoring
@@ -97,7 +108,7 @@ structum --help
 
 #### Next Steps: Begin Phase 4 - Enterprise Features
 
-**Phase 3.5 is now COMPLETE!** Naming refactor successful.
+**Phase 3.8 is now COMPLETE!** All development tooling in place.
 
 **Current State:**
 
@@ -105,6 +116,8 @@ structum --help
 - ✅ Optional dependencies pattern (`[full]`, `[tree]`, etc.)
 - ✅ All 5 plugins working with new structure
 - ✅ Industry-standard architecture (matches pytest, flask)
+- ✅ Professional development scripts in `scripts/` directory
+- ✅ Hatch task runner for all workflows (setup, test, build, lint, ci)
 
 **Next Phase**: Implement enterprise features (Phase 4)
 
@@ -405,18 +418,51 @@ structum-core (foundation)
 
 ## Development Commands
 
-### Setup
+### Quick Start (Recommended - Using Hatch)
+
+```bash
+# One-command setup (creates venv, installs core + all plugins + dev tools)
+hatch run setup
+
+# Run all tests
+hatch run test
+
+# Build all packages
+hatch run build
+
+# Lint and format code
+hatch run lint
+hatch run format
+
+# Complete CI workflow (clean, test, lint, build)
+hatch run ci
+```
+
+### Manual Setup (Alternative)
+
 ```bash
 # Create virtual environment and install
 python -m venv .venv
 source .venv/bin/activate  # Windows: .venv\Scripts\activate
-pip install -e ".[dev,docs]"
+
+# Run setup script
+./scripts/dev-setup.sh
 ```
 
 ### Testing
+
 ```bash
-# Run all tests with coverage
-pytest
+# Run all tests (recommended - using hatch)
+hatch run test
+
+# Run tests with verbose output
+hatch run test-verbose
+
+# Manual testing (alternative)
+./scripts/run-tests.sh
+
+# Run specific package tests
+cd structum && pytest
 
 # Run specific test file
 pytest tests/unit/core/test_tree.py

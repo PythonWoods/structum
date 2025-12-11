@@ -17,6 +17,15 @@ Complete architectural redesign transforming Structum into an enterprise-grade p
 
 ### ✨ Features
 
+#### Phase 3.8: Build and Development Scripts (2025-12-11)
+
+- **Script Organization**: Moved all development scripts to `scripts/` directory
+- **Build Automation**: Added `scripts/build-all.sh` and `scripts/clean-builds.sh`
+- **Hatch Task Runner**: Industry-standard task automation via root `pyproject.toml`
+- **Script Documentation**: Complete `scripts/README.md` guide
+- **Task Commands**: `hatch run setup/test/build/lint/format/ci`
+- **Updated References**: Updated `TESTING.md` with new script paths
+
 #### Phase 3.7: Test Configuration (2025-12-11)
 
 - **Monorepo Test Runner**: Added `run-tests.sh` to run all package tests

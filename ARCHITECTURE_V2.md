@@ -406,6 +406,76 @@ cd structum_tree && pytest
 - ✅ Documented coverage targets and best practices
 - ✅ Foundation for CI/CD integration
 
+### Phase 3.8: Build and Development Scripts ✅ COMPLETED
+
+**Goal**: Organize development scripts into proper directory structure, add build automation, and implement industry-standard task runner.
+
+**Changes**:
+
+1. ✅ Created `scripts/` directory for all development scripts
+2. ✅ Moved existing scripts to organized location
+3. ✅ Added build automation tools
+4. ✅ Created root `pyproject.toml` with hatch task runner
+5. ✅ Updated all documentation references
+
+**Script Organization**:
+```bash
+scripts/
+├── README.md              # Comprehensive script documentation
+├── dev-setup.sh          # Development environment setup
+├── run-tests.sh          # Monorepo test runner
+├── build-all.sh          # Build all packages
+└── clean-builds.sh       # Clean build artifacts
+```
+
+**Hatch Task Runner** (industry-standard, used by pytest, black, pip):
+```bash
+# Development
+hatch run setup              # Run dev-setup.sh
+
+# Testing
+hatch run test               # Run all tests
+hatch run test-verbose       # Run tests with verbose output
+
+# Building
+hatch run build              # Build all packages
+hatch run clean              # Clean build artifacts
+
+# Linting & Formatting
+hatch run lint               # Run ruff + mypy
+hatch run format             # Format code with ruff
+
+# Combined CI workflow
+hatch run ci                 # clean + test + lint + build
+```
+
+**Why Hatch (not tox or just)**:
+
+- ✅ Already using hatchling as build backend
+- ✅ Industry standard (pytest, black, pip use it)
+- ✅ Python-native, no external dependencies
+- ✅ PEP 621 compliant
+- ✅ Combines task running + building + publishing
+
+**Files Created**:
+
+- `scripts/README.md`: Complete documentation for all scripts
+- `scripts/build-all.sh`: Builds all packages using `python -m build` (PEP 517)
+- `scripts/clean-builds.sh`: Cleans dist/, build/, .egg-info across all packages
+- `pyproject.toml` (root): Hatch scripts configuration for monorepo tasks
+
+**Files Updated**:
+
+- `TESTING.md`: Updated script paths (`./run-tests.sh` → `./scripts/run-tests.sh`)
+
+**Benefits**:
+
+- ✅ Industry-standard directory structure (follows pytest, flask, django)
+- ✅ Professional task automation without Makefile
+- ✅ Clear documentation for all development workflows
+- ✅ Easy CI/CD integration via hatch commands
+- ✅ Consistent with existing build tools (hatchling)
+
 ### Phase 4: Enterprise Features
 1. ⬜ Implement health checks
 2. ⬜ Add performance monitoring
