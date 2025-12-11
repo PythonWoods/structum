@@ -9,6 +9,68 @@ and automatic release generation via **release-please**.
 
 ## [Unreleased]
 
+## [2.0.0-alpha.1] - 2025-12-11
+
+### 🎉 Major Release - Enterprise Plugin Framework
+
+Complete architectural redesign transforming Structum into an enterprise-grade plugin framework.
+
+### ✨ Features
+
+#### Phase 3.5: Naming Refactor (2025-12-11)
+
+- **Package Rename**: `structum-core` → `structum` for clarity and industry standards
+- **Optional Dependencies**: Added `[full]`, `[tree]`, `[archive]`, `[clean]`, `[docs]`, `[plugins]` extras
+- **Meta-Package Elimination**: Replaced with cleaner optional dependencies pattern
+- **Installation Patterns**:
+  - `pip install structum` - Core framework only
+  - `pip install structum[full]` - All official plugins
+  - `pip install structum[tree,docs]` - Selective plugins
+
+#### Phase 3: Meta-Package (2025-12-11)
+
+- **Meta-Package**: Created bundle package with all official plugins
+- **Synchronized Versioning**: All packages at v2.0.0-alpha.1
+
+#### Phase 2: Plugin Extraction (2025-12-10)
+
+- **structum_tree** (v2.0.0-alpha.1): Extracted tree visualization as standalone plugin
+- **structum_archive** (v2.0.0-alpha.1): Extracted code archiving as standalone plugin
+- **structum_clean** (v2.0.0-alpha.1): Extracted cleanup utilities as standalone plugin
+- **structum_docs** (v2.0.0-alpha.1): Extracted documentation management as standalone plugin
+- **structum_plugins** (v2.0.0-alpha.1): Extracted plugin management as standalone plugin
+
+#### Phase 1: Core Preparation (2025-12-10)
+
+- **Minimal Core**: Enterprise-grade plugin framework with minimal dependencies
+- **Plugin System**: Entry point-based discovery, lazy loading, conflict detection
+- **Monitoring**: Performance metrics collection infrastructure
+- **Security**: Plugin validation and security framework
+- **Configuration**: Centralized config management with validation
+
+### 🔄 Changed
+
+- **BREAKING**: Monolithic architecture → Plugin-based architecture
+- **BREAKING**: Package name: `structum` now refers to core framework (was meta-package)
+- **BREAKING**: All commands are now plugins (no built-in commands except `version` and `info`)
+- **Plugin Dependencies**: All plugins now depend on `structum>=2.0.0a1` (was `structum-core`)
+
+### 🗑️ Removed
+
+- **Meta-Package**: `structum-meta` eliminated in favor of optional dependencies
+- **Built-in Commands**: All functionality moved to plugins
+- **Old Documentation**: ARCHITECTURE.md, ROADMAP.md, Migration_Path.md (replaced by ARCHITECTURE_V2.md)
+
+### 📚 Documentation
+
+- **ARCHITECTURE_V2.md**: Complete v2.0 architecture documentation
+- **CLAUDE.md**: Updated with Phase 3.5 completion status
+- **Architectural Decisions**: Documented all key decisions and rationale
+
+---
+
+## [0.2.0] - 2024-12-05
+
 ### ✨ Features
 
 #### Core Commands

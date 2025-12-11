@@ -9,17 +9,20 @@
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![REUSE status](https://api.reuse.software/badge/github.com/pythonwoods/structum)](https://api.reuse.software/info/github.com/pythonwoods/structum)
 
-**Structum** is an enterprise-grade CLI tool designed to visualize, document, and archive directory structures. It bridges the gap between complex file systems and human-readable documentation.
+**Structum** is an enterprise-grade plugin framework for building extensible CLI applications. It provides a minimal, production-ready core with a powerful plugin system.
+
+> **Version 2.0 Alpha** - Complete architectural redesign. See [CHANGELOG.md](CHANGELOG.md) for details.
 
 ---
 
 ## ✨ Key Features
 
-*   **Visual Tree Generation**: Create beautiful, colored directory trees directly in your terminal.
-*   **Multiple Themes**: Support for **Nerd Fonts**, Emojis, and plain ASCII (perfect for Markdown/LLM contexts).
-*   **Smart Filtering**: Easily exclude `.git`, `__pycache__`, or specific file extensions.
-*   **Export Ready**: Generate clean output for documentation or AI context injection.
-*   **Extensible Plugin System**: Auto-discovered plugins for custom commands and framework integrations.
+*   **Plugin-First Architecture**: Everything is a plugin - no built-in commands beyond core utilities
+*   **Entry Point Discovery**: Plugins auto-discovered via Python entry points
+*   **Minimal Core**: Lightweight framework with essential infrastructure only
+*   **Optional Dependencies**: Install only the plugins you need
+*   **Enterprise-Grade**: Production-ready with monitoring, security, and configuration management
+*   **Developer-Friendly**: Clear SDK, excellent DX, comprehensive documentation
 
 ---
 
@@ -27,28 +30,46 @@
 
 ### Installation
 
+**Core Framework Only:**
 ```bash
 pip install structum
 ```
 
-### Usage
+**With All Official Plugins:**
+```bash
+pip install structum[full]
+```
 
-Structum provides three main commands:
+**Selective Installation:**
+```bash
+pip install structum[tree,archive]  # Just tree and archive plugins
+```
 
-1.  **`tree`**: Visualize directory structure.
-2.  **`archive`**: Export code to Markdown.
-3.  **`clean`**: Remove `__pycache__` directories.
+### Available Official Plugins
 
-#### Visualize Structure
+Install `structum[full]` to get all of these:
+
+1.  **`tree`**: Directory tree visualization
+2.  **`archive`**: Export code to Markdown
+3.  **`clean`**: Remove `__pycache__` directories
+4.  **`docs`**: Documentation management (MkDocs integration)
+5.  **`plugins`**: Plugin management utilities
+
+### Usage Examples
+
+#### Visualize Structure (requires `structum_tree`)
 ```bash
 # Basic usage with stats
 structum tree . --stats
 
-# Filter by extension (comma-separated supported)
+# Filter by extension
 structum tree . --ext py,md,json --depth 2
+
+# Different themes
+structum tree . --theme emoji  # or: nerd, ascii, none
 ```
 
-#### Archive Code
+#### Archive Code (requires `structum_archive`)
 ```bash
 # Archive multiple file types
 structum archive . --output code.md --ext py,js,ts
@@ -57,25 +78,34 @@ structum archive . --output code.md --ext py,js,ts
 structum archive src --split-folder --output docs/
 ```
 
-#### Clean Project
+#### Clean Project (requires `structum_clean`)
 ```bash
-# Remove __pycache__ (use --skip-venv to exclude virtual environments)
+# Remove __pycache__ (skip virtual environments)
 structum clean . --skip-venv
 ```
 
-#### Manage Plugins
+#### Manage Documentation (requires `structum_docs`)
 ```bash
-# List installed plugins (auto-discovered)
-structum plugins list
+# Serve docs locally
+structum docs serve
 
-# Generate a new plugin (automatically registered)
-structum plugins new my-plugin --category analysis
-
-# Test your plugin
-structum my-plugin
+# Deploy to GitHub Pages
+structum docs deploy
 ```
 
-> **Note**: Built-in plugins are automatically discovered - no manual registration needed!
+#### Manage Plugins (requires `structum_plugins`)
+```bash
+# List installed plugins
+structum plugins list
+
+# Generate a new plugin
+structum plugins new my-plugin --category utility
+
+# Get plugin info
+structum plugins info tree
+```
+
+> **Note**: All plugins are auto-discovered via entry points - no manual registration needed!
 
 ---
 
