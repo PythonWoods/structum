@@ -28,10 +28,13 @@ Structum is being transformed from a monolithic CLI tool into a **minimal enterp
 - ✅ **structum_docs** (v2.0.0-alpha.1) - Documentation management plugin
 - ✅ **structum_plugins** (v2.0.0-alpha.1) - Plugin management plugin
 
-#### Phase 3: Meta-Package ⏳ PENDING
-- ⏳ Create `structum` meta-package
-- ⏳ Bundle all official plugins
-- ⏳ Update CI/CD pipelines
+#### Phase 3: Meta-Package ✅ COMPLETED
+
+- ✅ Created `structum` meta-package (v2.0.0-alpha.1)
+- ✅ Bundled all official plugins as dependencies
+- ⏳ Update CI/CD pipelines (deferred to Phase 5)
+
+**Note:** Phase 3.5 will refactor naming (`structum-core` → `structum`, meta → extras)
 
 #### Phase 4: Enterprise Features ⏳ PENDING
 - ⏳ Health checks
@@ -64,35 +67,73 @@ structum --help
 #   - [COMMUNITY] demo, demo2
 ```
 
-#### Next Steps: Begin Phase 3
+#### Next Steps: Begin Phase 3.5 - Naming Refactor
 
-**Phase 2 is now COMPLETE!** All 5 official plugins have been successfully extracted.
+**Phase 3 is now COMPLETE!** Meta-package created and tested.
 
-**Next Phase**: Create the meta-package that bundles all official plugins.
+**Current State:**
 
-**Pattern to Follow** (for meta-package):
+- All 5 plugins extracted ✅
+- Meta-package `structum` bundles everything ✅
+- All packages working and tested ✅
+
+**Next Phase**: Refactor naming for clarity (Phase 3.5)
+
+**The Problem:**
+
+`pip install structum-core` is confusing - the core should just be `structum`!
+
+**Solution:**
+
+1. **Rename `structum-core/` → `structum/`**
+   - Main package becomes `structum` (the core framework)
+   - Matches industry standard (pytest, flask, django)
+
+2. **Eliminate `structum-meta/`**
+   - Replace with optional dependencies in core package
+   - `pip install structum[full]` - all plugins
+   - `pip install structum[plugins]` - just plugin commands
+   - `pip install structum` - core only
+
+3. **Update all plugin dependencies**
+   - Change `structum-core>=2.0.0a1` → `structum>=2.0.0a1`
+
+**Naming Refactor Steps:**
+
 ```bash
-# For each plugin (example: clean):
-mkdir -p structum_clean/src/structum_clean
-cd structum_clean
+# 1. Rename core package directory
+mv structum-core/ structum/
 
-# Create pyproject.toml with:
-# - name: structum_clean
-# - version: dynamic from __about__.py
-# - dependencies: structum-core>=2.0.0a1 (+ others as needed)
-# - entry-points: clean = "structum_clean.plugin:CleanPlugin"
+# 2. Update structum/pyproject.toml
+# Change: name = "structum-core"
+# To:     name = "structum"
 
-# Create plugin files:
-# - src/structum_clean/__about__.py      (version info)
-# - src/structum_clean/__init__.py       (exports)
-# - src/structum_clean/plugin.py         (PluginBase subclass)
-# - src/structum_clean/core.py           (business logic)
-# - README.md                            (plugin documentation)
+# Add optional dependencies:
+[project.optional-dependencies]
+tree = ["structum_tree>=2.0.0a1"]
+archive = ["structum_archive>=2.0.0a1"]
+clean = ["structum_clean>=2.0.0a1"]
+docs = ["structum_docs>=2.0.0a1"]
+plugins = ["structum_plugins>=2.0.0a1"]
+full = [
+    "structum_tree>=2.0.0a1",
+    "structum_archive>=2.0.0a1",
+    "structum_clean>=2.0.0a1",
+    "structum_docs>=2.0.0a1",
+    "structum_plugins>=2.0.0a1",
+]
 
-# Install and test:
-pip install -e .
-structum --help  # Should show [OFFICIAL] clean
-structum clean --help
+# 3. Delete meta-package
+rm -rf structum-meta/
+
+# 4. Update all plugin dependencies (5 files)
+# In each plugin's pyproject.toml, change:
+#   "structum-core>=2.0.0a1" → "structum>=2.0.0a1"
+
+# 5. Test installation patterns
+pip install -e ./structum           # Core only
+pip install -e ./structum[full]     # All plugins
+pip install -e ./structum[tree,archive]  # Selective
 ```
 
 #### Package Structure Reference
@@ -293,6 +334,39 @@ structum docs deploy --force
 ```
 
 **Note**: Requires MkDocs to be installed (`pip install mkdocs mkdocs-material`).
+
+---
+
+#### 7. structum (Meta-Package) (v2.0.0-alpha.1)
+
+**Purpose**: Complete bundle - all official plugins in one install
+**Location**: `structum-meta/`
+**Type**: Meta-package (dependencies only, no code)
+**Dependencies**: All official packages
+
+**What's Included:**
+
+- structum-core (plugin framework)
+- structum_tree (tree visualization)
+- structum_archive (code archiving)
+- structum_clean (cleanup utilities)
+- structum_docs (documentation management)
+- structum_plugins (plugin management)
+
+**Installation:**
+
+```bash
+# Complete installation (all plugins)
+pip install structum
+
+# Minimal installation (core only)
+pip install structum-core
+
+# Selective installation
+pip install structum-core structum_tree structum_archive
+```
+
+**Note**: This meta-package will be replaced with extras in Phase 3.5 (`structum[full]`).
 
 ---
 

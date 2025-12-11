@@ -282,18 +282,64 @@ structum --env development tree .
 4. ✅ Add monitoring infrastructure
 5. ✅ Add security framework
 
-### Phase 2: Plugin Separation 🔄 IN PROGRESS (2/5 completed)
+### Phase 2: Plugin Separation ✅ COMPLETED
 1. ✅ Extract tree → structum_tree (v2.0.0-alpha.1)
 2. ✅ Extract archive → structum_archive (v2.0.0-alpha.1)
-3. ⬜ Extract clean → structum_clean
-4. ⬜ Extract docs → structum_docs
-5. ⬜ Extract plugins management → structum_plugins
+3. ✅ Extract clean → structum_clean (v2.0.0-alpha.1)
+4. ✅ Extract docs → structum_docs (v2.0.0-alpha.1)
+5. ✅ Extract plugins management → structum_plugins (v2.0.0-alpha.1)
 
-### Phase 3: Meta-Package
-1. ⬜ Create structum meta-package
-2. ⬜ Setup monorepo or multi-repo structure
-3. ⬜ Update CI/CD pipelines
-4. ⬜ Coordinate versioning strategy
+### Phase 3: Meta-Package ✅ COMPLETED
+1. ✅ Created structum meta-package (v2.0.0-alpha.1)
+2. ✅ Setup monorepo structure (for alpha/beta development)
+3. ⬜ Update CI/CD pipelines (deferred to Phase 5)
+4. ✅ Coordinated versioning strategy (synchronized for v2.0.0a1)
+
+**Note**: Phase 3 implementation revealed naming issues. See Phase 3.5 for refactoring plan.
+
+### Phase 3.5: Naming Refactor ⏳ PENDING
+
+**Problem Identified**: `pip install structum-core` is confusing and doesn't follow industry standards. The core framework should be named `structum`, not `structum-core`.
+
+**Refactoring Plan**:
+
+1. ✅ **Analysis Complete** - Documented naming issues
+2. ⬜ **Rename structum-core → structum**
+   - Directory: `structum-core/` → `structum/`
+   - Package name: `structum-core` → `structum`
+   - Matches pytest, flask, django pattern
+3. ⬜ **Add Optional Dependencies to Core**
+   ```toml
+   [project.optional-dependencies]
+   tree = ["structum_tree>=2.0.0a1"]
+   archive = ["structum_archive>=2.0.0a1"]
+   clean = ["structum_clean>=2.0.0a1"]
+   docs = ["structum_docs>=2.0.0a1"]
+   plugins = ["structum_plugins>=2.0.0a1"]
+   full = [
+       "structum_tree>=2.0.0a1",
+       "structum_archive>=2.0.0a1",
+       "structum_clean>=2.0.0a1",
+       "structum_docs>=2.0.0a1",
+       "structum_plugins>=2.0.0a1",
+   ]
+   ```
+4. ⬜ **Eliminate Meta-Package**
+   - Delete `structum-meta/` directory
+   - Replace with `pip install structum[full]`
+5. ⬜ **Update All Plugin Dependencies**
+   - Update 5 plugin pyproject.toml files
+   - Change: `structum-core>=2.0.0a1` → `structum>=2.0.0a1`
+6. ⬜ **Test New Installation Patterns**
+   - `pip install structum` - core only
+   - `pip install structum[full]` - all plugins
+   - `pip install structum[tree,archive]` - selective
+
+**Benefits**:
+- Clear, intuitive naming
+- Follows industry best practices
+- Better user experience
+- Simpler maintenance
 
 ### Phase 4: Enterprise Features
 1. ⬜ Implement health checks
@@ -307,6 +353,94 @@ structum --env development tree .
 2. ⬜ Create migration guide
 3. ⬜ Update CLAUDE.md
 4. ⬜ Release v2.0.0
+
+---
+
+## Architectural Decisions & Rationale
+
+### Decision 1: Monorepo vs Multi-Repo (Phase 3)
+
+**Decision**: Use monorepo for alpha/beta, transition to multi-repo for stable release.
+
+**Rationale**:
+- **Monorepo benefits during development**: Easier coordination, atomic commits across packages, simpler testing
+- **Multi-repo for production**: Industry standard (pytest, flask), independent versioning, cleaner releases
+- **Transition plan**: Keep monorepo until v2.0.0 stable, then split to individual repos
+
+**Implementation**: Current monorepo structure with separate package directories.
+
+### Decision 2: Versioning Strategy (Phase 3)
+
+**Decision**: Synchronized versioning for v2.0.0 alpha/beta, independent versioning post-stable.
+
+**Rationale**:
+- **Alpha/Beta**: All packages at `2.0.0a1` simplifies testing and communication
+- **Post-Stable**: Independent versioning allows plugin updates without core changes
+- **Compatibility**: Use version constraints (e.g., `structum>=2.0.0,<3.0.0`)
+
+**Example**:
+```toml
+# During alpha/beta (current)
+structum==2.0.0a1
+structum_tree==2.0.0a1
+
+# Post-stable (future)
+structum==2.1.0
+structum_tree==2.3.5  # Can evolve independently
+```
+
+### Decision 3: Naming Convention (Phase 3.5)
+
+**Decision**: Rename `structum-core` → `structum`, eliminate meta-package, use optional dependencies.
+
+**Rationale**:
+- **User confusion**: `pip install structum-core` doesn't communicate "this is the main package"
+- **Industry standard**: pytest, flask, django all use the framework name for the core
+- **Better UX**: `pip install structum` for core, `pip install structum[full]` for everything
+- **Simpler maintenance**: One less package to manage
+
+**Migration**: Planned for Phase 3.5.
+
+### Decision 4: Meta-Package Pattern (Phase 3)
+
+**Decision**: Initially created meta-package, will replace with optional dependencies.
+
+**Rationale**:
+- **Initial approach**: Separate meta-package bundles all plugins
+- **Problem discovered**: Confusing naming, extra package to maintain
+- **Better solution**: Optional dependencies in core (`[full]`, `[plugins]`, etc.)
+- **Lesson learned**: Test naming patterns before committing to architecture
+
+**Status**: Meta-package created in Phase 3, will be eliminated in Phase 3.5.
+
+### Decision 5: Plugin Naming Convention
+
+**Decision**: Use `structum_*` naming for official plugins (underscore, not dash).
+
+**Rationale**:
+- **PyPI convention**: Dashes on PyPI (`structum-tree`), underscores in Python imports (`structum_tree`)
+- **Official marker**: Plugins starting with `structum_` are automatically tagged as `[OFFICIAL]`
+- **Community plugins**: Use any name (e.g., `structum-plugin-latex`, `my-custom-plugin`)
+
+**Implementation**: Entry point detection checks package name prefix.
+
+### Decision 6: Dependency Management
+
+**Decision**: Plugins depend on core only, not on each other (except documented cases).
+
+**Rationale**:
+- **Loose coupling**: Plugins should be independent
+- **Exception**: `structum_archive` depends on `structum_tree` for reusable tree rendering
+- **Documentation**: Dependencies must be clearly documented in README
+
+**Example**:
+```toml
+# Most plugins
+dependencies = ["structum>=2.0.0a1"]
+
+# Exception: archive needs tree utilities
+dependencies = ["structum>=2.0.0a1", "structum_tree>=2.0.0a1"]
+```
 
 ---
 
