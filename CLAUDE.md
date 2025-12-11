@@ -104,10 +104,15 @@ git status  # Should show: "On branch develop"
 # 3. View current structure
 ls -la
 # You should see:
-#   - structum-core/        (Phase 1 complete)
+#   - structum/             (Core package - Phase 1 complete)
 #   - structum_tree/        (Plugin 1 complete)
 #   - structum_archive/     (Plugin 2 complete)
-#   - src/                  (Original monolith - being phased out)
+#   - structum_clean/       (Plugin 3 complete)
+#   - structum_docs/        (Plugin 4 complete)
+#   - structum_plugins/     (Plugin 5 complete)
+#   - scripts/              (Development scripts - Phase 3.8)
+#   - .github/workflows/    (CI/CD - Phase 3.9)
+#   - src/                  (Legacy v1.x monolith - deprecated)
 
 # 4. Test current state
 structum --help
@@ -156,30 +161,37 @@ structum --help
 **Installation Patterns (Current):**
 
 ```bash
-# Core only (minimal installation)
-pip install -e ./structum
+# Local development - using hatch (RECOMMENDED)
+hatch run setup                    # Automated setup (all packages + dev tools)
 
-# All plugins (local development)
-pip install -e ./structum -e ./structum_tree -e ./structum_archive -e ./structum_clean -e ./structum_docs -e ./structum_plugins
+# Local development - manual installation
+pip install -e ./structum          # Core only
+pip install -e ./structum[full]    # Core + all plugins as optional dependencies
+
+# Individual plugins (if needed)
+pip install -e ./structum_tree
+pip install -e ./structum_archive
+# ... etc
 
 # When published to PyPI (future):
-pip install structum              # Core only
-pip install structum[full]        # All official plugins
-pip install structum[tree,archive]  # Selective plugins
+pip install structum               # Core framework only
+pip install structum[full]         # Core + all official plugins
+pip install structum[tree,docs]    # Core + selective plugins
 ```
 
 #### Package Structure Reference
 
 **Current Monorepo Layout**:
+
 ```
-structum/
-├── structum/                   # ✅ Core package (renamed from structum-core)
+structum/                       # ✅ Monorepo root
+├── structum/                   # ✅ Core package (Phase 1)
 │   ├── src/structum/
-│   │   ├── cli/bootstrap.py    # Minimal entry point
-│   │   ├── plugins/            # Plugin system
-│   │   ├── config/             # Config management
-│   │   ├── monitoring/         # Metrics
-│   │   └── security/           # Validation
+│   │   ├── cli/bootstrap.py    # Minimal CLI entry point
+│   │   ├── plugins/            # Plugin system (loader, registry, SDK)
+│   │   ├── config/             # Configuration management
+│   │   ├── monitoring/         # Performance metrics
+│   │   └── security/           # Security validation
 │   └── pyproject.toml          # v2.0.0-alpha.1
 │
 ├── structum_tree/              # ✅ Plugin 1 complete
@@ -213,17 +225,35 @@ structum/
 │   │   └── core.py             # docs management logic
 │   └── pyproject.toml          # v2.0.0-alpha.1
 │
-├── src/structum/               # ⚠️ Legacy monolith (can be deprecated)
+├── scripts/                    # ✅ Development scripts (Phase 3.8)
+│   ├── README.md               # Script documentation
+│   ├── dev-setup.sh            # Environment setup
+│   ├── run-tests.sh            # Test runner
+│   ├── build-all.sh            # Build all packages
+│   └── clean-builds.sh         # Clean artifacts
 │
-├── ARCHITECTURE_V2.md          # Complete architecture design
-└── CLAUDE.md                   # This file
+├── .github/workflows/          # ✅ CI/CD (Phase 3.9)
+│   ├── tests.yml               # Multi-version testing
+│   ├── lint.yml                # Code quality checks
+│   ├── build.yml               # Package building
+│   ├── publish.yml             # PyPI publishing
+│   └── release-please.yml      # Release automation
+│
+├── pyproject.toml              # Monorepo task automation (hatch)
+├── .pre-commit-config.yaml     # Pre-commit hooks configuration
+├── ARCHITECTURE_V2.md          # Complete v2.0 architecture design
+├── TESTING.md                  # Testing guide
+├── CHANGELOG.md                # Version history
+├── CLAUDE.md                   # This file (dev guide)
+└── src/                        # ⚠️ Legacy v1.x monolith (deprecated)
 ```
 
 ### Created Packages Summary
 
-#### 1. structum-core (v2.0.0-alpha.1)
-**Purpose**: Minimal enterprise-grade plugin framework
-**Location**: `structum-core/`
+#### 1. structum (v2.0.0-alpha.1)
+
+**Purpose**: Minimal enterprise-grade plugin framework (core package)
+**Location**: `structum/`
 **Entry Point**: `structum = "structum.cli.bootstrap:main"`
 **Dependencies**: `typer>=0.12`, `rich>=13.0`, `pydantic>=2.0`, `pydantic-settings>=2.0`
 
@@ -246,7 +276,7 @@ structum/
 **Purpose**: Directory tree visualization plugin
 **Location**: `structum_tree/`
 **Entry Point**: `tree = "structum_tree.plugin:TreePlugin"`
-**Dependencies**: `structum-core>=2.0.0a1`, `rich>=13.0`
+**Dependencies**: `structum>=2.0.0a1`, `rich>=13.0`
 
 **Features**:
 - Multiple themes: emoji, nerd, ascii, none
@@ -267,7 +297,7 @@ structum tree . --theme emoji --depth 2 --ext py
 **Purpose**: Code archiving to Markdown plugin
 **Location**: `structum_archive/`
 **Entry Point**: `archive = "structum_archive.plugin:ArchivePlugin"`
-**Dependencies**: `structum-core>=2.0.0a1`, `structum_tree>=2.0.0a1`, `rich>=13.0`
+**Dependencies**: `structum>=2.0.0a1`, `structum_tree>=2.0.0a1`, `rich>=13.0`
 
 **Features**:
 - Archive code to Markdown with syntax highlighting
@@ -292,7 +322,7 @@ structum archive . --split-folder --output docs/
 **Purpose**: Cleanup utilities plugin
 **Location**: `structum_clean/`
 **Entry Point**: `clean = "structum_clean.plugin:CleanPlugin"`
-**Dependencies**: `structum-core>=2.0.0a1`, `rich>=13.0`
+**Dependencies**: `structum>=2.0.0a1`, `rich>=13.0`
 
 **Features**:
 
@@ -317,7 +347,7 @@ structum clean . --skip-venv
 **Purpose**: Plugin management plugin
 **Location**: `structum_plugins/`
 **Entry Point**: `plugins = "structum_plugins.plugin:PluginsPlugin"`
-**Dependencies**: `structum-core>=2.0.0a1`, `rich>=13.0`
+**Dependencies**: `structum>=2.0.0a1`, `rich>=13.0`
 
 **Features**:
 
@@ -344,7 +374,7 @@ structum plugins new awesome-tool --output ~/projects/ --category utility
 **Purpose**: Documentation management plugin
 **Location**: `structum_docs/`
 **Entry Point**: `docs = "structum_docs.plugin:DocsPlugin"`
-**Dependencies**: `structum-core>=2.0.0a1`, `rich>=13.0`
+**Dependencies**: `structum>=2.0.0a1`, `rich>=13.0`
 
 **Features**:
 
@@ -369,67 +399,79 @@ structum docs deploy --force
 
 ---
 
-#### 7. structum (Meta-Package) (v2.0.0-alpha.1)
+### Optional Dependencies Pattern
 
-**Purpose**: Complete bundle - all official plugins in one install
-**Location**: `structum-meta/`
-**Type**: Meta-package (dependencies only, no code)
-**Dependencies**: All official packages
+**Phase 3.5 Update**: The meta-package approach was replaced with Python's optional dependencies (extras) pattern.
 
-**What's Included:**
-
-- structum-core (plugin framework)
-- structum_tree (tree visualization)
-- structum_archive (code archiving)
-- structum_clean (cleanup utilities)
-- structum_docs (documentation management)
-- structum_plugins (plugin management)
-
-**Installation:**
+**Installation Options:**
 
 ```bash
-# Complete installation (all plugins)
+# Core framework only
 pip install structum
 
-# Minimal installation (core only)
-pip install structum-core
+# All official plugins (recommended for most users)
+pip install structum[full]
 
-# Selective installation
-pip install structum-core structum_tree structum_archive
+# Selective plugins
+pip install structum[tree]           # Core + tree plugin
+pip install structum[tree,docs]      # Core + tree + docs plugins
+
+# All available extras:
+# - [full]     → All official plugins
+# - [tree]     → Tree visualization
+# - [archive]  → Code archiving
+# - [clean]    → Cleanup utilities
+# - [docs]     → Documentation management
+# - [plugins]  → Plugin management
 ```
 
-**Note**: This meta-package will be replaced with extras in Phase 3.5 (`structum[full]`).
+**Benefits of Optional Dependencies:**
+
+- ✅ Industry standard (pytest, flask, django use this pattern)
+- ✅ Cleaner than separate meta-package
+- ✅ Single package to maintain
+- ✅ Flexible installation options
+- ✅ Better dependency resolution
 
 ---
 
 ### Plugin Dependency Graph
 
 ```
-structum-core (foundation)
+structum (core framework)
     ↓
     ├─→ structum_tree (no plugin dependencies)
     │       ↓
-    │       └─→ structum_archive (depends on tree)
+    │       └─→ structum_archive (depends on structum_tree for tree rendering)
     │
     ├─→ structum_clean (no plugin dependencies)
     ├─→ structum_docs (no plugin dependencies)
     └─→ structum_plugins (no plugin dependencies)
 ```
 
+**Note**: All plugins depend on `structum>=2.0.0a1`. Only `structum_archive` has an additional plugin dependency (`structum_tree`) for shared tree rendering functionality.
+
 ---
 
-## Project Overview (Current State - Will Change)
+## Project Overview
 
-**Current**: Structum is a CLI tool with plugin support
-**Future (v2.0)**: Structum will be a minimal plugin framework (like pytest)
+**Structum v2.0** is a minimal enterprise-grade plugin framework (similar to pytest, flask).
+
+**Current Architecture:**
+
+- ✅ **Core Package** (`structum`): Provides only plugin infrastructure
+- ✅ **Official Plugins**: All functionality delivered via plugins (tree, archive, clean, docs, plugins)
+- ✅ **Plugin Discovery**: Entry point-based auto-discovery
+- ✅ **Optional Dependencies**: Install core alone or with plugins via `[full]`/`[tree]`/etc extras
 
 **Core Technologies:**
-- Python 3.11+ with strict type checking
+
+- Python 3.11+ with strict type checking (MyPy)
 - Typer (CLI framework) + Rich (terminal output)
 - Entry point-based plugin system
 - Hatchling for builds
-
-**V2.0 Vision**: Core package (`structum-core`) provides only plugin infrastructure. All commands (tree, archive, clean, docs) become official plugins.
+- Hatch for task automation
+- GitHub Actions for CI/CD
 
 ## Development Commands
 
@@ -695,127 +737,35 @@ set_plugin_enabled("my-plugin", False)     # Disable plugin
 
 Config is stored in `~/.config/structum/config.json`.
 
-## V2.0 Refactoring Guide
+## Critical Files Reference
 
-### Current Architecture (v1.x - Being Replaced)
+**Architecture & Design:**
 
-```
-src/structum/
-├── cli/              # CLI commands (will be extracted)
-│   ├── main.py       # Entry point
-│   └── commands/     # tree, archive, clean, docs, plugins
-├── core/             # Business logic (will be extracted)
-├── plugins/          # Plugin system (will stay, enhanced)
-└── utils/            # Utilities (will be reorganized)
-```
+- **[ARCHITECTURE_V2.md](ARCHITECTURE_V2.md)**: Complete v2.0 architecture documentation with all design decisions
+- **[TESTING.md](TESTING.md)**: Comprehensive testing guide and strategy
+- **[CHANGELOG.md](CHANGELOG.md)**: Version history and release notes
 
-### Target Architecture (v2.0)
+**Core Package Files:**
 
-```
-structum-core/                    # Minimal core (new package)
-├── src/structum/
-│   ├── cli/
-│   │   └── bootstrap.py          # Minimal entry point
-│   ├── plugins/                  # Enhanced plugin system
-│   │   ├── loader.py
-│   │   ├── registry.py
-│   │   ├── sdk.py
-│   │   ├── utils.py
-│   │   └── health.py             # NEW: Health checks
-│   ├── config/                   # NEW: Config management
-│   ├── monitoring/               # NEW: Metrics & telemetry
-│   └── security/                 # NEW: Sandboxing & validation
+- `structum/src/structum/cli/bootstrap.py` - Minimal CLI entry point
+- `structum/src/structum/plugins/loader.py` - Plugin discovery and loading
+- `structum/src/structum/plugins/registry.py` - Plugin registry management
+- `structum/src/structum/plugins/sdk.py` - Plugin SDK base classes
 
-structum_tree/                    # Official plugin
-structum_archive/                 # Official plugin
-structum_clean/                   # Official plugin
-structum_docs/                    # Official plugin
-structum_plugins/                 # Official plugin
+**Development Tools:**
 
-structum/                         # Meta-package (bundles all)
-```
+- `scripts/dev-setup.sh` - Automated development environment setup
+- `scripts/run-tests.sh` - Monorepo test runner
+- `scripts/build-all.sh` - Build all packages
+- `pyproject.toml` (root) - Hatch task automation configuration
 
-### Refactoring Steps (In Order)
+**CI/CD:**
 
-**Phase 1: Core Preparation**
-1. Create `structum-core/` directory structure
-2. Move plugin system to core
-3. Add monitoring infrastructure
-4. Add security framework
-5. Create minimal bootstrap CLI
-
-**Phase 2: Plugin Extraction**
-1. Extract `tree` command → `structum_tree/`
-2. Extract `archive` command → `structum_archive/`
-3. Extract `clean` command → `structum_clean/`
-4. Extract `docs` command → `structum_docs/`
-5. Extract `plugins` commands → `structum_plugins/`
-
-**Phase 3: Meta-Package**
-1. Create `structum/` meta-package
-2. Add all official plugins as dependencies
-3. Update CI/CD for monorepo
-
-**Phase 4: Enterprise Features**
-1. Implement health checks
-2. Add performance monitoring
-3. Add security features (sandboxing)
-4. Add hot reload
-5. Add multi-environment config
-
-**Phase 5: Testing & Release**
-1. Comprehensive testing
-2. Update all documentation
-3. Migration guide for v1 users
-4. Release v2.0.0
-
-### Key Decisions Made
-
-1. **Repository Structure**: Monorepo (easier coordination)
-2. **Backward Compatibility**: Clean break for v2.0 (no v1 compat layer)
-3. **Plugin Types**: `[OFFICIAL]` (structum_*) and `[COMMUNITY]` (all others)
-4. **Installation**: `pip install structum` bundles all official plugins
-5. **Core Package**: `pip install structum-core` for framework only
-
-### Commands for Refactoring
-
-```bash
-# Check refactoring status
-git status
-git branch  # Should be on 'develop'
-
-# Review architecture
-cat ARCHITECTURE_V2.md
-
-# Start Phase 1: Create core structure
-mkdir -p structum-core/src/structum/{cli,plugins,config,monitoring,security}
-
-# Extract tree plugin (example)
-mkdir -p structum_tree/src/structum_tree/{commands,core}
-# Copy relevant code from src/structum/core/tree.py
-# Copy relevant code from src/structum/cli/commands/tree.py
-
-# Test during development
-pip install -e .
-python -m structum --help
-```
-
-### Critical Files to Know
-
-- **`ARCHITECTURE_V2.md`**: Complete v2.0 design document
-- **`ARCHITECTURE.md`**: Old v1.x architecture (will be deprecated)
-- **`src/structum/plugins/loader.py`**: Plugin loading logic
-- **`src/structum/plugins/registry.py`**: Plugin registry
-- **`src/structum/plugins/sdk.py`**: Plugin SDK base classes
-- **`src/structum/cli/main.py`**: Current CLI entry (will be replaced)
-
-### Testing Strategy During Refactoring
-
-1. Keep v1.x working during transition
-2. Test each extracted plugin independently
-3. Integration tests for plugin interactions
-4. Performance benchmarks (startup time, memory)
-5. Security tests for sandboxing
+- `.github/workflows/tests.yml` - Multi-version testing
+- `.github/workflows/lint.yml` - Code quality checks
+- `.github/workflows/build.yml` - Package building
+- `.github/workflows/publish.yml` - PyPI publishing
+- `.pre-commit-config.yaml` - Pre-commit hooks
 
 ### Refactoring Progress Checklist
 
@@ -867,13 +817,15 @@ Track the v2.0 refactoring progress:
 
 ## Important Notes
 
-- **V2.0 IN PROGRESS**: Architecture is changing, see `ARCHITECTURE_V2.md`
-- **No built-in plugins in v2.0** - everything becomes a plugin
-- **Plugin commands auto-registered** during `load_plugins()` call
-- **Disabled plugins show helpful error messages** instead of "No such command"
-- **Plugin conflicts are detected** and warnings shown during load
-- **Plugin metadata read from pyproject.toml** - single source of truth via `importlib.metadata`
-- **Interactive plugin creation** - `structum plugins new` prompts for author, email, description, etc.
+- **V2.0 Architecture**: Minimal plugin framework - see [ARCHITECTURE_V2.md](ARCHITECTURE_V2.md) for complete design
+- **No built-in commands**: All functionality delivered via plugins (tree, archive, clean, docs, plugins)
+- **Plugin auto-discovery**: Plugins registered via entry points, auto-discovered on load
+- **Disabled plugins**: Show helpful error messages instead of "No such command"
+- **Plugin conflicts**: Detected and warnings shown during load
+- **Plugin metadata**: Read from `pyproject.toml` via `importlib.metadata` (single source of truth)
+- **Interactive plugin creation**: `structum plugins new` prompts for all metadata interactively
 - **Plugin types**: `[OFFICIAL]` for `structum_*` packages, `[COMMUNITY]` for all others
-- **Version is in `src/structum/__about__.py`** (managed by hatchling)
+- **Version location**: Each package has `__about__.py` (e.g., `structum/src/structum/__about__.py`)
 - **Branch strategy**: Develop on `develop`, merge to `main` for releases
+- **Task automation**: Use `hatch run <task>` for all development workflows (not Make/tox/just)
+- **CI/CD**: GitHub Actions with modular workflows (tests, lint, build, publish, release-please)
