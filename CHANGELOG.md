@@ -17,6 +17,15 @@ Complete architectural redesign transforming Structum into an enterprise-grade p
 
 ### ✨ Features
 
+#### Phase 3.9: CI/CD Configuration (2025-12-11)
+
+- **GitHub Actions Workflows**: Modular CI/CD with tests, lint, build, publish, release-please
+- **Multi-Version Testing**: Python 3.11, 3.12, 3.13 support
+- **Pre-commit Hooks**: Ruff, MyPy, REUSE, markdown linting, file checks
+- **Release Automation**: release-please for automated changelog and releases
+- **PyPI Publishing**: Trusted publishing (no API tokens needed)
+- **Local CI Parity**: `hatch run test/lint/build` matches GitHub Actions exactly
+
 #### Phase 3.8: Build and Development Scripts (2025-12-11)
 
 - **Script Organization**: Moved all development scripts to `scripts/` directory

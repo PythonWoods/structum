@@ -1,0 +1,77 @@
+# SPDX-License-Identifier: Apache-2.0
+# SPDX-FileCopyrightText: 2025 PythonWoods
+
+# Pre-commit hooks for Structum v2.0 monorepo
+# Install: pre-commit install
+# Run manually: pre-commit run --all-files
+
+repos:
+  # Ruff - Fast Python linter and formatter
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.8.4
+    hooks:
+      - id: ruff
+        name: Ruff linter
+        args: ["--fix"]
+        files: ^(structum|structum_.*)/src/
+      - id: ruff-format
+        name: Ruff formatter
+        files: ^(structum|structum_.*)/src/
+
+  # MyPy - Static type checker
+  - repo: https://github.com/pre-commit/mirrors-mypy
+    rev: v1.13.0
+    hooks:
+      - id: mypy
+        name: MyPy type checker
+        files: ^(structum|structum_.*)/src/
+        additional_dependencies:
+          - types-setuptools
+          - pydantic>=2.0
+          - typer>=0.12
+        args: ["--strict", "--ignore-missing-imports"]
+
+  # General file checks
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: end-of-file-fixer
+        name: Fix end of files
+      - id: trailing-whitespace
+        name: Trim trailing whitespace
+        args: [--markdown-linebreak-ext=md]
+      - id: check-yaml
+        name: Check YAML syntax
+      - id: check-toml
+        name: Check TOML syntax
+      - id: check-added-large-files
+        name: Check for large files
+        args: ["--maxkb=1000"]
+      - id: check-merge-conflict
+        name: Check for merge conflicts
+      - id: check-case-conflict
+        name: Check for case conflicts
+
+  # REUSE compliance (SPDX headers)
+  - repo: https://github.com/fsfe/reuse-tool
+    rev: v4.0.3
+    hooks:
+      - id: reuse
+        name: REUSE compliance check
+
+  # Markdown linting
+  - repo: https://github.com/igorshubovych/markdownlint-cli
+    rev: v0.42.0
+    hooks:
+      - id: markdownlint
+        name: Markdown linter
+        args: ["--fix"]
+        files: \.(md|markdown)$
+
+# Configuration for specific tools
+default_language_version:
+  python: python3.12
+
+ci:
+  autofix_commit_msg: "style: auto-fix pre-commit hooks"
+  autoupdate_commit_msg: "chore: update pre-commit hooks"

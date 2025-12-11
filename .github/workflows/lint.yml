@@ -1,0 +1,43 @@
+# SPDX-License-Identifier: Apache-2.0
+# SPDX-FileCopyrightText: 2025 PythonWoods
+
+name: Lint
+
+on:
+  push:
+    branches: ["main", "develop"]
+  pull_request:
+
+jobs:
+  lint:
+    name: Lint and Format Check
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Cache pip
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: pip-lint-${{ hashFiles('**/pyproject.toml') }}
+          restore-keys: |
+            pip-lint-
+
+      - name: Install hatch
+        run: pip install hatch
+
+      - name: Install dependencies
+        run: pip install -e "./structum[dev]"
+
+      - name: Run ruff check
+        run: hatch run lint
+
+      - name: Check formatting
+        run: |
+          ruff format --check structum/src structum_*/src

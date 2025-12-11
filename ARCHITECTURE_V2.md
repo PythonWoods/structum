@@ -476,6 +476,71 @@ hatch run ci                 # clean + test + lint + build
 - ✅ Easy CI/CD integration via hatch commands
 - ✅ Consistent with existing build tools (hatchling)
 
+### Phase 3.9: CI/CD Configuration ✅ COMPLETED
+
+**Goal**: Configure GitHub Actions workflows, pre-commit hooks, and release automation for monorepo v2.0.
+
+**Changes**:
+
+1. ✅ Replaced monolithic CI with modular workflows
+2. ✅ Created pre-commit hooks configuration
+3. ✅ Set up release-please automation
+4. ✅ Configured PyPI trusted publishing
+
+**GitHub Actions Workflows**:
+
+- `tests.yml` - Run all package tests on Python 3.11, 3.12, 3.13
+- `lint.yml` - Ruff linting and formatting checks
+- `build.yml` - Build all packages and upload artifacts
+- `publish.yml` - Publish to PyPI (triggered on release)
+- `release-please.yml` - Automated release PR generation
+
+**Pre-commit Hooks** (`.pre-commit-config.yaml`):
+
+- Ruff (linter + formatter)
+- MyPy (type checking)
+- REUSE compliance (SPDX headers)
+- Markdown linting
+- General file checks (EOF, trailing whitespace, YAML, TOML)
+
+**CI/CD Integration**:
+
+```bash
+# Local development matches CI exactly
+hatch run test      # Same as tests.yml
+hatch run lint      # Same as lint.yml
+hatch run build     # Same as build.yml
+hatch run ci        # Run complete CI workflow locally
+```
+
+**Release Automation**:
+
+1. Merge to `main` → release-please creates PR with changelog
+2. Merge release PR → GitHub Release created
+3. Release created → publish.yml uploads to PyPI (trusted publishing)
+
+**Files Created**:
+
+- `.github/workflows/tests.yml` - Multi-version Python testing
+- `.github/workflows/lint.yml` - Code quality checks
+- `.github/workflows/build.yml` - Package building
+- `.github/workflows/publish.yml` - PyPI publishing
+- `.github/workflows/release-please.yml` - Release automation
+- `.pre-commit-config.yaml` - Pre-commit hooks
+
+**Files Removed**:
+
+- `.github/workflows/main_ci.yml` - Replaced by modular workflows
+
+**Benefits**:
+
+- ✅ Modular CI workflows (easier to debug, faster feedback)
+- ✅ Multi-version Python testing (3.11, 3.12, 3.13)
+- ✅ Pre-commit hooks enforce quality before commit
+- ✅ Automated releases with conventional commits
+- ✅ PyPI trusted publishing (no API tokens needed)
+- ✅ Local CI commands match GitHub Actions exactly
+
 ### Phase 4: Enterprise Features
 1. ⬜ Implement health checks
 2. ⬜ Add performance monitoring
