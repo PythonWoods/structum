@@ -342,6 +342,29 @@ structum --env development tree .
 - ✅ Simpler maintenance
 - ✅ All tests passing
 
+### Phase 3.6: Development Tooling ✅ COMPLETED
+
+**Objective**: Improve developer experience with setup automation and tooling.
+
+**Work Completed**:
+
+1. ✅ **Development Setup Script** (`dev-setup.sh`)
+   - Automated installation of all packages in editable mode
+   - Virtual environment detection
+   - Python version check
+   - Installs core + all plugins + dev dependencies
+   - Clear instructions for next steps
+
+**Usage**:
+```bash
+./dev-setup.sh
+```
+
+**Benefits**:
+- ✅ One-command setup for new contributors
+- ✅ Ensures consistent development environment
+- ✅ Reduces onboarding friction
+
 ### Phase 4: Enterprise Features
 1. ⬜ Implement health checks
 2. ⬜ Add performance monitoring

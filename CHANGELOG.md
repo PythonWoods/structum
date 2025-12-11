@@ -17,6 +17,13 @@ Complete architectural redesign transforming Structum into an enterprise-grade p
 
 ### ✨ Features
 
+#### Phase 3.6: Development Tooling (2025-12-11)
+
+- **Development Setup Script**: Added `dev-setup.sh` for one-command environment setup
+- **Virtual Environment Detection**: Warns if not in venv
+- **Automated Installation**: Installs core + all plugins + dev dependencies in editable mode
+- **Developer Instructions**: Clear next steps after setup
+
 #### Phase 3.5: Naming Refactor (2025-12-11)
 
 - **Package Rename**: `structum-core` → `structum` for clarity and industry standards

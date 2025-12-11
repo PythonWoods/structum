@@ -45,6 +45,15 @@ Structum is being transformed from a monolithic CLI tool into a **minimal enterp
 
 **Result**: Clear, intuitive naming that follows industry standards (pytest, flask, django)
 
+#### Phase 3.6: Development Tooling ✅ COMPLETED
+
+- ✅ Created `dev-setup.sh` for automated development environment setup
+- ✅ Virtual environment detection and validation
+- ✅ One-command installation of core + all plugins + dev tools
+- ✅ Helpful next-steps instructions for developers
+
+**Result**: Streamlined onboarding for new contributors
+
 #### Phase 4: Enterprise Features ⏳ PENDING
 - ⏳ Health checks
 - ⏳ Advanced monitoring
