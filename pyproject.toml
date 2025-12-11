@@ -15,9 +15,11 @@ description = "Structum monorepo development tools"
 requires-python = ">=3.11"
 dependencies = []
 
-# This is a virtual package for task automation only (no code to install)
-[tool.hatch.build.targets.wheel]
-packages = []
+# Root project is not a distributable Python package.
+# Disable wheel and sdist builds to avoid metadata generation errors.
+[tool.hatch.build]
+wheel = { disable = true }
+sdist = { disable = true }
 
 # Hatch environment with dev dependencies
 [tool.hatch.envs.default]
@@ -34,8 +36,6 @@ dependencies = [
     "pydantic>=2.0",
 ]
 
-# Hatch scripts for monorepo tasks
-# Usage: hatch run <script-name>
 [tool.hatch.envs.default.scripts]
 # Development
 setup = "bash scripts/dev-setup.sh"
@@ -44,9 +44,12 @@ setup = "bash scripts/dev-setup.sh"
 test = "bash scripts/run-tests.sh"
 test-verbose = "bash scripts/run-tests.sh --verbose"
 
-# Building
+# Building (monorepo-level)
 build = "bash scripts/build-all.sh"
 clean = "bash scripts/clean-builds.sh"
+
+# Publishing (monorepo-level, optional local helper)
+publish-all = "bash scripts/publish-all.sh"
 
 # Linting & Formatting
 lint = [
