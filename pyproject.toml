@@ -1,27 +1,14 @@
 # SPDX-License-Identifier: Apache-2.0
 # SPDX-FileCopyrightText: 2025 PythonWoods
 
-# Monorepo root configuration for Structum v2.0
-# This file provides task automation for the entire monorepo
+# Root monorepo configuration for Structum v2.0
+# This file does NOT define a Python package.
+# It exists only to orchestrate tooling (Hatch, scripts, CI).
 
 [build-system]
 requires = ["hatchling>=1.25"]
 build-backend = "hatchling.build"
 
-[project]
-name = "structum-monorepo"
-version = "2.0.0a1"
-description = "Structum monorepo development tools"
-requires-python = ">=3.11"
-dependencies = []
-
-# Root project is not a distributable Python package.
-# Disable wheel and sdist builds to avoid metadata generation errors.
-[tool.hatch.build]
-wheel = { disable = true }
-sdist = { disable = true }
-
-# Hatch environment with dev dependencies
 [tool.hatch.envs.default]
 dependencies = [
     "build>=1.0.0",
@@ -37,21 +24,15 @@ dependencies = [
 ]
 
 [tool.hatch.envs.default.scripts]
-# Development
 setup = "bash scripts/dev-setup.sh"
 
-# Testing
 test = "bash scripts/run-tests.sh"
 test-verbose = "bash scripts/run-tests.sh --verbose"
 
-# Building (monorepo-level)
 build = "bash scripts/build-all.sh"
 clean = "bash scripts/clean-builds.sh"
-
-# Publishing (monorepo-level, optional local helper)
 publish-all = "bash scripts/publish-all.sh"
 
-# Linting & Formatting
 lint = [
     "ruff check structum/src structum_*/src",
     "mypy structum/src structum_*/src",
@@ -62,7 +43,6 @@ check = [
     "mypy structum/src structum_*/src",
 ]
 
-# Combined workflows
 ci = [
     "clean",
     "test",
