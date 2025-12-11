@@ -28,6 +28,7 @@ Attributes:
     NONE_SET: Empty icon theme.
     THEMES: Registry mapping theme names to IconSet instances.
 """
+
 import pathlib
 from typing import NamedTuple
 
@@ -42,11 +43,13 @@ class IconSet(NamedTuple):
         extensions: A dictionary mapping file extensions (e.g., ".py") to their respective icons.
         filenames: A dictionary mapping specific filenames (e.g., "dockerfile") to their respective icons.
     """
+
     folder_open: str
     folder_closed: str
     file_default: str
     extensions: dict[str, str]
     filenames: dict[str, str]
+
 
 # --- 1. Set "NERD" (Requires Nerd Fonts) ---
 NERD_SET = IconSet(
@@ -54,14 +57,28 @@ NERD_SET = IconSet(
     folder_closed="",
     file_default="",
     filenames={
-        "dockerfile": "", "makefile": "", "jenkinsfile": "",
-        ".gitignore": "", ".env": "", "requirements.txt": "",
+        "dockerfile": "",
+        "makefile": "",
+        "jenkinsfile": "",
+        ".gitignore": "",
+        ".env": "",
+        "requirements.txt": "",
     },
     extensions={
-        ".py": "", ".js": "", ".ts": "", ".html": "", ".css": "",
-        ".json": "", ".md": "", ".txt": "", ".sql": "",
-        ".zip": "", ".png": "", ".jpg": "", ".pdf": "",
-    }
+        ".py": "",
+        ".js": "",
+        ".ts": "",
+        ".html": "",
+        ".css": "",
+        ".json": "",
+        ".md": "",
+        ".txt": "",
+        ".sql": "",
+        ".zip": "",
+        ".png": "",
+        ".jpg": "",
+        ".pdf": "",
+    },
 )
 
 # --- 2. Set "EMOJI" (Compatible everywhere) ---
@@ -70,35 +87,39 @@ EMOJI_SET = IconSet(
     folder_closed="📁",
     file_default="📄",
     filenames={
-        "dockerfile": "🐳", "makefile": "🛠️", ".gitignore": "🙈", ".env": "🔒",
+        "dockerfile": "🐳",
+        "makefile": "🛠️",
+        ".gitignore": "🙈",
+        ".env": "🔒",
     },
     extensions={
-        ".py": "🐍", ".js": "🟨", ".ts": "🟦", ".html": "🌐", ".css": "🎨",
-        ".json": "📋", ".md": "📝", ".txt": "📄", ".sql": "💾",
-        ".zip": "📦", ".png": "🖼️", ".jpg": "🖼️", ".pdf": "📕",
-        ".exe": "⚙️", ".sh": "🐚"
-    }
+        ".py": "🐍",
+        ".js": "🟨",
+        ".ts": "🟦",
+        ".html": "🌐",
+        ".css": "🎨",
+        ".json": "📋",
+        ".md": "📝",
+        ".txt": "📄",
+        ".sql": "💾",
+        ".zip": "📦",
+        ".png": "🖼️",
+        ".jpg": "🖼️",
+        ".pdf": "📕",
+        ".exe": "⚙️",
+        ".sh": "🐚",
+    },
 )
 
 # --- 3. Set "ASCII" (Safe for text/log files) ---
-ASCII_SET = IconSet(
-    folder_open="",
-    folder_closed="",
-    file_default="",
-    filenames={},
-    extensions={}
-)
+ASCII_SET = IconSet(folder_open="", folder_closed="", file_default="", filenames={}, extensions={})
 
 # --- 4. Set "NONE" (No icon) ---
 NONE_SET = IconSet("", "", "", {}, {})
 
 # Registry of available themes
-THEMES = {
-    "nerd": NERD_SET,
-    "emoji": EMOJI_SET,
-    "ascii": ASCII_SET,
-    "none": NONE_SET
-}
+THEMES = {"nerd": NERD_SET, "emoji": EMOJI_SET, "ascii": ASCII_SET, "none": NONE_SET}
+
 
 def get_icon(path: pathlib.Path, theme_name: str = "emoji") -> str:
     """Returns the appropriate icon for the given path based on the specified theme.

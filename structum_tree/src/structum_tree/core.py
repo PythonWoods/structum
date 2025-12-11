@@ -17,6 +17,7 @@ Example:
     >>> import pathlib
     >>> print_tree(pathlib.Path("./my_project"), theme="emoji", max_depth=2)
 """
+
 import pathlib
 from collections.abc import Iterable, Sequence
 
@@ -28,6 +29,7 @@ from structum_tree import icons
 from structum_tree.utils import normalize_extensions
 
 console = Console()
+
 
 def build_tree(
     directory: pathlib.Path,
@@ -101,15 +103,14 @@ def build_tree(
     tree = Tree(root_label, guide_style=guide_style)
 
     # 3. Recursive Function
-    def _populate_branch(current_tree: Tree, current_path: pathlib.Path, current_depth: int) -> bool:
+    def _populate_branch(
+        current_tree: Tree, current_path: pathlib.Path, current_depth: int
+    ) -> bool:
         if max_depth is not None and current_depth >= max_depth:
             return False
 
         try:
-            items = sorted(
-                current_path.iterdir(),
-                key=lambda p: (not p.is_dir(), p.name.lower())
-            )
+            items = sorted(current_path.iterdir(), key=lambda p: (not p.is_dir(), p.name.lower()))
         except PermissionError:
             msg = "🔒 [Access Denied]"
             # Red color only if not in ascii mode
@@ -183,6 +184,7 @@ def build_tree(
 
 # --- CLI Usage Wrapper (Print to screen) ---
 
+
 def print_tree(
     directory: pathlib.Path,
     extensions: Sequence[str] | None = None,
@@ -191,7 +193,7 @@ def print_tree(
     ignore_hidden: bool = True,
     ignore_empty: bool = False,
     theme: str = "emoji",
-    show_stats: bool = False
+    show_stats: bool = False,
 ) -> None:
     """Prints a formatted, colored directory tree to the console.
 
@@ -214,27 +216,27 @@ def print_tree(
     # Count directories and files if stats are requested
     dir_count = 0
     file_count = 0
-    
+
     if show_stats:
         # Count items recursively
         target_exts = normalize_extensions(extensions)
         excluded_dir_names = set(ignore_dirs or [])
-        
+
         def _count_items(path: pathlib.Path, depth: int) -> None:
             nonlocal dir_count, file_count
-            
+
             if max_depth is not None and depth > max_depth:
                 return
-            
+
             try:
                 items = list(path.iterdir())
             except PermissionError:
                 return
-            
+
             for item in items:
                 if ignore_hidden and item.name.startswith("."):
                     continue
-                
+
                 if item.is_dir():
                     if item.name not in excluded_dir_names:
                         dir_count += 1
@@ -242,18 +244,18 @@ def print_tree(
                 elif item.is_file():
                     if not target_exts or item.suffix.lower() in target_exts:
                         file_count += 1
-        
+
         _count_items(directory, 0)
-    
+
     tree = build_tree(
         directory=directory,
         extensions=extensions,
-        exclude_dirs=ignore_dirs, # Note: correct parameter name mapping
+        exclude_dirs=ignore_dirs,  # Note: correct parameter name mapping
         max_depth=max_depth,
         ignore_hidden=ignore_hidden,
         ignore_files=False,
         ignore_empty=ignore_empty,
-        theme=theme
+        theme=theme,
     )
 
     if tree:
@@ -268,6 +270,7 @@ def print_tree(
 
 
 # --- Export Wrapper (Returns string) ---
+
 
 def get_tree_ascii(
     directory: pathlib.Path,
@@ -308,7 +311,7 @@ def get_tree_ascii(
         ignore_hidden=ignore_hidden,
         ignore_files=False,
         ignore_empty=ignore_empty,
-        theme="ascii"      # <--- Force ASCII theme
+        theme="ascii",  # <--- Force ASCII theme
     )
 
     if not tree:

@@ -34,6 +34,7 @@ def _register_disabled_plugin_command(
         plugin_name: The name of the disabled plugin.
         help_panel: Optional help panel name for grouping in --help output.
     """
+
     def disabled_command_callback(ctx: typer.Context) -> None:
         """Show helpful message for disabled plugin."""
         console.print(
@@ -105,7 +106,9 @@ def load_entrypoint_plugins(app: typer.Typer) -> None:
             plugin_metadata = PluginRegistry.get_metadata(plugin_cls.name)
 
             # Display load status with rich info
-            tag = "[bold green][OFFICIAL][/bold green]" if is_official else "[blue][COMMUNITY][/blue]"
+            tag = (
+                "[bold green][OFFICIAL][/bold green]" if is_official else "[blue][COMMUNITY][/blue]"
+            )
             category_name = CATEGORIES.get(plugin_cls.category, plugin_cls.category)
 
             console.print(
@@ -113,7 +116,7 @@ def load_entrypoint_plugins(app: typer.Typer) -> None:
                 f"[dim]v{pkg_meta.get('version', 'unknown')}[/dim] "
                 f"[dim]({category_name})[/dim]"
             )
-            if pkg_meta.get('description'):
+            if pkg_meta.get("description"):
                 console.print(f"  [dim]{pkg_meta['description']}[/dim]")
 
             loaded_count += 1

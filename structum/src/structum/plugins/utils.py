@@ -5,7 +5,6 @@
 
 import inspect
 from importlib.metadata import PackageNotFoundError, metadata
-from pathlib import Path
 
 
 def get_plugin_metadata_from_module(module_name: str) -> dict[str, str]:

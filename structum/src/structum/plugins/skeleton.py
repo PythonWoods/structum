@@ -5,7 +5,7 @@
 
 from pathlib import Path
 
-PYPROJECT_TEMPLATE = '''[project]
+PYPROJECT_TEMPLATE = """[project]
 name = "{pypi_name}"
 version = "{version}"
 description = "{description}"
@@ -40,7 +40,7 @@ build-backend = "hatchling.build"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/{package_name}"]
-'''
+"""
 
 README_TEMPLATE = '''# {title}
 
@@ -142,7 +142,7 @@ pip install {pypi_name}
 {author_name} <{author_email}>
 '''
 
-GITIGNORE_TEMPLATE = '''# Python
+GITIGNORE_TEMPLATE = """# Python
 __pycache__/
 *.py[cod]
 *$py.class
@@ -185,7 +185,7 @@ htmlcov/
 # OS
 .DS_Store
 Thumbs.db
-'''
+"""
 
 PLUGIN_INIT_TEMPLATE = '''# SPDX-License-Identifier: Apache-2.0
 

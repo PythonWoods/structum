@@ -50,6 +50,7 @@ class ArchivePlugin(PluginBase):
 
     def register_commands(self, app: typer.Typer, help_panel: str | None = None) -> None:
         """Register the archive command."""
+
         @app.command(name="archive", rich_help_panel=help_panel)
         def archive_command(
             directory: Path = typer.Argument(
@@ -58,49 +59,40 @@ class ArchivePlugin(PluginBase):
                 exists=True,
                 file_okay=False,
                 dir_okay=True,
-                resolve_path=True
+                resolve_path=True,
             ),
             output: Path = typer.Option(
                 "archive.md",
-                "--output", "-o",
-                help="Output file path (or directory if split mode is enabled)."
+                "--output",
+                "-o",
+                help="Output file path (or directory if split mode is enabled).",
             ),
             extensions: list[str] | None = typer.Option(
                 None,
-                "--ext", "-e",
+                "--ext",
+                "-e",
                 help="Filter by file extensions (e.g., '-e py -e md' or '-e py,md,js').",
-                callback=parse_list_callback
+                callback=parse_list_callback,
             ),
             ignore_dirs: list[str] | None = typer.Option(
                 None,
-                "--ignore", "-i",
+                "--ignore",
+                "-i",
                 help="Directory names to exclude (e.g., '-i .git -i node_modules' or '-i .git,node_modules').",
-                callback=parse_list_callback
+                callback=parse_list_callback,
             ),
             split_by_folder: bool = typer.Option(
-                False,
-                "--split-folder",
-                help="Create a separate archive for each folder."
+                False, "--split-folder", help="Create a separate archive for each folder."
             ),
             split_by_type: bool = typer.Option(
-                False,
-                "--split-type",
-                help="Create a separate archive for each file extension."
+                False, "--split-type", help="Create a separate archive for each file extension."
             ),
-            toc: bool = typer.Option(
-                True,
-                "--toc/--no-toc",
-                help="Include a Table of Contents."
-            ),
+            toc: bool = typer.Option(True, "--toc/--no-toc", help="Include a Table of Contents."),
             tree: bool = typer.Option(
-                True,
-                "--tree/--no-tree",
-                help="Include a directory tree structure."
+                True, "--tree/--no-tree", help="Include a directory tree structure."
             ),
             verbose: bool = typer.Option(
-                True,
-                "--verbose/--quiet", "-v/-q",
-                help="Verbose output."
+                True, "--verbose/--quiet", "-v/-q", help="Verbose output."
             ),
         ) -> None:
             """Archive source code into Markdown files.
@@ -127,7 +119,7 @@ class ArchivePlugin(PluginBase):
                     split_by_type=split_by_type,
                     toc=toc,
                     include_tree=tree,
-                    verbose=verbose
+                    verbose=verbose,
                 )
             except ValueError as e:
                 console.print(f"[bold red]Error:[/bold red] {e}")

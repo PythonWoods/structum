@@ -26,17 +26,16 @@ class DocsPlugin(PluginBase):
     def register_commands(self, app: typer.Typer, help_panel: str | None = None) -> None:
         """Register the docs command group."""
         docs_app = typer.Typer(
-            help="Manage project documentation.",
-            no_args_is_help=True,
-            rich_help_panel=help_panel
+            help="Manage project documentation.", no_args_is_help=True, rich_help_panel=help_panel
         )
 
         @docs_app.command(name="serve")
         def docs_serve_command(
             dev_addr: str = typer.Option(
                 "127.0.0.1:8000",
-                "--dev-addr", "-a",
-                help="Address and port to serve documentation on."
+                "--dev-addr",
+                "-a",
+                help="Address and port to serve documentation on.",
             ),
         ) -> None:
             """Serves the project documentation locally using MkDocs.
@@ -55,14 +54,10 @@ class DocsPlugin(PluginBase):
         @docs_app.command(name="deploy")
         def docs_deploy_command(
             message: str | None = typer.Option(
-                None,
-                "--message", "-m",
-                help="Custom commit message for the deployment."
+                None, "--message", "-m", help="Custom commit message for the deployment."
             ),
             force: bool = typer.Option(
-                False,
-                "--force",
-                help="Force push to gh-pages branch (use with caution)."
+                False, "--force", help="Force push to gh-pages branch (use with caution)."
             ),
         ) -> None:
             """Deploys the documentation to GitHub Pages.

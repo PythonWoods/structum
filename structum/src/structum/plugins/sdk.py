@@ -69,9 +69,7 @@ class PluginBase(ABC):
         """
         return None
 
-    def register_commands(
-        self, app: "typer.Typer", help_panel: str | None = None
-    ) -> None:  # noqa: B027
+    def register_commands(self, app: "typer.Typer", help_panel: str | None = None) -> None:  # noqa: B027
         """Register CLI commands for this plugin.
 
         Args:

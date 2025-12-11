@@ -15,14 +15,23 @@ description = "Structum monorepo development tools"
 requires-python = ">=3.11"
 dependencies = []
 
-[project.optional-dependencies]
-dev = [
+# This is a virtual package for task automation only (no code to install)
+[tool.hatch.build.targets.wheel]
+packages = []
+
+# Hatch environment with dev dependencies
+[tool.hatch.envs.default]
+dependencies = [
     "build>=1.0.0",
+    "hatchling>=1.25",
     "twine>=4.0.0",
     "pytest>=8.0",
     "pytest-cov>=4.0",
     "ruff>=0.5",
     "mypy>=1.11",
+    "typer>=0.12",
+    "rich>=13.0",
+    "pydantic>=2.0",
 ]
 
 # Hatch scripts for monorepo tasks

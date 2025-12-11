@@ -15,6 +15,7 @@ from structum_tree.core import print_tree
 
 class ThemeChoice(str, Enum):
     """Valid theme choices for tree visualization."""
+
     NERD = "nerd"
     EMOJI = "emoji"
     ASCII = "ascii"
@@ -56,6 +57,7 @@ class TreePlugin(PluginBase):
 
     def register_commands(self, app: typer.Typer, help_panel: str | None = None) -> None:
         """Register the tree command."""
+
         @app.command(name="tree", rich_help_panel=help_panel)
         def tree_command(
             directory: Path = typer.Argument(
@@ -64,45 +66,36 @@ class TreePlugin(PluginBase):
                 exists=True,
                 file_okay=False,
                 dir_okay=True,
-                resolve_path=True
+                resolve_path=True,
             ),
             extensions: list[str] | None = typer.Option(
                 None,
-                "--ext", "-e",
+                "--ext",
+                "-e",
                 help="Filter by file extensions (e.g., '-e py -e md' or '-e py,md,js').",
-                callback=parse_list_callback
+                callback=parse_list_callback,
             ),
             ignore_dirs: list[str] | None = typer.Option(
                 None,
-                "--ignore", "-i",
+                "--ignore",
+                "-i",
                 help="Directory names to exclude (e.g., '-i .git -i node_modules' or '-i .git,node_modules').",
-                callback=parse_list_callback
+                callback=parse_list_callback,
             ),
             max_depth: int | None = typer.Option(
-                None,
-                "--depth", "-d",
-                help="Maximum depth of the tree traversal."
+                None, "--depth", "-d", help="Maximum depth of the tree traversal."
             ),
             show_hidden: bool = typer.Option(
-                False,
-                "--hidden",
-                help="Show hidden files and directories (starting with '.')."
+                False, "--hidden", help="Show hidden files and directories (starting with '.')."
             ),
             ignore_empty: bool = typer.Option(
-                False,
-                "--no-empty",
-                help="Hide directories that do not contain visible files."
+                False, "--no-empty", help="Hide directories that do not contain visible files."
             ),
             theme: ThemeChoice = typer.Option(
-                ThemeChoice.EMOJI,
-                "--theme", "-t",
-                help="Icon theme to use.",
-                case_sensitive=False
+                ThemeChoice.EMOJI, "--theme", "-t", help="Icon theme to use.", case_sensitive=False
             ),
             show_stats: bool = typer.Option(
-                False,
-                "--stats", "-s",
-                help="Show directory and file count statistics."
+                False, "--stats", "-s", help="Show directory and file count statistics."
             ),
         ) -> None:
             """Visualize directory structures as trees.
@@ -125,5 +118,5 @@ class TreePlugin(PluginBase):
                 ignore_hidden=ignore_hidden_logic,
                 ignore_empty=ignore_empty,
                 theme=theme.value,  # Convert Enum to string
-                show_stats=show_stats
+                show_stats=show_stats,
             )

@@ -15,7 +15,6 @@ from datetime import datetime
 from pathlib import Path
 
 from rich.console import Console
-
 from structum_tree.core import get_tree_ascii
 from structum_tree.utils import IGNORE_DIRS_DEFAULT, normalize_extensions
 
@@ -64,13 +63,13 @@ def gather_files(
             # Or should we require at least one extension?
             # The bug report says "structum archive -o ~/draft" finds 0 files.
             # This implies default behavior should be "all files".
-            
+
             should_include = False
             if not normalized_exts:
-                 should_include = True
+                should_include = True
             elif any(filename.endswith(ext) for ext in normalized_exts):
-                 should_include = True
-            
+                should_include = True
+
             if should_include:
                 full_path = current_dir / filename
                 rel_path = full_path.relative_to(root)
@@ -117,19 +116,15 @@ def write_markdown(
             md.write("```text\n")
             # PASSING FILTERS TO TREE GENERATION
             # Use defaults if ignore_dirs is None, but get_tree_ascii handles None by default?
-            # Actually get_tree_ascii treats ignore_dirs=None as "no specific ignores"? 
+            # Actually get_tree_ascii treats ignore_dirs=None as "no specific ignores"?
             # No, let's look at get_tree_ascii docstring in tree.py (it doesn't default to common ignores there).
             # But build_tree logic: excluded_dir_names = set(exclude_dirs or [])
             # So if we pass None, it filters nothing.
             # We want to match gather_files logic: ignore_dirs OR defaults.
-            
+
             final_ignore_dirs = ignore_dirs if ignore_dirs is not None else IGNORE_DIRS_DEFAULT
-            
-            tree_str = get_tree_ascii(
-                root, 
-                extensions=extensions, 
-                ignore_dirs=final_ignore_dirs
-            )
+
+            tree_str = get_tree_ascii(root, extensions=extensions, ignore_dirs=final_ignore_dirs)
             md.write(tree_str)
             md.write("\n```\n\n")
 
@@ -181,7 +176,9 @@ def _create_archives_per_folder(
         # Map '.' folder to 'root.md', others to 'path/to/dir.md'
         relative_dir = folder if folder != Path(".") else Path("root")
         out_path = output_dir / relative_dir.with_suffix(".md")
-        write_markdown(out_path, group_files, root, toc, include_tree, verbose, extensions, ignore_dirs)
+        write_markdown(
+            out_path, group_files, root, toc, include_tree, verbose, extensions, ignore_dirs
+        )
 
 
 def _create_archives_per_type(
@@ -204,7 +201,9 @@ def _create_archives_per_type(
 
     for ext, group_files in grouped.items():
         out_path = output_dir / f"{ext}.md"
-        write_markdown(out_path, group_files, root, toc, include_tree, verbose, extensions, ignore_dirs)
+        write_markdown(
+            out_path, group_files, root, toc, include_tree, verbose, extensions, ignore_dirs
+        )
 
 
 def create_archive(
@@ -243,7 +242,9 @@ def create_archive(
     # FIX: Handle directory output for single file mode
     if output.is_dir() and not (split_by_folder or split_by_type):
         if verbose:
-            console.print(f"[yellow]Address output '{output}' is a directory. Defaulting to '{output / 'archive.md'}'[/yellow]")
+            console.print(
+                f"[yellow]Address output '{output}' is a directory. Defaulting to '{output / 'archive.md'}'[/yellow]"
+            )
         output = output / "archive.md"
 
     files = gather_files(root, extensions, ignore_dirs)
@@ -260,13 +261,17 @@ def create_archive(
     if split_by_folder:
         if verbose:
             console.print("📁 Mode: Split by folder")
-        _create_archives_per_folder(root, output, files, toc, include_tree, verbose, extensions, ignore_dirs)
+        _create_archives_per_folder(
+            root, output, files, toc, include_tree, verbose, extensions, ignore_dirs
+        )
         return
 
     if split_by_type:
         if verbose:
             console.print("📚 Mode: Split by extension")
-        _create_archives_per_type(root, output, files, toc, include_tree, verbose, extensions, ignore_dirs)
+        _create_archives_per_type(
+            root, output, files, toc, include_tree, verbose, extensions, ignore_dirs
+        )
         return
 
     # Single archive mode

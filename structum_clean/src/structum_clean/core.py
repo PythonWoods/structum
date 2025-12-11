@@ -16,7 +16,7 @@ from rich.console import Console
 console = Console()
 
 # Common virtual environment directory names
-VENV_DIRS = {'.env', 'env', 'venv', '.venv', 'virtualenv'}
+VENV_DIRS = {".env", "env", "venv", ".venv", "virtualenv"}
 
 
 def clean_pycache(root: Path, verbose: bool = True, skip_venv: bool = False) -> int:
@@ -67,6 +67,8 @@ def clean_pycache(root: Path, verbose: bool = True, skip_venv: bool = False) -> 
     if verbose:
         if skipped_venvs:
             console.print(f"[dim]ℹ️  Skipped {len(skipped_venvs)} virtual environment(s)[/dim]")
-        console.print(f"✅ Total __pycache__ directories removed: [bold green]{removed}[/bold green]")
+        console.print(
+            f"✅ Total __pycache__ directories removed: [bold green]{removed}[/bold green]"
+        )
 
     return removed

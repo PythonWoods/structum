@@ -14,6 +14,7 @@ Example:
     >>> normalize_extensions(["py", ".txt", "MD"])
     {'.py', '.txt', '.md'}
 """
+
 from collections.abc import Iterable
 
 # Default directories to ignore during traversal

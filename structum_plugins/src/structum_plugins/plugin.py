@@ -33,9 +33,7 @@ class PluginsPlugin(PluginBase):
     def register_commands(self, app: typer.Typer, help_panel: str | None = None) -> None:
         """Register the plugins command group."""
         plugins_app = typer.Typer(
-            help="Manage plugins.",
-            no_args_is_help=True,
-            rich_help_panel=help_panel
+            help="Manage plugins.", no_args_is_help=True, rich_help_panel=help_panel
         )
 
         @plugins_app.command("list")
@@ -47,7 +45,9 @@ class PluginsPlugin(PluginBase):
 
             if not plugins:
                 console.print("[yellow]No plugins found.[/yellow]")
-                console.print("\n[dim]Install plugins with:[/dim] [cyan]pip install structum-<plugin-name>[/cyan]")
+                console.print(
+                    "\n[dim]Install plugins with:[/dim] [cyan]pip install structum-<plugin-name>[/cyan]"
+                )
                 return
 
             table = Table(title="Installed Plugins")
@@ -84,7 +84,9 @@ class PluginsPlugin(PluginBase):
 
             # Show legend
             console.print("\n[dim]Legend:[/dim]")
-            console.print("  [bold green][OFFICIAL][/bold green] - Official plugins maintained by PythonWoods (structum_*)")
+            console.print(
+                "  [bold green][OFFICIAL][/bold green] - Official plugins maintained by PythonWoods (structum_*)"
+            )
             console.print("  [blue][COMMUNITY][/blue] - Community plugins")
 
         @plugins_app.command("info")
@@ -104,15 +106,19 @@ class PluginsPlugin(PluginBase):
             console.print(f"[bold yellow]Category:[/bold yellow] {plugin.category}")
             console.print(f"[bold green]Version:[/bold green] {pkg_meta.get('version', 'unknown')}")
             console.print(f"[bold]Author:[/bold] {pkg_meta.get('author', 'unknown')}")
-            if pkg_meta.get('author_email'):
+            if pkg_meta.get("author_email"):
                 console.print(f"[bold]Email:[/bold] {pkg_meta['author_email']}")
             console.print(f"[bold]Description:[/bold] {pkg_meta.get('description', '')}")
-            if pkg_meta.get('license'):
+            if pkg_meta.get("license"):
                 console.print(f"[bold]License:[/bold] {pkg_meta['license']}")
 
             # Show type and module info
             if plugin_metadata:
-                plugin_type = "[bold green][OFFICIAL][/bold green]" if plugin_metadata.plugin_type.value == "official" else "[blue][COMMUNITY][/blue]"
+                plugin_type = (
+                    "[bold green][OFFICIAL][/bold green]"
+                    if plugin_metadata.plugin_type.value == "official"
+                    else "[blue][COMMUNITY][/blue]"
+                )
                 console.print(f"[bold]Type:[/bold] {plugin_type}")
                 console.print(f"[bold]Module:[/bold] {plugin_metadata.module_path}")
                 if plugin_metadata.distribution_name:
@@ -198,19 +204,33 @@ class PluginsPlugin(PluginBase):
 
                 # Show package structure
                 console.print("\n[bold]Generated files:[/bold]")
-                console.print("  📄 [cyan]pyproject.toml[/cyan] - Package configuration with entry point")
+                console.print(
+                    "  📄 [cyan]pyproject.toml[/cyan] - Package configuration with entry point"
+                )
                 console.print("  📄 [cyan]README.md[/cyan] - Documentation template")
                 console.print("  📄 [cyan].gitignore[/cyan] - Git ignore rules")
-                console.print(f"  📁 [cyan]src/{name.replace('-', '_')}/[/cyan] - Plugin source code")
+                console.print(
+                    f"  📁 [cyan]src/{name.replace('-', '_')}/[/cyan] - Plugin source code"
+                )
 
                 # Installation instructions
                 console.print("\n[bold]Next steps:[/bold]")
                 console.print(f"  1. [yellow]cd {plugin_dir.name}[/yellow]")
-                console.print("  2. [yellow]pip install -e .[/yellow]  [dim](install in development mode)[/dim]")
-                console.print(f"  3. [yellow]structum {name} info[/yellow]  [dim](test your plugin)[/dim]")
-                console.print("  4. [yellow]structum plugins list[/yellow]  [dim](verify installation)[/dim]")
+                console.print(
+                    "  2. [yellow]pip install -e .[/yellow]  [dim](install in development mode)[/dim]"
+                )
+                console.print(
+                    f"  3. [yellow]structum {name} info[/yellow]  [dim](test your plugin)[/dim]"
+                )
+                console.print(
+                    "  4. [yellow]structum plugins list[/yellow]  [dim](verify installation)[/dim]"
+                )
 
-                console.print("\n[dim]💡 Edit src/{}/commands/main.py to add your commands[/dim]".format(name.replace("-", "_")))
+                console.print(
+                    "\n[dim]💡 Edit src/{}/commands/main.py to add your commands[/dim]".format(
+                        name.replace("-", "_")
+                    )
+                )
                 console.print("[dim]   See README.md for detailed instructions[/dim]")
             except Exception as e:
                 console.print(f"[red]✘ Error creating plugin:[/red] {e}")

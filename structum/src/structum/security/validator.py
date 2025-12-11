@@ -68,7 +68,7 @@ class PluginValidator:
         """
         try:
             # Resolve to absolute path and check for traversal
-            resolved = path.resolve()
+            _ = path.resolve()
             # In a real implementation, you'd check against allowed directories
             return True
         except (OSError, RuntimeError):

@@ -22,14 +22,13 @@ def serve_docs(dev_addr: str) -> None:
     """
     try:
         console.print("[bold blue]Starting documentation server...[/bold blue]")
-        result = subprocess.run(
-            ["mkdocs", "serve", "--dev-addr", dev_addr],
-            check=True
-        )
+        result = subprocess.run(["mkdocs", "serve", "--dev-addr", dev_addr], check=True)
         sys.exit(result.returncode)
     except subprocess.CalledProcessError as e:
         console.print("[bold red]Error:[/bold red] Failed to start documentation server.")
-        console.print("[dim]Make sure mkdocs and mkdocs-material are installed: pip install mkdocs mkdocs-material[/dim]")
+        console.print(
+            "[dim]Make sure mkdocs and mkdocs-material are installed: pip install mkdocs mkdocs-material[/dim]"
+        )
         sys.exit(e.returncode)
     except FileNotFoundError:
         console.print("[bold red]Error:[/bold red] mkdocs command not found.")
@@ -59,7 +58,9 @@ def deploy_docs(message: str | None, force: bool) -> None:
         sys.exit(result.returncode)
     except subprocess.CalledProcessError as e:
         console.print("[bold red]Error:[/bold red] Failed to deploy documentation.")
-        console.print("[dim]Make sure you have push access to the repository and gh-pages branch exists.[/dim]")
+        console.print(
+            "[dim]Make sure you have push access to the repository and gh-pages branch exists.[/dim]"
+        )
         sys.exit(e.returncode)
     except FileNotFoundError:
         console.print("[bold red]Error:[/bold red] mkdocs command not found.")

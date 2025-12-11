@@ -112,9 +112,9 @@ class PluginRegistry:
     @classmethod
     def load_all(cls) -> None:
         """Instantiate and setup all registered plugins."""
-        for name, metadata in cls._plugins.items():
+        for name, plugin_meta in cls._plugins.items():
             if name not in cls._instances:
-                instance = metadata.plugin_class()
+                instance = plugin_meta.plugin_class()
                 instance.setup()
                 cls._instances[name] = instance
 
@@ -209,8 +209,8 @@ class PluginRegistry:
             PluginType.OFFICIAL.value: [],
             PluginType.COMMUNITY.value: [],
         }
-        for name, metadata in cls._plugins.items():
-            result[metadata.plugin_type.value].append(name)
+        for name, plugin_meta in cls._plugins.items():
+            result[plugin_meta.plugin_type.value].append(name)
         return result
 
     @classmethod
@@ -221,8 +221,8 @@ class PluginRegistry:
             Dictionary mapping category to list of plugin names.
         """
         result: dict[str, list[str]] = {}
-        for name, metadata in cls._plugins.items():
-            category = metadata.plugin_class.category
+        for name, plugin_meta in cls._plugins.items():
+            category = plugin_meta.plugin_class.category
             if category not in result:
                 result[category] = []
             result[category].append(name)

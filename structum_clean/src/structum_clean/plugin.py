@@ -27,6 +27,7 @@ class CleanPlugin(PluginBase):
 
     def register_commands(self, app: typer.Typer, help_panel: str | None = None) -> None:
         """Register the clean command."""
+
         @app.command(name="clean", rich_help_panel=help_panel)
         def clean_command(
             directory: Path = typer.Argument(
@@ -35,17 +36,15 @@ class CleanPlugin(PluginBase):
                 exists=True,
                 file_okay=False,
                 dir_okay=True,
-                resolve_path=True
+                resolve_path=True,
             ),
             verbose: bool = typer.Option(
-                True,
-                "--verbose/--quiet", "-v/-q",
-                help="Verbose output."
+                True, "--verbose/--quiet", "-v/-q", help="Verbose output."
             ),
             skip_venv: bool = typer.Option(
                 False,
                 "--skip-venv",
-                help="Skip virtual environment directories (.env, venv, etc.)."
+                help="Skip virtual environment directories (.env, venv, etc.).",
             ),
         ) -> None:
             """Recursively removes all __pycache__ directories.
