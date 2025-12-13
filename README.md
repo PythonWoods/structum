@@ -17,12 +17,12 @@
 
 ## ✨ Key Features
 
-*   **Plugin-First Architecture**: Everything is a plugin - no built-in commands beyond core utilities
-*   **Entry Point Discovery**: Plugins auto-discovered via Python entry points
-*   **Minimal Core**: Lightweight framework with essential infrastructure only
-*   **Optional Dependencies**: Install only the plugins you need
-*   **Enterprise-Grade**: Production-ready with monitoring, security, and configuration management
-*   **Developer-Friendly**: Clear SDK, excellent DX, comprehensive documentation
+* **Plugin-First Architecture**: Everything is a plugin - no built-in commands beyond core utilities
+* **Entry Point Discovery**: Plugins auto-discovered via Python entry points
+* **Minimal Core**: Lightweight framework with essential infrastructure only
+* **Optional Dependencies**: Install only the plugins you need
+* **Enterprise-Grade**: Production-ready with monitoring, security, and configuration management
+* **Developer-Friendly**: Clear SDK, excellent DX, comprehensive documentation
 
 ---
 
@@ -31,16 +31,19 @@
 ### Installation
 
 **Core Framework Only:**
+
 ```bash
 pip install structum
 ```
 
 **With All Official Plugins:**
+
 ```bash
 pip install structum[full]
 ```
 
 **Selective Installation:**
+
 ```bash
 pip install structum[tree,archive]  # Just tree and archive plugins
 ```
@@ -49,15 +52,16 @@ pip install structum[tree,archive]  # Just tree and archive plugins
 
 Install `structum[full]` to get all of these:
 
-1.  **`tree`**: Directory tree visualization
-2.  **`archive`**: Export code to Markdown
-3.  **`clean`**: Remove `__pycache__` directories
-4.  **`docs`**: Documentation management (MkDocs integration)
-5.  **`plugins`**: Plugin management utilities
+1. **`tree`**: Directory tree visualization
+2. **`archive`**: Export code to Markdown
+3. **`clean`**: Remove `__pycache__` directories
+4. **`docs`**: Documentation management (MkDocs integration)
+5. **`plugins`**: Plugin management utilities
 
 ### Usage Examples
 
 #### Visualize Structure (requires `structum_tree`)
+
 ```bash
 # Basic usage with stats
 structum tree . --stats
@@ -70,6 +74,7 @@ structum tree . --theme emoji  # or: nerd, ascii, none
 ```
 
 #### Archive Code (requires `structum_archive`)
+
 ```bash
 # Archive multiple file types
 structum archive . --output code.md --ext py,js,ts
@@ -79,12 +84,14 @@ structum archive src --split-folder --output docs/
 ```
 
 #### Clean Project (requires `structum_clean`)
+
 ```bash
 # Remove __pycache__ (skip virtual environments)
 structum clean . --skip-venv
 ```
 
 #### Manage Documentation (requires `structum_docs`)
+
 ```bash
 # Serve docs locally
 structum docs serve
@@ -94,6 +101,7 @@ structum docs deploy
 ```
 
 #### Manage Plugins (requires `structum_plugins`)
+
 ```bash
 # List installed plugins
 structum plugins list

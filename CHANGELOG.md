@@ -9,6 +9,44 @@ and automatic release generation via **release-please**.
 
 ## [Unreleased]
 
+### ✨ Features
+
+#### Phase 4.1: Health Checks (2025-12-13)
+
+- **Health Check Command**: Added `structum health` command for system and plugin monitoring
+- **System Health Checks**: Python version, platform, core framework, configuration validation
+- **Plugin Health Checks**: Load time measurement, metadata validation, import testing
+- **Health Status Levels**: OK, WARNING, DEGRADED, ERROR with clear indicators
+- **Flexible Checking**: `--system` flag for system-only, `--plugin` for specific plugin checks
+- **Rich Output**: Formatted tables with status icons and detailed diagnostics
+
+#### Phase 5.3: Documentation Overhaul (2025-12-13)
+
+- **Complete Documentation Update**: Updated all documentation for v2.0 architecture
+- **CONTRIBUTING.md**: Rewritten for monorepo structure and v2.0 workflow
+- **Getting Started Guide**: Updated for new plugin-based architecture
+- **Development Docs**: Updated conventions, plugins, and testing guides
+- **CLI Documentation**: Updated command references for plugin commands
+
+#### Phase 5.1: Testing Infrastructure (2025-12-11)
+
+- **Test Suites Created**: Added comprehensive test infrastructure for all 6 packages
+  - `structum/tests/` - Core framework tests
+  - `structum_tree/tests/` - Tree plugin tests
+  - `structum_archive/tests/` - Archive plugin tests
+  - `structum_clean/tests/` - Clean plugin tests
+  - `structum_docs/tests/` - Docs plugin tests
+  - `structum_plugins/tests/` - Plugins management tests
+- **35 Tests Passing**: All packages have working test suites
+- **Coverage Baseline**: Core at 49% (target: 85%+), plugins averaging 70%+
+- **Test Strategy**: Package-specific test suites with monorepo runner
+- **Documentation Updates**:
+  - **TESTING.md**: Updated with Phase 5.1 results and coverage targets
+  - **ARCHITECTURE_V2.md**: Updated status to reflect completed phases
+  - **CLAUDE.md**: Updated with Phase 5.1 and 5.3 completion status
+
+---
+
 ## [2.0.0-alpha.1] - 2025-12-11
 
 ### 🎉 Major Release - Enterprise Plugin Framework
@@ -309,7 +347,8 @@ Complete architectural redesign transforming Structum into an enterprise-grade p
   - Package naming: `structum-plugin-<name>` (PyPI-ready)
 
 - **Generated Structure** (standalone Python project):
-  ```
+
+  ```bash
   output_dir/my-plugin/              # ← Standalone project, no container folder
   ├── pyproject.toml                 # Entry point, dependencies, build config
   ├── README.md                      # Documentation template
@@ -352,6 +391,7 @@ Complete architectural redesign transforming Structum into an enterprise-grade p
   - All tests passing with 100% coverage for skeleton.py
 
 **Developer Experience**:
+
 - **Before**: Generate skeleton → manually create pyproject.toml → manually configure entry point → install
 - **After**: `structum plugins new my-plugin` → `cd my-plugin && pip install -e .` → done! ✨
 - **Workflow**: Identical to any standard Python project (git, PyPI, etc.)

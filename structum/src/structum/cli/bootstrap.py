@@ -81,6 +81,37 @@ def create_app(
             for metric_name, value in summary["counters"].items():
                 console.print(f"  {metric_name}: {value}")
 
+    # Built-in health command
+    @app.command(name="health")
+    def health_command(
+        plugin: str | None = typer.Option(
+            None, "--plugin", "-p", help="Check specific plugin health"
+        ),
+        system_only: bool = typer.Option(
+            False, "--system", "-s", help="Check only system health (skip plugins)"
+        ),
+    ) -> None:
+        """Check system and plugin health."""
+        from structum.monitoring.health import HealthChecker
+
+        checker = HealthChecker()
+
+        # Check system health
+        system_checks = checker.check_system()
+
+        # Check plugin health
+        plugin_checks: list = []
+        if not system_only:
+            if plugin:
+                # Check specific plugin
+                plugin_checks = [checker.check_plugin(plugin)]
+            else:
+                # Check all plugins
+                plugin_checks = checker.check_all_plugins()
+
+        # Print report
+        checker.print_health_report(system_checks, plugin_checks)
+
     # Load plugins and register their commands
     start_time = time.time()
     load_plugins(app)
