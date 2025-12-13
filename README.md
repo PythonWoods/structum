@@ -160,8 +160,8 @@ L4 — Community Plugins
 
 ### Documentation
 
-* **[ARCHITECTURE_V2.md](ARCHITECTURE_V2.md)**: Current v2.0 implementation details
-* **[ARCHITECTURE_V3/](ARCHITECTURE_V3/)**: Future vision and design specifications
+* **[Architecture V2](docs/architecture/v2.md)**: Current v2.0 implementation details
+* **[Architecture V3](docs/architecture/v3/)**: Future vision and design specifications
 * **[CLAUDE.md](CLAUDE.md)**: Development guide for contributors
 
 Full user documentation: 👉 **[https://pythonwoods.github.io/structum/](https://pythonwoods.github.io/structum/)**

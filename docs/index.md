@@ -34,7 +34,7 @@ Install with `pip install structum[full]`:
 
 ## Architecture
 
-```
+```text
 structum/               # Core framework (infrastructure only)
 ├── plugins/           # Plugin system (loader, registry, SDK)
 ├── config/            # Configuration management
@@ -48,7 +48,7 @@ structum_docs/
 structum_plugins/
 ```
 
-See [ARCHITECTURE_V2.md](https://github.com/pythonwoods/structum/blob/develop/ARCHITECTURE_V2.md) for complete v2.0 design documentation.
+See [Architecture V2](https://github.com/pythonwoods/structum/blob/develop/docs/architecture/v2.md) for complete v2.0 design documentation.
 
 ## V3 Vision: Enterprise Meta-Framework
 
@@ -59,7 +59,7 @@ Structum is evolving into a **foundational meta-framework** for building plugin-
 - **Dependency Injection**: Container for testability and plugin orchestration
 - **Enhanced Security**: Policy-based plugin management and sandboxing readiness
 
-See [ARCHITECTURE_V3/](https://github.com/pythonwoods/structum/tree/develop/ARCHITECTURE_V3) for the complete future vision.
+See [Architecture V3](https://github.com/pythonwoods/structum/tree/develop/docs/architecture/v3) for the complete future vision.
 
 ## Development Status
 

@@ -8,7 +8,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 Structum is being transformed from a monolithic CLI tool into a **minimal enterprise-grade plugin framework**. All current functionality will be extracted into separate plugins.
 
-**Key Architecture Document**: Read `ARCHITECTURE_V2.md` for complete design details.
+**Key Architecture Document**: Read `docs/architecture/v2.md` for complete design details.
 
 ### Refactoring Status Dashboard
 
@@ -242,11 +242,12 @@ structum/                       # ✅ Monorepo root
 │
 ├── pyproject.toml              # Monorepo task automation (hatch)
 ├── .pre-commit-config.yaml     # Pre-commit hooks configuration
-├── ARCHITECTURE_V2.md          # Complete v2.0 architecture design
+├── docs/architecture/          # Architecture documentation
+│   ├── v2.md                   # Complete v2.0 architecture design
+│   └── v3/                     # V3 vision and design specifications
 ├── TESTING.md                  # Testing guide
 ├── CHANGELOG.md                # Version history
 ├── CLAUDE.md                   # This file (dev guide)
-└── src/                        # ⚠️ Legacy v1.x monolith (deprecated)
 ```
 
 ### Created Packages Summary
@@ -742,8 +743,9 @@ Config is stored in `~/.config/structum/config.json`.
 
 **Architecture & Design:**
 
-- **[ARCHITECTURE_V2.md](ARCHITECTURE_V2.md)**: Complete v2.0 architecture documentation with all design decisions
-- **[TESTING.md](TESTING.md)**: Comprehensive testing guide and strategy
+- **[Architecture V2](docs/architecture/v2.md)**: Complete v2.0 architecture documentation with all design decisions
+- **[Architecture V3](docs/architecture/v3/)**: Future vision and design specifications
+- **[Testing Guide](docs/development/testing.md)**: Comprehensive testing guide and strategy
 - **[CHANGELOG.md](CHANGELOG.md)**: Version history and release notes
 
 **Core Package Files:**
@@ -824,7 +826,7 @@ Track the v2.0 refactoring progress:
 
 ### Current State (v2.0.0-alpha.1)
 
-- **V2.0 Architecture**: Minimal plugin framework - see [ARCHITECTURE_V2.md](ARCHITECTURE_V2.md) for complete design
+- **V2.0 Architecture**: Minimal plugin framework - see [Architecture V2](docs/architecture/v2.md) for complete design
 - **No built-in commands**: All functionality delivered via plugins (tree, archive, clean, docs, plugins)
 - **Plugin auto-discovery**: Plugins registered via entry points, auto-discovered on load
 - **Disabled plugins**: Show helpful error messages instead of "No such command"
@@ -839,7 +841,7 @@ Track the v2.0 refactoring progress:
 
 ### V3 Vision and Principles
 
-**CRITICAL**: V3 architecture documentation in [ARCHITECTURE_V3/](ARCHITECTURE_V3/) defines the future vision. When implementing Phase 4+ features, follow V3 principles:
+**CRITICAL**: V3 architecture documentation in [docs/architecture/v3/](docs/architecture/v3/) defines the future vision. When implementing Phase 4+ features, follow V3 principles:
 
 1. **Layered Architecture (L1-L4)**
    - **L1 (Core)**: Plugin engine, observability primitives, DI container, security

@@ -163,8 +163,8 @@ Structum stores configuration in `~/.config/structum/config.json`:
 
 - [CLI Reference](cli/commands.md) - Complete command documentation
 - [Plugin Development](development/plugins.md) - Create your own plugins
-- [Architecture V2.0](../ARCHITECTURE_V2.md) - Understand the v2.0 design
-- [Architecture V3 Vision](../ARCHITECTURE_V3/ARCHITECTURE_V3.md) - Future architectural vision
+- [Architecture V2.0](architecture/v2.md) - Understand the v2.0 design
+- [Architecture V3 Vision](architecture/v3/) - Future architectural vision
 - [Contributing](../CONTRIBUTING.md) - Contribute to Structum
 
 ## Need Help?
