@@ -129,10 +129,42 @@ Structum supports different visual styles:
 
 ---
 
-## 📚 Documentation
+## 🏗️ Architecture & Vision
 
-Full documentation is available at:
-👉 **[https://pythonwoods.github.io/structum/](https://pythonwoods.github.io/structum/)**
+**Current Version**: v2.0.0-alpha.1 (Plugin Framework Foundation)
+
+Structum is evolving into a **foundational meta-framework** for building plugin-oriented systems, domain frameworks, and extensible applications.
+
+### Layered Architecture (V3 Vision)
+
+```text
+L1 — Core Runtime (structum)
+     └─ Plugin engine, observability primitives, DI container
+
+L2 — Official Extensions (structum_*)
+     └─ tree, archive, clean, docs, plugins
+
+L3 — Domain Frameworks
+     └─ User-owned frameworks built on Structum
+
+L4 — Community Plugins
+     └─ Third-party extensions
+```
+
+### Key Principles
+
+* **Zero Vendor Lock-in**: Core provides interfaces, plugins provide implementations
+* **Observability First**: Metrics hooks, tracing hooks, structured logging primitives
+* **Container-Agnostic**: Docker optional, Python packages first
+* **Monorepo Development**: Single repo, modular PyPI distribution
+
+### Documentation
+
+* **[ARCHITECTURE_V2.md](ARCHITECTURE_V2.md)**: Current v2.0 implementation details
+* **[ARCHITECTURE_V3/](ARCHITECTURE_V3/)**: Future vision and design specifications
+* **[CLAUDE.md](CLAUDE.md)**: Development guide for contributors
+
+Full user documentation: 👉 **[https://pythonwoods.github.io/structum/](https://pythonwoods.github.io/structum/)**
 
 ---
 

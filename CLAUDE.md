@@ -86,10 +86,11 @@ Structum is being transformed from a monolithic CLI tool into a **minimal enterp
 
 **Result**: Complete CI/CD pipeline with automated testing, releases, and PyPI publishing
 
-#### Phase 4: Enterprise Features ⏳ PENDING
-- ⏳ Health checks
-- ⏳ Advanced monitoring
-- ⏳ Hot reload support
+#### Phase 4: Enterprise Features ⏳ IN PROGRESS
+
+- ✅ **Phase 4.1**: Health checks (completed 2025-12-13)
+- ⏳ **Phase 4.2**: Advanced monitoring (observability primitives)
+- ⏳ **Phase 4.3**: Hot reload support
 
 ### How to Continue Refactoring
 
@@ -821,6 +822,8 @@ Track the v2.0 refactoring progress:
 
 ## Important Notes
 
+### Current State (v2.0.0-alpha.1)
+
 - **V2.0 Architecture**: Minimal plugin framework - see [ARCHITECTURE_V2.md](ARCHITECTURE_V2.md) for complete design
 - **No built-in commands**: All functionality delivered via plugins (tree, archive, clean, docs, plugins)
 - **Plugin auto-discovery**: Plugins registered via entry points, auto-discovered on load
@@ -833,3 +836,44 @@ Track the v2.0 refactoring progress:
 - **Branch strategy**: Develop on `develop`, merge to `main` for releases
 - **Task automation**: Use `hatch run <task>` for all development workflows (not Make/tox/just)
 - **CI/CD**: GitHub Actions with modular workflows (tests, lint, build, publish, release-please)
+
+### V3 Vision and Principles
+
+**CRITICAL**: V3 architecture documentation in [ARCHITECTURE_V3/](ARCHITECTURE_V3/) defines the future vision. When implementing Phase 4+ features, follow V3 principles:
+
+1. **Layered Architecture (L1-L4)**
+   - **L1 (Core)**: Plugin engine, observability primitives, DI container, security
+   - **L2 (Extensions)**: Optional official plugins (structum_*)
+   - **L3 (Domain Frameworks)**: User-owned frameworks built on Structum
+   - **L4 (Community)**: Third-party plugins
+
+2. **Observability Strategy**
+   - **In Core**: Interfaces/hooks only (metrics hooks, tracing hooks, logging interface)
+   - **As Plugins**: Vendor implementations (Sentry, Datadog, OpenTelemetry)
+   - **Principle**: Zero vendor lock-in, no hard dependencies
+
+3. **Phase 4.2 Guidance (Advanced Monitoring)**
+   - Implement observability **primitives** in core (`structum/monitoring/`)
+   - Provide abstract interfaces, NOT concrete implementations
+   - Default to stdlib fallbacks (basic ConsoleHandler, etc.)
+   - Extension points for plugin-based advanced implementations
+
+4. **Core vs Extension Boundary**
+   - Core: Plugin management, discovery, lifecycle, config, observability hooks
+   - Extensions: FS utilities, concrete logging implementations, vendor integrations
+
+### Legacy Code Policy
+
+**NO LEGACY PRESERVATION NEEDED**: Structum has never been publicly released. There is:
+
+- ✅ No backward compatibility required
+- ✅ No migration guides needed
+- ✅ No deprecated code to maintain
+- ✅ Freedom to make breaking changes during v2.0 alpha/beta
+
+**Action Items**:
+
+- Delete obsolete code immediately (e.g., `src/` legacy monolith removed)
+- Refactor aggressively toward V3 vision
+- Focus on clean architecture, not compatibility
+- V2.0 alpha is the foundation, not a constraint

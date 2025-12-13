@@ -720,16 +720,70 @@ dependencies = ["structum>=2.0.0a1", "structum_tree>=2.0.0a1"]
 
 ---
 
-## Next Steps
+## V3 Vision and Future Evolution
 
-1. [ ] Review and approve architecture
-2. [ ] Choose repository structure
-3. [ ] Start Phase 1: Core extraction
-4. [ ] Set up development workflow
-5. [ ] Begin plugin separation
+**Status**: v2.0.0-alpha.1 is the current implementation. V3 is the future architectural vision.
+
+### V2 → V3 Transition Strategy
+
+Structum v2.0 provides a solid plugin framework foundation. V3 will enhance this with enterprise-grade capabilities while maintaining backward compatibility where possible.
+
+**Key V3 Enhancements**:
+
+1. **Layered Architecture Model** (L1-L4)
+   - L1: Core Runtime (structum) - Plugin engine, observability primitives
+   - L2: Official Extensions (structum_*) - Optional, modular capabilities
+   - L3: Domain Frameworks - User-owned frameworks built on Structum
+   - L4: Community Plugins - Third-party extensions
+
+2. **Observability Primitives** (v2.x → v3.0)
+   - **In Core**: Metrics hooks, tracing hooks, structured logging **interfaces**
+   - **As Plugins**: Vendor-specific implementations (Sentry, Datadog, OpenTelemetry)
+   - **Principle**: No hard dependencies, vendor-neutral core
+
+3. **Dependency Injection Container** (v3.0+)
+   - Testability and isolation
+   - Plugin orchestration
+   - Singleton, scoped, transient lifetimes
+
+4. **Enhanced Security Model** (v3.x)
+   - Policy-based plugin management
+   - Sandboxing readiness
+   - Audit logging
+
+### V3 Documentation
+
+See [`ARCHITECTURE_V3/`](ARCHITECTURE_V3/) for complete V3 specifications:
+
+- **[ARCHITECTURE_V3.md](ARCHITECTURE_V3/ARCHITECTURE_V3.md)**: Definitive architectural specification
+- **[DECISIONS.md](ARCHITECTURE_V3/DECISIONS.md)**: Architectural Decision Records (ADRs)
+- **[CONTAINERIZATION_STRATEGY.md](ARCHITECTURE_V3/CONTAINERIZATION_STRATEGY.md)**: Docker usage guidelines
+- **[blueprints/](ARCHITECTURE_V3/blueprints/)**: Domain framework templates
+
+### Roadmap
+
+- **v2.0 (Current)**: Plugin framework foundation
+- **v2.1-v2.9**: Incremental V3 feature adoption (observability, monitoring)
+- **v3.0**: Full V3 architecture with DI container, enhanced security
+- **v3.x**: Advanced isolation, policy system, domain framework SDK
+
+**Migration Philosophy**: v2 code will not be deprecated without clear migration paths. V3 features will be additive where possible.
 
 ---
 
-**Document Version**: 1.1
-**Last Updated**: 2025-12-09
-**Status**: 🟢 IN PROGRESS - Phase 1 Complete, Phase 2 In Progress (2/5)
+## Next Steps (v2.0)
+
+1. [x] Review and approve architecture
+2. [x] Choose repository structure (monorepo for alpha/beta)
+3. [x] Start Phase 1: Core extraction
+4. [x] Set up development workflow
+5. [x] Begin plugin separation
+6. [ ] Complete Phase 4: Enterprise features (health checks ✓, monitoring, hot reload)
+7. [ ] Complete Phase 5: Testing and documentation
+8. [ ] Release v2.0.0-beta.1
+
+---
+
+**Document Version**: 2.0
+**Last Updated**: 2025-12-13
+**Status**: 🟢 v2.0.0-alpha.1 IMPLEMENTED | V3 Vision Documented
