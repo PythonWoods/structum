@@ -48,7 +48,18 @@ structum_docs/
 structum_plugins/
 ```
 
-See [ARCHITECTURE_V2.md](https://github.com/pythonwoods/structum/blob/develop/ARCHITECTURE_V2.md) for complete design documentation.
+See [ARCHITECTURE_V2.md](https://github.com/pythonwoods/structum/blob/develop/ARCHITECTURE_V2.md) for complete v2.0 design documentation.
+
+## V3 Vision: Enterprise Meta-Framework
+
+Structum is evolving into a **foundational meta-framework** for building plugin-oriented systems and domain frameworks. V3 introduces:
+
+- **Layered Architecture** (L1-L4): Core → Extensions → Domain Frameworks → Community
+- **Observability Primitives**: Interfaces in core, implementations as plugins (zero vendor lock-in)
+- **Dependency Injection**: Container for testability and plugin orchestration
+- **Enhanced Security**: Policy-based plugin management and sandboxing readiness
+
+See [ARCHITECTURE_V3/](https://github.com/pythonwoods/structum/tree/develop/ARCHITECTURE_V3) for the complete future vision.
 
 ## Development Status
 
@@ -57,7 +68,9 @@ See [ARCHITECTURE_V2.md](https://github.com/pythonwoods/structum/blob/develop/AR
 - ✅ Core architecture complete
 - ✅ Plugin system stable
 - ✅ 5 official plugins released
+- ✅ Health checks implemented (Phase 4.1)
 - ⏳ Expanding test coverage
+- ⏳ Observability primitives (Phase 4.2)
 - 🎯 Target: v2.0.0-beta.1 (Q1 2025)
 
 ---

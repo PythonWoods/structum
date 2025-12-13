@@ -41,7 +41,7 @@ cd structum && pytest
 cd structum_tree && pytest
 
 # With coverage
-cd structum && pytest --cov=src/structum --cov-report=term
+cd structum && pytest --cov=structum --cov-report=term
 ```
 
 ### Run Specific Test File
@@ -199,14 +199,14 @@ def test_plugin_loading(mock_eps):
 
 ```bash
 # HTML report
-pytest --cov=src/structum --cov-report=html
+pytest --cov=structum --cov-report=html
 open htmlcov/index.html
 
 # Terminal report
-pytest --cov=src/structum --cov-report=term
+pytest --cov=structum --cov-report=term
 
 # Missing lines report
-pytest --cov=src/structum --cov-report=term-missing
+pytest --cov=structum --cov-report=term-missing
 ```
 
 ## Testing Conventions
