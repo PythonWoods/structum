@@ -1,0 +1,19 @@
+```plantuml
+@startuml
+title Structum V3 - Plugin Loading Sequence
+
+actor User
+participant App
+participant PluginLoader
+participant Registry
+participant Plugin
+
+User -> App: start()
+App -> PluginLoader: load_plugins()
+PluginLoader -> Registry: discover()
+Registry -> Registry: validate()
+Registry -> Plugin: instantiate()
+Plugin -> Registry: register()
+Registry -> App: active plugins
+@enduml
+```

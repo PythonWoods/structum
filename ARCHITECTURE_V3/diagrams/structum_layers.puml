@@ -1,0 +1,35 @@
+```plantuml
+@startuml
+title Structum V3 - Layered Architecture
+
+package "L1 Core Runtime" {
+  [Plugin Engine]
+  [Plugin Management]
+  [Config Engine]
+  [DI Container]
+  [Observability]
+  [Security Validator]
+  [CLI Bootstrap]
+}
+
+package "L2 Official Extensions" {
+  [Tree]
+  [Archive]
+  [Clean]
+  [Docs]
+}
+
+package "L3 Domain Frameworks" {
+  [Camera Framework]
+  [Motion Detection]
+}
+
+package "L4 Community Plugins" {
+  [Third-party Plugins]
+}
+
+[L2 Official Extensions] --> [Plugin Engine]
+[L3 Domain Frameworks] --> [Plugin Engine]
+[L4 Community Plugins] --> [Plugin Engine]
+@enduml
+```
